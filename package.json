@@ -1,0 +1,67 @@
+{
+  "name": "mop-desktop",
+  "version": "2.1.0",
+  "private": true,
+  "description": "MOP — desenvolvido por NOXUZ. Livro de turno e gestão de pendências.",
+  "author": "NOXUZ",
+  "main": "desktop/main.cjs",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.cjs",
+    "dist:win": "electron-builder --win nsis --x64",
+    "dist:portable": "electron-builder --win portable --x64",
+    "test:management": "electron test/management-ui-smoke.cjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "br.com.mop.desktop",
+    "productName": "MOP",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "desktop/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "MOP-Instalador-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "MOP",
+      "deleteAppDataOnUninstall": false,
+      "installerLanguages": [
+        "pt_BR"
+      ],
+      "language": "1046"
+    },
+    "portable": {
+      "artifactName": "MOP-Executavel-${version}.${ext}"
+    }
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.2"
+  }
+}

@@ -1,0 +1,23 @@
+'use strict';
+const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const {PGlite}=require('@electric-sql/pglite');const {randomUUID}=require('node:crypto');
+test('SQL: perfis, escopo de condomínio, anexos, gestão de contas e imutabilidade',async t=>{
+ const db=new PGlite();t.after(()=>db.close());const workspace='00000000-0000-4000-8000-000000000001',admin=randomUUID(),operator=randomUUID(),viewer=randomUUID();
+ await db.exec(`create role anon;create role authenticated;create schema auth;create table auth.users(id uuid primary key,email text);create function auth.uid() returns uuid language sql as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;grant usage on schema auth to authenticated;grant execute on function auth.uid() to authenticated;insert into auth.users values('${admin}','admin@test.com'),('${operator}','operator@test.com'),('${viewer}','viewer@test.com');`);
+ await db.exec(fs.readFileSync(path.join(__dirname,'../supabase/mop.sql'),'utf8'));
+ await db.exec(`insert into mop_members(workspace_id,user_id,role,condos) values('${workspace}','${admin}','admin',null),('${workspace}','${operator}','operator',array['A']),('${workspace}','${viewer}','viewer',array['A']);set role authenticated;set request.jwt.claim.sub='${admin}';`);
+ const push=async(kind,payload,id=randomUUID(),base=0)=>{const {rows}=await db.query('select mop_push($1,$2,$3,$4,$5,$6) value',[workspace,randomUUID(),id,kind,base,JSON.stringify(payload)]);return rows[0].value;};
+ const a=await push('items',{protocol:'MOP-20260928-AAAAAA',subject:'Permitido',status:'Pendente',condo:'A'}),b=await push('items',{protocol:'MOP-20260928-BBBBBB',subject:'Restrito',status:'Pendente',condo:'B'});
+ await push('attachments',{item_id:b.record.id,condo:'B',name:'restrito.pdf',mime:'application/pdf',content:Buffer.from('%PDF-test').toString('base64')});
+ await push('handovers',{open_ids:[a.record.id,b.record.id],snapshot:[{id:a.record.id,condo:'A'},{id:b.record.id,condo:'B'}]});
+ await db.exec(`set request.jwt.claim.sub='${operator}'`);let rows=(await db.query('select kind,payload from mop_records')).rows;assert.equal(rows.length,1);assert.equal(rows[0].payload.subject,'Permitido');
+ await assert.rejects(push('items',{protocol:'MOP-20260928-CCCCCC',subject:'Tentativa',status:'Pendente',condo:'B'}),/acesso/);
+ await assert.rejects(push('attachments',{item_id:b.record.id,condo:'A',name:'roubo.pdf',mime:'application/pdf',content:'JVBERi0='}),/acesso/);
+ await assert.rejects(push('templates',{key:randomUUID(),title:'Ronda',frequency:'daily',condo:'A',steps:['Portão']}),/supervisores/);
+ await assert.rejects(db.query('select mop_list_members($1)',[workspace]),/administradores/);
+ await db.exec(`set request.jwt.claim.sub='${viewer}'`);await assert.rejects(push('items',{protocol:'MOP-20260928-DDDDDD',subject:'Sem escrita',status:'Pendente',condo:'A'}),/acesso/);
+ await db.exec(`set request.jwt.claim.sub='${admin}'`);await db.query('select mop_set_member($1,$2,$3,$4)',[workspace,'operator@test.com','supervisor',['A']]);assert.equal((await db.query('select mop_list_members($1) list',[workspace])).rows[0].list.length,3);
+ await db.exec(`set request.jwt.claim.sub='${operator}'`);const template=await push('templates',{key:randomUUID(),title:'Ronda',frequency:'daily',condo:'A',steps:['Portão']});assert.equal(template.ok,true);
+ const run=await push('runs',{template_key:template.record.payload.key,title:'Ronda',slot:'2026-09-28',condo:'A',answers:[{label:'Portão',value:'ok'}]});await assert.rejects(push('runs',{...run.record.payload,note:'Tentativa de reescrever'},run.record.id,1),/imutáveis/);
+ await assert.rejects(db.query('update mop_members set role=$1',['admin']),/permission denied/);
+});

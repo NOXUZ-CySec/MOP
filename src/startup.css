@@ -1,0 +1,43 @@
+.starting{overflow:hidden;background:#102238}
+#appContent{display:contents}
+.starting #appContent{visibility:hidden}
+.startup{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#102238;color:#e5f4ff;padding:32px;opacity:1;transition:opacity .28s ease}
+.startup[hidden]{display:none}
+.startup{overflow:auto}
+.startup[data-state="login"] .startup-track{display:none}
+.startup[data-state="login"] .startup-track::after{animation:none}
+#loginForm{margin-top:24px;text-align:left}
+#loginForm[hidden],#loginConsent[hidden]{display:none}
+#loginForm label{display:block;color:#d4e8fa;margin:14px 0 6px}
+#loginForm input{width:100%;padding:12px;border:1px solid #4a687e;background:#19344c;color:#fff;border-radius:8px}
+#loginForm input:focus{outline:2px solid #53d8ec;outline-offset:2px}
+#loginForm .login-consent{display:flex;align-items:flex-start;gap:10px;font-size:12px;line-height:1.5}
+#loginConsent input{width:auto;margin-top:4px;flex-shrink:0}
+#loginSubmit{width:100%;margin-top:20px}
+.login-help{font-size:12px;color:#aac3d9;line-height:1.6;margin-top:18px}
+.startup-card{width:min(100%,420px);text-align:center}
+.startup-logo{display:block;width:min(100%,280px);height:120px;object-fit:contain;margin:0 auto 36px}
+.startup-track{height:4px;overflow:hidden;border-radius:4px;background:#23425c;margin:0 auto 24px;width:min(100%,280px)}
+.startup-track::after{content:"";display:block;height:100%;width:40%;border-radius:inherit;background:linear-gradient(90deg,#168fff,#53e5ee);animation:startup-progress 1.25s ease-in-out infinite;will-change:transform}
+.startup-message{font-size:16px;margin:0}
+.startup-error{color:#ffc9c9;font-size:14px;overflow-wrap:anywhere}
+#startupRetry[hidden]{display:none}
+.startup[data-state="error"] .startup-track::after{animation:none;transform:none;background:#df9292;width:100%}
+.startup[data-state="ready"]{opacity:0;pointer-events:none}
+.startup[data-state="ready"] .startup-track::after{animation:none}
+@keyframes startup-progress{from{transform:translateX(-100%)}to{transform:translateX(350%)}}
+@media(prefers-reduced-motion:reduce){.startup{transition:none}.startup-track::after{animation:none;transform:translateX(75%)}*,*::before,*::after{scroll-behavior:auto!important}}
+
+.startup-brand{color:#aac3d9;font-size:12px;margin:-18px 0 28px}.startup-brand strong{color:#e5f4ff;font-weight:650}
+
+.startup-noxuz{display:flex;flex-direction:column;align-items:center;gap:6px;margin:-16px 0 26px;color:#e5f4ff}.startup-noxuz>span{font-size:11px;color:#aac3d9}.startup-noxuz .noxuz-wordmark{font-size:24px;letter-spacing:4px}
+
+.startup-noxuz .noxuz-logo{width:min(100%,320px);height:auto}.startup-noxuz{gap:10px}
+
+/* Assinatura compacta no canto, fora do formulário de acesso. */
+.startup{padding-top:32px;padding-bottom:88px}
+.startup-noxuz{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);display:flex;flex-direction:row;align-items:center;gap:9px;margin:0}
+.startup-noxuz .noxuz-mini{display:block;width:40px;height:40px;flex:0 0 40px;border-radius:8px;object-fit:contain}
+.startup-noxuz>span{font-size:11px;color:#aac3d9}
+.startup-noxuz strong{color:#e5f4ff;font-weight:650}
+@media(max-width:550px){.startup-noxuz{bottom:16px}.startup{padding-top:32px;padding-bottom:80px}}
