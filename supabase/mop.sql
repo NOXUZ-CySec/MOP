@@ -17,6 +17,8 @@ create table if not exists public.mop_records (
   primary key(workspace_id,id)
 );
 create index if not exists mop_records_revision on public.mop_records(workspace_id,revision);
+create index if not exists mop_records_updated_by_idx on public.mop_records(updated_by);
+create index if not exists mop_operations_user_id_idx on public.mop_operations(user_id);
 create table if not exists public.mop_operations (
   workspace_id uuid not null references public.mop_workspaces(id),
   op_id uuid not null, record_id uuid not null, kind text not null, payload jsonb not null,
@@ -28,7 +30,7 @@ alter table public.mop_members enable row level security;
 alter table public.mop_records enable row level security;
 alter table public.mop_operations enable row level security;
 drop policy if exists mop_own_membership on public.mop_members;
-create policy mop_own_membership on public.mop_members for select to authenticated using(user_id=auth.uid());
+create policy mop_own_membership on public.mop_members for select to authenticated using(user_id=(select auth.uid()));
 drop policy if exists mop_read_records on public.mop_records;
 create policy mop_read_records on public.mop_records for select to authenticated using(
   exists(select 1 from public.mop_members m where m.workspace_id=mop_records.workspace_id and m.user_id=auth.uid())
@@ -73,7 +75,7 @@ end $$;
 revoke all on function mop_private.mop_can_condo(uuid,text),mop_private.mop_is_admin(uuid),mop_private.mop_can_record(uuid,text,jsonb) from public,anon;
 grant execute on function mop_private.mop_can_condo(uuid,text),mop_private.mop_is_admin(uuid),mop_private.mop_can_record(uuid,text,jsonb) to authenticated;
 drop policy if exists mop_read_records on public.mop_records;
-create policy mop_read_records on public.mop_records for select to authenticated using(mop_private.mop_can_record(workspace_id,kind,payload));
+create policy mop_read_records on public.mop_records for select to authenticated using((select mop_private.mop_can_record(workspace_id,kind,payload)));
 
 create or replace function public.mop_list_members(p_workspace uuid) returns jsonb
 language plpgsql security definer set search_path='' as $$

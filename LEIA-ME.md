@@ -1,4 +1,6 @@
-# MOP para Windows — versão 2.0
+# MOP para Windows — versão 2.1.0
+
+> **Versão atual: 2.1.0.** Para a apresentação, o objetivo de uso e a lista atualizada de recursos, consulte [README.md](README.md). Este guia preserva as instruções técnicas detalhadas de uso, dados locais e recuperação.
 
 ![NOXUZ — Cybersecurity & Technology](assets/noxuz-logo.png)
 
