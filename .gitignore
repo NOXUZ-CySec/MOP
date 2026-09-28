@@ -2,3 +2,5 @@ node_modules/
 dist/
 *.sqlite*
 backups/
+
+supabase/.temp/

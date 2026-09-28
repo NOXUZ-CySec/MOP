@@ -18,5 +18,7 @@ contextBridge.exposeInMainWorld('mopDesktop',Object.freeze({
   read:()=>unwrap(ipcRenderer.sendSync('mop:read')),
   write:state=>unwrap(ipcRenderer.sendSync('mop:write',state)),
   exportData:async()=>unwrap(await ipcRenderer.invoke('mop:export')),
-  openData:async()=>unwrap(await ipcRenderer.invoke('mop:open-data'))
+  openData:async()=>unwrap(await ipcRenderer.invoke('mop:open-data')),
+  update:async(action)=>{if(!['status','check','install'].includes(action))throw Error('Ação de atualização desconhecida.');return unwrap(await ipcRenderer.invoke('mop:update-'+action));},
+  onUpdate:callback=>{const listener=(_event,status)=>callback(status);ipcRenderer.on('mop:update-status',listener);return ()=>ipcRenderer.removeListener('mop:update-status',listener);}
 }));

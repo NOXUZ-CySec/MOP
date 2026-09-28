@@ -1,6 +1,6 @@
 {
   "name": "mop-desktop",
-  "version": "2.1.0",
+  "version": "2.2.1",
   "private": true,
   "description": "MOP — desenvolvido por NOXUZ. Livro de turno e gestão de pendências.",
   "author": "NOXUZ",
@@ -59,9 +59,17 @@
     },
     "portable": {
       "artifactName": "MOP-Executavel-${version}.${ext}"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "NOXUZ-CySec",
+        "repo": "MOP-Releases"
+      }
+    ]
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.117.2"
+    "@supabase/supabase-js": "^2.117.2",
+    "electron-updater": "^6.8.9"
   }
 }

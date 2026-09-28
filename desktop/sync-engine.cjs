@@ -19,7 +19,7 @@ class SyncEngine {
     this.state='local';this.message='Trabalhando no banco local.';this.running=null;this.timer=null;this.channel=null;this.client=null;this.closed=false;this.authenticated=false;
     this.config=JSON.parse(this.local.setting('config')||JSON.stringify(defaults));
   }
-  status(){return {...this.local.status(),state:this.state,message:this.message,authenticated:this.authenticated,email:this.email||'',url:this.config.url,key:this.config.key,remembered:!!this.safeStorage?.isEncryptionAvailable()};}
+  status(){return {...this.local.status(),state:this.state,message:require('../src/privacy.js').clean(this.message),authenticated:this.authenticated,display_name:require('../src/privacy.js').label(this.membership?.display_name,this.userId),url:this.config.url,key:this.config.key,remembered:!!this.safeStorage?.isEncryptionAvailable()};}
   emit(dataChanged=false){this.notify({...this.status(),dataChanged});}
   makeClient(config){
     const encrypted=!!this.safeStorage?.isEncryptionAvailable();
@@ -49,6 +49,14 @@ class SyncEngine {
     this.email=data.session.user.email;this.authenticated=true;
     this.subscribe();await this.kick();
   }
+  async resolveLogin(login){
+    const config=configuration(this.config);
+    const client=this.makeClient(config);
+    const {data,error}=await client.rpc('mop_resolve_login',{p_login:String(login||'').trim()});
+    try{await client.auth.signOut({scope:'local'});}catch{}
+    if(error)throw connectionFailure(error,'Não foi possível localizar o usuário.');
+    return typeof data==='string'&&data.includes('@')?data:null;
+  }
   async connect(input,{deferSync=false}={}){
     if(this.connecting)throw Error('Aguarde a conexão em andamento.');
     this.connecting=true;
@@ -61,7 +69,7 @@ class SyncEngine {
       this.client=this.makeClient(config);
       const {data,error}=await this.client.auth.signInWithPassword({email:String(input.email||'').trim(),password:String(input.password||'')});
       if(error)throw connectionFailure(error,'Não foi possível entrar. Confira e-mail, senha e conexão.');
-      const membership=await this.client.from('mop_members').select('workspace_id,role,condos,access_version').eq('user_id',data.user.id);
+      const membership=await this.client.from('mop_members').select('workspace_id,user_id,username,display_name,role,condos,access_version').eq('user_id',data.user.id);
       if(membership.error)throw connectionFailure(membership.error,'Não foi possível consultar a autorização na central. Confira a conexão e a configuração do projeto.');
       if(membership.data.length!==1)throw Object.assign(Error('O operador não está autorizado nesta central.'),{code:'AUTH_DENIED'});
       this.membership=membership.data[0];
@@ -102,7 +110,7 @@ class SyncEngine {
       if(session.error)throw session.error;
       if(!session.data.session){this.authenticated=false;this.state='login';this.message='Entre novamente para sincronizar. Os dados locais estão preservados.';return;}
       this.authenticated=true;this.email=session.data.session.user.email;this.subscribe();
-      const membership=await this.client.from('mop_members').select('workspace_id,role,condos,access_version').eq('user_id',session.data.session.user.id).eq('workspace_id',this.workspace());
+      const membership=await this.client.from('mop_members').select('workspace_id,user_id,display_name,role,condos,access_version').eq('user_id',session.data.session.user.id).eq('workspace_id',this.workspace());
       if(membership.error)throw membership.error;
       if(!membership.data.length)throw Object.assign(Error('O operador não tem permissão para acessar esta central.'),{code:'AUTH_DENIED'});
       const updated=membership.data[0];

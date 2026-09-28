@@ -75,3 +75,20 @@ main{margin-left:238px;padding:23px 36px 50px;max-width:1800px}.page-heading{dis
 /* Grupo final sem título visível. */
 .sidebar-about{flex-shrink:0;margin-top:16px;padding-top:12px;border-top:1px solid #26374a}
 .sidebar-about button{width:100%}
+
+.update-card{margin-top:12px;padding-top:12px;border-top:1px solid var(--line,#d9dee7)}
+.update-card .desktop-tool,.update-card .primary{width:100%;margin-top:6px}
+.update-card p{font-size:.78rem;margin:6px 0 0}
+
+/* Expansores: chevron discreto e consistente em toda a interface. */
+summary{list-style:none;position:relative}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";display:inline-block;width:7px;height:7px;border-right:1.7px solid currentColor;border-bottom:1.7px solid currentColor;transform:rotate(45deg);transform-origin:center;transition:transform .16s ease,opacity .16s ease;opacity:.82;margin-left:10px;vertical-align:3px;flex:0 0 7px}
+details[open]>summary::after{transform:rotate(225deg);vertical-align:-1px}
+.record-chevron,.menu-chevron{display:none!important}
+.record-card>summary.record-summary::after{grid-column:4;grid-row:1;justify-self:center;margin:0;color:#52667d}
+.record-card[open]>summary.record-summary::after{transform:rotate(225deg)}
+.data-menu>summary::after{margin-left:auto;color:#8fcddd}
+.compact-pending>summary::after{justify-self:end;color:#64748b}
+.optional-fields>details>summary::after,.record-body>details>summary::after,.module-content details.panel>summary::after{float:right;margin-top:3px;color:#087d9e}
+@media(max-width:700px){.record-card>summary.record-summary::after{grid-column:2;grid-row:1}}

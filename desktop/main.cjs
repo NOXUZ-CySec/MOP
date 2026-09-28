@@ -1,13 +1,17 @@
 'use strict';
-const {app,BrowserWindow,ipcMain,dialog,shell,Menu,powerMonitor,safeStorage,Notification} = require('electron');
+const {app,BrowserWindow,ipcMain,dialog,shell,Menu,powerMonitor,safeStorage,Notification,MenuItem} = require('electron');
+const {autoUpdater}=require('electron-updater');
 const path = require('node:path');
 const {pathToFileURL} = require('node:url');
 const {Store} = require('./store.cjs');
 const {visible,stampWrite}=require('./operations.cjs');
 const operations=require('../src/operations.js');
 const fs=require('node:fs');
+const privacy=require('../src/privacy.js');
 let store,win,sync,access,readVersion;
 let alertTimer;
+let updaterReady=false;
+let updateState={state:'idle',version:null,percent:0,message:'Atualizações automáticas prontas.'};
 const index = path.join(__dirname,'../src/index.html');
 const indexURL = pathToFileURL(index).href;
 // Caminho estável, independente da versão e da pasta do instalador.
@@ -22,7 +26,9 @@ else {
       const trusted = event => {
         if (!win || event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame || event.senderFrame.url !== indexURL) throw Error('Origem não autorizada.');
       };
-      const response = (event,fn) => {try{trusted(event);return {ok:true,value:fn()};}catch(e){return {ok:false,error:e.message};}};
+      const response = (event,fn) => {try{trusted(event);return {ok:true,value:fn()};}catch(e){return {ok:false,error:privacy.clean(e.message)};}};
+      const sendUpdate=(patch={})=>{updateState={...updateState,...patch};if(win&&!win.isDestroyed())win.webContents.send('mop:update-status',updateState);};
+      const setupUpdater=()=>{if(updaterReady||!app.isPackaged)return;updaterReady=true;autoUpdater.autoDownload=true;autoUpdater.autoInstallOnAppQuit=true;autoUpdater.allowPrerelease=false;autoUpdater.on('checking-for-update',()=>sendUpdate({state:'checking',message:'Verificando atualizações…'}));autoUpdater.on('update-available',info=>sendUpdate({state:'available',version:info.version,message:'Nova versão '+info.version+' encontrada. Download iniciado.'}));autoUpdater.on('update-not-available',()=>sendUpdate({state:'current',version:app.getVersion(),percent:0,message:'Você já está usando a versão mais recente.'}));autoUpdater.on('download-progress',p=>sendUpdate({state:'downloading',percent:Math.round(p.percent||0),message:'Baixando atualização… '+Math.round(p.percent||0)+'%'}));autoUpdater.on('update-downloaded',info=>sendUpdate({state:'ready',version:info.version,percent:100,message:'Atualização '+info.version+' pronta para instalar.'}));autoUpdater.on('error',error=>sendUpdate({state:'error',message:'Não foi possível verificar atualizações agora: '+privacy.clean(error.message)}));setTimeout(()=>autoUpdater.checkForUpdates().catch(()=>{}),5000);setInterval(()=>autoUpdater.checkForUpdates().catch(()=>{}),6*60*60*1000).unref();};
       const authorized=()=>{if(!access)throw Error('Entre com seu e-mail e senha para acessar o MOP.');return access.require();};
       ipcMain.handle('mop:shown',async event=>{
         try {trusted(event);await shown;return {ok:true,value:true};}
@@ -56,10 +62,13 @@ else {
         }
         return sync;
       };
+      ipcMain.handle('mop:update-status',event=>response(event,()=>updateState));
+      ipcMain.handle('mop:update-check',async event=>{try{trusted(event);if(!app.isPackaged)return {ok:true,value:{...updateState,state:'dev',message:'Atualizações automáticas funcionam no aplicativo instalado.'}};setupUpdater();await autoUpdater.checkForUpdates();return {ok:true,value:updateState};}catch(e){return {ok:false,error:privacy.clean(e.message)};}});
+      ipcMain.handle('mop:update-install',event=>{try{trusted(event);if(updateState.state!=='ready')throw Error('Nenhuma atualização está pronta para instalar.');setImmediate(()=>autoUpdater.quitAndInstall(false,true));return {ok:true,value:true};}catch(e){return {ok:false,error:privacy.clean(e.message)};}});
       ipcMain.handle('mop:auth-status',event=>{try{trusted(event);synchronization();return {ok:true,value:access.status()};}catch{return {ok:false,error:'Não foi possível preparar o login.'};}});
       ipcMain.handle('mop:auth-login',async(event,input)=>{
         try{trusted(event);synchronization();return {ok:true,value:await access.login(input)};}
-        catch(e){return {ok:false,error:e.message};}
+        catch(e){return {ok:false,error:privacy.clean(e.message)};}
       });
       ipcMain.handle('mop:auth-logout',async event=>{try{trusted(event);if(access)await access.lock();return {ok:true,value:true};}catch{return {ok:false,error:'Não foi possível encerrar a sessão.'};}});
       for(const [name,action] of Object.entries({
@@ -67,9 +76,9 @@ else {
         connect:()=>{throw Error('Use a tela de login para entrar no MOP.');},
         disconnect:async()=>{await access.lock();return {authenticated:false};},
         now:async()=>{await synchronization().kick();return sync.status();},
-        conflicts:()=>{const s=visible(store.read(),authorized());return synchronization().local.conflicts().filter(c=>s[c.kind]?.some(x=>x.id===c.localId));},
+        conflicts:()=>{const s=visible(store.read(),authorized());return privacy.clean(synchronization().local.conflicts().filter(c=>s[c.kind]?.some(x=>x.id===c.localId)));},
         resolve:input=>{const session=authorized(),s=visible(store.read(),session),c=sync.local.conflicts().find(c=>c.id===input.id);if(session.role==='viewer'||!c||!s[c.kind]?.some(x=>x.id===c.localId))throw Error('Conflito fora do seu acesso.');return synchronization().resolve(input.id,input.choice,input.version);}
-      }))ipcMain.handle('mop:sync-'+name,async(event,input)=>{try{trusted(event);authorized();const value=await action(input);if(name!=='disconnect')authorized();return {ok:true,value};}catch(e){return {ok:false,error:e.message};}});
+      }))ipcMain.handle('mop:sync-'+name,async(event,input)=>{try{trusted(event);authorized();const value=await action(input);if(name!=='disconnect')authorized();return {ok:true,value};}catch(e){return {ok:false,error:privacy.clean(e.message)};}});
       ipcMain.on('mop:read',event=>{event.returnValue=response(event,()=>{const session=authorized();const state=store.read();readVersion=JSON.stringify(state);return visible(state,session);});});
       ipcMain.on('mop:write',(event,state)=>{event.returnValue=response(event,()=>{
         authorized();
@@ -78,20 +87,20 @@ else {
       });});
       ipcMain.handle('mop:export',async event=>{
         try {
-          trusted(event);if(authorized().condos!==null&&authorized().condos!==undefined)throw Error('Backup integral disponível apenas para contas com acesso a toda a central. Use Relatórios para exportar seu escopo.');
+          trusted(event);const session=authorized();if(!['supervisor','admin'].includes(session.role))throw Error('Salvar backup está disponível apenas para supervisores e administradores.');if(session.condos!==null&&session.condos!==undefined)throw Error('Backup integral disponível apenas para supervisores ou administradores com acesso a toda a central. Use Relatórios para exportar seu escopo.');
           const result = await dialog.showSaveDialog(win,{title:'Salvar backup do MOP',defaultPath:path.join(app.getPath('documents'),'MOP-backup-'+new Date().toISOString().slice(0,10)+'.json'),filters:[{name:'Backup MOP',extensions:['json']}]});
           authorized();
           if(result.canceled)return {ok:true,value:false};
           store.exportTo(result.filePath);return {ok:true,value:true};
-        } catch(e){return {ok:false,error:e.message};}
+        } catch(e){return {ok:false,error:privacy.clean(e.message)};}
       });
-      ipcMain.handle('mop:open-data',async event=>{try{trusted(event);if(authorized().role!=='admin')throw Error('Somente administradores podem abrir a pasta de dados.');const error=await shell.openPath(store.directory);if(error)throw Error(error);return {ok:true,value:true};}catch(e){return {ok:false,error:e.message};}});
+      ipcMain.handle('mop:open-data',async event=>{try{trusted(event);if(authorized().role!=='admin')throw Error('Somente administradores podem abrir a pasta de dados.');const error=await shell.openPath(store.directory);if(error)throw Error(error);return {ok:true,value:true};}catch(e){return {ok:false,error:privacy.clean(e.message)};}});
       ipcMain.handle('mop:management',async(event,action,input)=>{
         try{trusted(event);if(authorized().role!=='admin')throw Error('Acesso exclusivo de administradores.');
           if(!['list','save'].includes(action))throw Error('Ação inválida.');
-          const params=action==='list'?{p_workspace:sync.workspace()}:{p_workspace:sync.workspace(),p_email:input.email,p_role:input.role,p_condos:input.condos};
-          const {data,error}=await sync.client.rpc(action==='list'?'mop_list_members':'mop_set_member',params);if(error)throw error;authorized();return {ok:true,value:data};
-        }catch(e){return {ok:false,error:e.message};}
+          const params=action==='list'?{p_workspace:sync.workspace()}:{p_workspace:sync.workspace(),p_user_id:input.user_id,p_username:input.username,p_display_name:input.display_name,p_role:input.role,p_condos:input.condos};
+          const {data,error}=await sync.client.rpc(action==='list'?'mop_list_members':'mop_set_operator_220',params);if(error)throw error;authorized();return {ok:true,value:privacy.clean(data)};
+        }catch(e){return {ok:false,error:privacy.clean(e.message)};}
       });
       ipcMain.handle('mop:download',async(event,input)=>{
         let preview;
@@ -110,19 +119,22 @@ else {
           }else throw Error('Formato inválido.');
           const result=await dialog.showSaveDialog(win,{title:'Salvar arquivo',defaultPath:path.join(app.getPath('documents'),name),filters:[{name:'Arquivo '+extension.toUpperCase(),extensions:[extension]}]});
           authorized();if(result.canceled)return {ok:true,value:false};fs.writeFileSync(result.filePath,data);return {ok:true,value:true};
-        }catch(e){return {ok:false,error:e.message};}finally{if(preview&&!preview.isDestroyed())preview.destroy();}
+        }catch(e){return {ok:false,error:privacy.clean(e.message)};}finally{if(preview&&!preview.isDestroyed())preview.destroy();}
       });
-      win = new BrowserWindow({width:1380,height:900,minWidth:760,minHeight:600,title:'MOP — desenvolvido por NOXUZ',icon:path.join(__dirname,'../assets/icon.ico'),show:false,webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true}});
+      win = new BrowserWindow({width:1380,height:900,minWidth:760,minHeight:600,title:'MOP — desenvolvido por NOXUZ',icon:path.join(__dirname,'../assets/icon.ico'),show:false,webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,spellcheck:true}});
       Menu.setApplicationMenu(null);
       win.webContents.setWindowOpenHandler(()=>({action:'deny'}));
       win.webContents.on('will-navigate',(event,url)=>{if(url!==indexURL)event.preventDefault();});
       win.webContents.on('did-start-navigation',(_event,_url,_inPlace,isMainFrame)=>{if(isMainFrame&&access?.session)access.lock();});
       win.webContents.on('render-process-gone',()=>{if(access)access.lock();});
       win.webContents.on('will-attach-webview',event=>event.preventDefault());
+      win.webContents.session.setSpellCheckerEnabled(true);
+      win.webContents.session.setSpellCheckerLanguages(['pt-BR']);
+      win.webContents.on('context-menu',(_event,params)=>{if(!params.isEditable)return;const menu=new Menu();for(const suggestion of params.dictionarySuggestions||[])menu.append(new MenuItem({label:suggestion,click:()=>win.webContents.replaceMisspelling(suggestion)}));if(params.misspelledWord){if(menu.items.length)menu.append(new MenuItem({type:'separator'}));menu.append(new MenuItem({label:'Adicionar ao dicionário',click:()=>win.webContents.session.addWordToSpellCheckerDictionary(params.misspelledWord)}));}if(menu.items.length)menu.popup({window:win});});
       win.webContents.session.setPermissionRequestHandler((_wc,_permission,callback)=>callback(false));
       win.webContents.session.setPermissionCheckHandler(()=>false);
-      win.webContents.session.webRequest.onBeforeRequest({urls:['http://*/*','https://*/*','ws://*/*','wss://*/*']},(_details,callback)=>callback({cancel:true}));
-      win.once('ready-to-show',()=>{win.show();windowShown();});
+      win.webContents.session.webRequest.onBeforeRequest({urls:['http://*/*','https://*/*','ws://*/*','wss://*/*']},(details,callback)=>{const dictionary=/^https:\/\/(?:redirector\.gvt1\.com|dl\.google\.com)\/(?:dl\/)?edgedl\/chrome\/dict\/[a-z0-9-]+\.bdic(?:\?.*)?$/i.test(details.url);callback({cancel:!dictionary});});
+      win.once('ready-to-show',()=>{win.show();windowShown();setupUpdater();});
       powerMonitor.on('resume',()=>{if(win&&!win.isDestroyed())win.webContents.send('mop:resume');});
       powerMonitor.on('lock-screen',()=>{if(access)access.lock();});
       powerMonitor.on('suspend',()=>{if(access)access.lock();});

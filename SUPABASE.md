@@ -1,5 +1,15 @@
 # Configurar a central compartilhada
 
+## Identificação dos operadores — próxima build
+
+A migração `20260928163826_mop_operator_privacy.sql` acrescenta `display_name` ao cadastro de membros, mantém o UUID de autoria e remove e-mails dos registros e recibos operacionais da central. O nome não concede permissões: a autorização continua vinculada à conta autenticada e ao workspace/condomínios.
+
+Na nova interface, **Gestão → Acessos → Editar** permite alterar o nome de exibição de uma conta existente. Para vincular uma nova conta, utilize seu identificador de cadastro, nome, perfil e condomínios. A lista não retorna e-mails. Um administrador pode editar o próprio nome, mas precisa de outro administrador para mudar o próprio perfil/escopo. Alterações invalidam a autorização online anterior; entre novamente. A autorização offline expira conforme o prazo já existente.
+
+Aplique a migração antes de distribuir a nova build. Ela limpa dados textuais existentes e normaliza envios antigos no servidor, preservando a repetição segura dos envios. A interface antiga ainda usa e-mail em campos de autoria e precisa ser atualizada. A autenticação mantém o e-mail; arquivos anexados, backups externos e caches offline antigos não são apagados por essa migração. Novas exportações JSON da build atualizada são protegidas.
+
+Na central deste projeto, os nomes autorizados pelo responsável são Marcelo (administrador) e Evelyn (operadora). Novas contas sem nome recebem uma identificação neutra até o administrador preencher o nome; não se deduz o nome pelo endereço de e-mail.
+
 ![NOXUZ — Cybersecurity & Technology](assets/noxuz-logo.png)
 
 **MOP — desenvolvido por NOXUZ**
@@ -16,7 +26,9 @@ Em **Authentication → Users → Add user**, crie uma conta para cada operador,
 
 Execute no SQL Editor o trecho abaixo, substituindo os e-mails pelos reais:
 
-Para o usuário de teste informado (`marcelosantostoledo1@gmail.com`), você pode executar diretamente `supabase/autorizar-teste.sql` após `mop.sql`. Ele autoriza apenas essa conta e mostra o vínculo criado. Para cadastrar mais operadores, use o exemplo abaixo.
+Em uma instalação nova, cadastre e confirme primeiro o e-mail administrador. Em seguida, execute `supabase/autorizar-admin-inicial.sql` no SQL Editor para atribuir o perfil administrador e acesso a todos os condomínios. Troque o e-mail no script quando necessário. O script informa se a conta ainda não existe.
+
+No ambiente MOP configurado neste projeto, `marcelosantostoledo1@gmail.com` já é administrador. Para autorizar outras contas, cadastre-as em Authentication > Users e use o exemplo abaixo para conceder acesso inicial. Depois disso, um administrador pode gerenciar perfis e condomínios pela opção **Gestão → Acessos**.
 
 ```sql
 insert into public.mop_members(workspace_id,user_id)
@@ -29,12 +41,12 @@ select u.email, m.workspace_id
 from public.mop_members m join auth.users u on u.id=m.user_id;
 ```
 
-A consulta final deve mostrar os operadores autorizados. Não habilite acesso público às tabelas. A chave publicável identifica o projeto; login e regras do banco controlam o acesso.
+A consulta final deve mostrar os operadores autorizados. O perfil inicial padrão é **operador** e abrange todos os condomínios até que um administrador limite o acesso. Os perfis disponíveis são administrador, supervisor, operador e consulta. Supervisores e administradores podem cadastrar modelos de checklist. Não habilite acesso público às tabelas. A chave publicável identifica o projeto; login e regras do banco controlam o acesso.
 
 ## 3. Conectar cada computador
 
 1. Preserve uma cópia da pasta `%APPDATA%\MOP\dados` com o programa fechado antes da primeira sincronização. O MOP também cria backup automático antes das alterações.
-2. No projeto atualizado, execute `npm start`. Depois da validação, gere/distribua a versão atualizada do aplicativo quando desejar; o executável antigo não contém esta integração.
+2. Instale a versão 2.1.0 ou mais recente; executáveis antigos não contêm estes recursos nem as verificações de perfil.
 3. Na tela inicial, entre com o e-mail e a senha do operador autorizado. Nenhum registro, contador ou histórico é carregado na interface antes do login.
 4. Na primeira conexão, confirme o envio dos registros locais. A base local será vinculada à central; trocar de projeto depois exige um perfil separado.
 5. Aguarde o estado **Sincronizado** e repita na outra máquina.

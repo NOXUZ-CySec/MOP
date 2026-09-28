@@ -1,0 +1,17 @@
+/* MOP 2.1.2 — linguagem visual unificada para status e componentes expansíveis. */
+.quick-status-wrap{position:relative;display:inline-flex;align-items:center;min-width:0}
+.quick-status{appearance:none;-webkit-appearance:none;min-width:164px;min-height:30px;border:1px solid #d4e0e9;border-radius:7px;padding:5px 30px 5px 10px;font-size:10px;line-height:1.25;font-weight:750;letter-spacing:.15px;background:#eaf3f8;color:#316279;box-shadow:none;cursor:pointer;transition:border-color .15s,box-shadow .15s,background .15s}
+.quick-status-wrap::after{content:"";position:absolute;right:11px;width:6px;height:6px;border-right:1.7px solid currentColor;border-bottom:1.7px solid currentColor;transform:translateY(-2px) rotate(45deg);pointer-events:none;color:#58758a}
+.quick-status:hover{border-color:#aebfcd;box-shadow:0 2px 6px #183f590d}.quick-status:focus{border-color:#198bac;box-shadow:0 0 0 3px #1791b216}.quick-status:disabled{cursor:wait;opacity:.65}
+.quick-status.status-pendente{background:#edf2f6;color:#465b70;border-color:#d7e0e7}.quick-status.status-em-andamento{background:#e8f3f8;color:#22647d;border-color:#c8dfe8}.quick-status.status-aguardando-resposta,.quick-status.status-aguardando-manutenção{background:#fff5dc;color:#7a5812;border-color:#ead8a9}.quick-status.status-resolvido{background:#e3f3e9;color:#196a44;border-color:#b8dfc8}
+/* Retira o marcador nativo e usa um chevron discreto, igual em toda a ferramenta. */
+details>summary{position:relative;list-style:none;padding-right:28px}
+details>summary::-webkit-details-marker{display:none}
+details>summary::after{content:"";position:absolute;right:8px;top:50%;width:7px;height:7px;border-right:1.8px solid #71869a;border-bottom:1.8px solid #71869a;transform:translateY(-65%) rotate(45deg);transform-origin:center;transition:transform .16s ease,border-color .16s ease}
+details[open]>summary::after{transform:translateY(-35%) rotate(225deg)}
+details>summary:hover::after{border-color:#087d9e}
+.record-card>summary.record-summary{padding-right:46px}.record-card>summary.record-summary::after{right:20px;width:8px;height:8px;border-width:2px}.record-chevron{display:none!important}
+.compact-pending>summary{padding-right:32px}.compact-pending>summary::after{right:10px}
+.data-menu>summary{padding-right:38px}.data-menu>summary::after{right:16px;border-color:#8fa9bd}.menu-chevron{display:none!important}
+.optional-fields>details>summary{padding-right:32px}.module-content details.panel>summary{padding-right:34px}
+@media(max-width:700px){.quick-status{min-width:148px}.record-card>summary.record-summary{padding-right:40px}.record-card>summary.record-summary::after{right:15px}}

@@ -36,7 +36,7 @@ app.whenReady().then(async()=>{
     client=createClient(config.url,config.key,{...options,global:{...options.global,headers:{Authorization:'Bearer '+token}}});
     const auth=await client.auth.getUser(token);
     if(auth.error){report.authenticated={verified:false,status:auth.error.status,reason:auth.error.code||'SESSION_INVALID'};return;}
-    report.authenticated={verified:true,email:auth.data.user.email};
+    report.authenticated={verified:true,userId:auth.data.user.id};
     const memberships=await client.from('mop_members').select('workspace_id').eq('user_id',auth.data.user.id);
     const workspace=get('binding')?.split('|')[1];
     const allowed=!!memberships.data?.some(r=>r.workspace_id===workspace);
