@@ -18,13 +18,13 @@ create table if not exists public.mop_records (
 );
 create index if not exists mop_records_revision on public.mop_records(workspace_id,revision);
 create index if not exists mop_records_updated_by_idx on public.mop_records(updated_by);
-create index if not exists mop_operations_user_id_idx on public.mop_operations(user_id);
 create table if not exists public.mop_operations (
   workspace_id uuid not null references public.mop_workspaces(id),
   op_id uuid not null, record_id uuid not null, kind text not null, payload jsonb not null,
   result jsonb not null, user_id uuid not null references auth.users(id),
   created_at timestamptz not null default now(), primary key(workspace_id,op_id)
 );
+create index if not exists mop_operations_user_id_idx on public.mop_operations(user_id);
 alter table public.mop_workspaces enable row level security;
 alter table public.mop_members enable row level security;
 alter table public.mop_records enable row level security;
