@@ -75,3 +75,7 @@ main{margin-left:238px;padding:23px 36px 50px;max-width:1800px}.page-heading{dis
 /* Grupo final sem título visível. */
 .sidebar-about{flex-shrink:0;margin-top:16px;padding-top:12px;border-top:1px solid #26374a}
 .sidebar-about button{width:100%}
+
+.update-card{margin-top:12px;padding-top:12px;border-top:1px solid var(--line,#d9dee7)}
+.update-card .desktop-tool,.update-card .primary{width:100%;margin-top:6px}
+.update-card p{font-size:.78rem;margin:6px 0 0}

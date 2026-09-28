@@ -59,9 +59,17 @@
     },
     "portable": {
       "artifactName": "MOP-Executavel-${version}.${ext}"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "NOXUZ-CySec",
+        "repo": "MOP-Releases"
+      }
+    ]
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.117.2"
+    "@supabase/supabase-js": "^2.117.2",
+    "electron-updater": "^6.8.9"
   }
 }
