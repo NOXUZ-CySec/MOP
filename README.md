@@ -1,4 +1,4 @@
-# MOP para Windows — versão 2.1
+# MOP para Windows — versão 2.0
 
 ![NOXUZ — Cybersecurity & Technology](assets/noxuz-logo.png)
 
