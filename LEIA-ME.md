@@ -1,6 +1,6 @@
 # MOP para Windows — versão 2.1.0
 
-> **Versão atual: 2.1.0.** Para a apresentação, o objetivo de uso e a lista atualizada de recursos, consulte [README.md](README.md). Este guia preserva as instruções técnicas detalhadas de uso, dados locais e recuperação.
+> **Versão atual: 2.1.0.** Para a apresentação, o objetivo de uso e a lista atualizada de recursos, consulte [README.md](README.md). A próxima versão 2.2.0 está em preparação; o README distingue alterações presentes no código de funcionalidades ainda pendentes. Este guia preserva as instruções técnicas detalhadas de uso, dados locais e recuperação.
 
 ![NOXUZ — Cybersecurity & Technology](assets/noxuz-logo.png)
 
@@ -29,14 +29,14 @@ O último operador validado online pode acessar este computador offline, com a m
 
 ## Executável sem instalação
 
-A versão `MOP-Executavel-2.0.0.exe` contém o aplicativo e seu runtime. Abra no Windows 10/11 de 64 bits. Os dados continuam em `%APPDATA%\MOP\dados`, não dentro do executável; copiar somente o EXE para outro computador não leva os registros. Os registros sincronizados são obtidos pela central após o login. Para restauração local em uma base não vinculada, use Dados → Exportar dados / Importar dados. Para gerar esta versão novamente, execute `GERAR-EXECUTAVEL.cmd` ou `npm run dist:portable`.
+A versão `MOP-Executavel-2.1.0.exe` contém o aplicativo e seu runtime. Abra no Windows 10/11 de 64 bits. Os dados continuam em `%APPDATA%\MOP\dados`, não dentro do executável; copiar somente o EXE para outro computador não leva os registros. Os registros sincronizados são obtidos pela central após o login. Para restauração local em uma base não vinculada, use Dados → Exportar dados / Importar dados. Para gerar esta versão novamente, execute `GERAR-EXECUTAVEL.cmd` ou `npm run dist:portable`.
 
 ## Gerar o instalador no Windows
 
 1. Exporte seus registros no MOP HTML atual e guarde o JSON.
 2. Instale Node.js 24 LTS pelo site https://nodejs.org/ no computador de desenvolvimento, com internet. Feche e reabra o terminal após instalar.
 3. Extraia este ZIP para uma pasta permanente, por exemplo Documentos\MOP-Windows. Não execute dentro do ZIP.
-4. Execute `GERAR-INSTALADOR.cmd`. O script instala as dependências, executa os testes e gera `dist\MOP-Instalador-2.0.0.exe`.
+4. Execute `GERAR-INSTALADOR.cmd`. O script instala as dependências, executa os testes e gera `dist\MOP-Instalador-2.1.0.exe`.
 5. Instale o MOP no Windows 10/11 de 64 bits e abra pelo atalho. Se precisar restaurar uma base local ainda não vinculada à central, abra Dados → Importar dados, escolha o JSON e confirme a substituição.
 
 O download das ferramentas na primeira geração precisa de internet. O instalador pronto inclui o runtime: o computador que usará o MOP não precisa de Node.js ou VS Code. O login inicial e a sincronização exigem internet; o uso offline depende de um login autorizado recente. Políticas da empresa ainda podem exigir liberação do aplicativo pela TI. O pacote não possui certificado de assinatura digital.
@@ -77,7 +77,7 @@ Para restaurar um JSON: abra **Dados → Importar dados**, confira os totais e c
 
 Se o banco estiver danificado e o aplicativo não abrir: feche o MOP, copie toda a pasta `dados` para preservação, renomeie a pasta original para `dados-preservados` e reabra. O aplicativo criará uma base vazia. Importe um JSON de `dados-preservados\backups`. Não apague a pasta preservada.
 
-Não mova um SQLite em uso para pasta de rede, OneDrive ou compartilhamento. Para dados unificados entre computadores, configure a central conforme SUPABASE.md. O aplicativo exige autenticação, mas o SQLite e os backups JSON não são criptografados; proteja a conta do Windows e a pasta dos dados. O nome de operador preenchido nos registros é separado da conta usada no login.
+Não mova um SQLite em uso para pasta de rede, OneDrive ou compartilhamento. Para dados unificados entre computadores, configure a central conforme SUPABASE.md. O aplicativo exige autenticação, mas o SQLite e os backups JSON não são criptografados; proteja a conta do Windows e a pasta dos dados. As novas operações têm autoria vinculada à conta autenticada; registros legados preservam os nomes já armazenados.
 
 ## Validação antes do uso operacional
 
