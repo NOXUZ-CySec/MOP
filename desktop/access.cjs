@@ -28,13 +28,13 @@ class Access {
     if(!this.safeStorage?.isEncryptionAvailable())return expiresAt;
     const salt=randomBytes(32).toString('hex');
     const verifier=(await derive(password,salt,64)).toString('hex');
-    const grant={...require('./operations.cjs').policy(this.sync.membership),email,display_name:privacy.label(this.sync.membership?.display_name,this.sync.userId),userId:this.sync.userId,binding:this.sync.local.bound(),salt,verifier,validatedAt:this.now(),expiresAt};
+    const grant={...require('./operations.cjs').policy(this.sync.membership),email,login:this.sync.membership?.username||email,display_name:privacy.label(this.sync.membership?.display_name,this.sync.userId),userId:this.sync.userId,binding:this.sync.local.bound(),salt,verifier,validatedAt:this.now(),expiresAt};
     this.sync.local.set('access:offline',this.safeStorage.encryptString(JSON.stringify(grant)).toString('base64'));
     return expiresAt;
   }
   async offline(email,password){
     const grant=this.readGrant();
-    if(!grant||grant.email!==email||grant.binding!==this.sync.local.bound()||!grant.binding||this.now()<grant.validatedAt||this.now()>=grant.expiresAt)
+    if(!grant||(grant.email!==email&&grant.login!==email)||grant.binding!==this.sync.local.bound()||!grant.binding||this.now()<grant.validatedAt||this.now()>=grant.expiresAt)
       throw failure('Sem conexão. Faça um login online autorizado neste computador antes de usar o acesso offline (válido por até 7 dias).','OFFLINE_UNAVAILABLE');
     const expected=Buffer.from(grant.verifier,'hex');
     const actual=await derive(password,grant.salt,64);
@@ -45,14 +45,16 @@ class Access {
     if(this.busy)throw failure('Aguarde a tentativa de login em andamento.','LOGIN_BUSY');
     if(this.now()<this.retryAt)throw failure('Muitas tentativas. Aguarde 30 segundos e tente novamente.','LOGIN_RATE_LIMIT');
     if(this.session)throw failure('Encerre a sessão atual antes de trocar de usuário.','ALREADY_LOGGED_IN');
-    const email=typeof input.email==='string'?input.email.trim().toLowerCase():'';
+    const login=typeof (input.login??input.email)==='string'?String(input.login??input.email).trim().toLowerCase():'';
+    let email=login;
     const password=typeof input.password==='string'?input.password:'';
-    if(!email.includes('@')||email.length>254||!password||password.length>1024)throw failure('Informe um e-mail e uma senha válidos.','LOGIN_REJECTED');
+    if(!login||login.length>254||!password||password.length>1024)throw failure('Informe usuário/e-mail e senha válidos.','LOGIN_REJECTED');
     this.busy=true;const epoch=this.epoch;
     try{
       await this.stopping;
       let session;
       try{
+        if(!login.includes('@')){const resolved=await this.sync.resolveLogin(login);if(!resolved)throw failure('Usuário ou senha incorretos.','LOGIN_REJECTED');email=resolved;}
         await this.sync.connect({...this.sync.config,email,password,uploadExisting:input.uploadExisting===true},{deferSync:true});
         if(!this.sync.authenticated||!this.sync.userId)throw failure('Não foi possível validar sua autorização.','AUTH_DENIED');
         const expiresAt=await this.saveGrant(email,password);
@@ -60,7 +62,7 @@ class Access {
       }catch(error){
         if(['AUTH_DENIED','42501','invalid_credentials','user_banned','email_not_confirmed'].includes(error.code))this.clearGrant();
         if(error.code!=='NETWORK_UNAVAILABLE')throw error;
-        session=await this.offline(email,password);
+        session=await this.offline(login,password);
       }
       if(epoch!==this.epoch)throw failure('Login interrompido. Entre novamente.','LOGIN_CANCELLED');
       this.session=session;this.failures=0;this.retryAt=0;

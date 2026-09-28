@@ -6,7 +6,7 @@
   const retry=document.querySelector('#startupRetry');
   const content=document.querySelector('#appContent');
   const form=document.createElement('form');form.id='loginForm';form.hidden=true;
-  form.innerHTML=`<label for="loginEmail">E-mail</label><input id="loginEmail" type="email" autocomplete="username" maxlength="254" required>
+  form.innerHTML=`<label for="loginEmail">Usuário ou e-mail</label><input id="loginEmail" type="text" autocomplete="username" maxlength="254" required>
     <label for="loginPassword">Senha</label><input id="loginPassword" type="password" autocomplete="current-password" maxlength="1024" required>
     <label class="login-consent" id="loginConsent"><input id="loginUpload" type="checkbox"> Na primeira conexão, autorizo enviar os registros deste computador para a central configurada.</label>
     <button id="loginSubmit" class="primary" type="submit">Entrar</button>
@@ -45,7 +45,7 @@
     screen.dataset.state='ready';document.body.classList.remove('starting');
     if(!matchMedia('(prefers-reduced-motion: reduce)').matches)await Promise.all(screen.getAnimations().map(a=>a.finished.catch(()=>{})));
     if(locked)return;
-    screen.hidden=true;content.querySelector('[data-tab="overview"]').focus({preventScroll:true});
+    screen.hidden=true;if(window.MOPReleaseNotes)await window.MOPReleaseNotes.show(false);await window.MOPShiftGate?.ensure();content.querySelector('[data-tab="overview"]').focus({preventScroll:true});
   }
   function initializationError(reason){
     screen.dataset.state='error';screen.setAttribute('aria-busy','false');
@@ -69,7 +69,7 @@
     screen.dataset.state='authenticating';screen.setAttribute('aria-busy','true');message.textContent='Verificando acesso…';
     try{
       const password=document.querySelector('#loginPassword').value;document.querySelector('#loginPassword').value='';
-      const status=await window.mopDesktop.auth('login',{email:document.querySelector('#loginEmail').value,password,uploadExisting:document.querySelector('#loginUpload').checked});
+      const status=await window.mopDesktop.auth('login',{login:document.querySelector('#loginEmail').value,password,uploadExisting:document.querySelector('#loginUpload').checked});
       if(locked)return;
       document.querySelector('#loginEmail').value='';
         if(!status.authenticated)throw Error('Não foi possível autorizar o acesso.');

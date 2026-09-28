@@ -22,13 +22,13 @@
   function due(s,now=new Date()){normalize(s);return s.templates.filter(t=>t.active!==false).map(t=>({template:t,slot:slot(t,now)})).filter(x=>x.slot&&!s.runs.some(r=>r.template_key===x.template.key&&r.slot===x.slot));}
   function alerts(s,now=new Date()){
     const time=+now;
-    return s.items.filter(x=>x.status!=='Resolvido').flatMap(x=>{
+    return s.items.filter(x=>!x.deleted_at&&x.status!=='Resolvido').flatMap(x=>{
       const deadline=x.deadline?Date.parse(x.deadline.length===16?x.deadline+':00-03:00':x.deadline):NaN;
       const late=deadline<time,soon=deadline>=time&&deadline-time<=3600000;
       return late||soon||x.priority==='Urgente'?[{item:x,level:late?'late':soon?'soon':'urgent',label:late?'Prazo vencido':soon?'Vence em até 1 hora':'Ocorrência urgente',escalated:late&&time-deadline>=3600000}]:[];
     }).sort((a,b)=>Number(b.escalated)-Number(a.escalated)||(a.item.deadline||'9999').localeCompare(b.item.deadline||'9999'));
   }
-  function select(s,f={}){return s.items.filter(x=>(!f.condo||x.condo===f.condo)&&(!f.status||x.status===f.status)&&(!f.from||dateKey(x.created_at)>=f.from)&&(!f.to||dateKey(x.created_at)<=f.to)&&(!f.shift||x.created_shift?.name===f.shift||x.created_shift?.type===f.shift));}
+  function select(s,f={}){return s.items.filter(x=>(f.include_deleted===true||!x.deleted_at)&&(!f.condo||x.condo===f.condo)&&(!f.status||x.status===f.status)&&(!f.from||dateKey(x.created_at)>=f.from)&&(!f.to||dateKey(x.created_at)<=f.to)&&(!f.shift||x.created_shift?.name===f.shift||x.created_shift?.type===f.shift));}
   function metrics(s,f={}){
     const rows=select(s,f),resolved=rows.filter(x=>x.status==='Resolvido');
     const durations=resolved.map(x=>{const e=s.events.filter(e=>e.item_id===x.id&&e.after?.status==='Resolvido').at(-1);return (Date.parse(e?.at||x.resolved_at||x.updated_at)-Date.parse(x.created_at))/3600000;}).filter(n=>Number.isFinite(n)&&n>=0);

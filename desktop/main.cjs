@@ -87,7 +87,7 @@ else {
       });});
       ipcMain.handle('mop:export',async event=>{
         try {
-          trusted(event);if(authorized().condos!==null&&authorized().condos!==undefined)throw Error('Backup integral disponível apenas para contas com acesso a toda a central. Use Relatórios para exportar seu escopo.');
+          trusted(event);const session=authorized();if(!['supervisor','admin'].includes(session.role))throw Error('Salvar backup está disponível apenas para supervisores e administradores.');if(session.condos!==null&&session.condos!==undefined)throw Error('Backup integral disponível apenas para supervisores ou administradores com acesso a toda a central. Use Relatórios para exportar seu escopo.');
           const result = await dialog.showSaveDialog(win,{title:'Salvar backup do MOP',defaultPath:path.join(app.getPath('documents'),'MOP-backup-'+new Date().toISOString().slice(0,10)+'.json'),filters:[{name:'Backup MOP',extensions:['json']}]});
           authorized();
           if(result.canceled)return {ok:true,value:false};
@@ -98,8 +98,8 @@ else {
       ipcMain.handle('mop:management',async(event,action,input)=>{
         try{trusted(event);if(authorized().role!=='admin')throw Error('Acesso exclusivo de administradores.');
           if(!['list','save'].includes(action))throw Error('Ação inválida.');
-          const params=action==='list'?{p_workspace:sync.workspace()}:{p_workspace:sync.workspace(),p_user_id:input.user_id,p_display_name:input.display_name,p_role:input.role,p_condos:input.condos};
-          const {data,error}=await sync.client.rpc(action==='list'?'mop_list_members':'mop_set_operator',params);if(error)throw error;authorized();return {ok:true,value:privacy.clean(data)};
+          const params=action==='list'?{p_workspace:sync.workspace()}:{p_workspace:sync.workspace(),p_user_id:input.user_id,p_username:input.username,p_display_name:input.display_name,p_role:input.role,p_condos:input.condos};
+          const {data,error}=await sync.client.rpc(action==='list'?'mop_list_members':'mop_set_operator_220',params);if(error)throw error;authorized();return {ok:true,value:privacy.clean(data)};
         }catch(e){return {ok:false,error:privacy.clean(e.message)};}
       });
       ipcMain.handle('mop:download',async(event,input)=>{

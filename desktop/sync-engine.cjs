@@ -49,6 +49,14 @@ class SyncEngine {
     this.email=data.session.user.email;this.authenticated=true;
     this.subscribe();await this.kick();
   }
+  async resolveLogin(login){
+    const config=configuration(this.config);
+    const client=this.makeClient(config);
+    const {data,error}=await client.rpc('mop_resolve_login',{p_login:String(login||'').trim()});
+    try{await client.auth.signOut({scope:'local'});}catch{}
+    if(error)throw connectionFailure(error,'Não foi possível localizar o usuário.');
+    return typeof data==='string'&&data.includes('@')?data:null;
+  }
   async connect(input,{deferSync=false}={}){
     if(this.connecting)throw Error('Aguarde a conexão em andamento.');
     this.connecting=true;
@@ -61,7 +69,7 @@ class SyncEngine {
       this.client=this.makeClient(config);
       const {data,error}=await this.client.auth.signInWithPassword({email:String(input.email||'').trim(),password:String(input.password||'')});
       if(error)throw connectionFailure(error,'Não foi possível entrar. Confira e-mail, senha e conexão.');
-      const membership=await this.client.from('mop_members').select('workspace_id,user_id,display_name,role,condos,access_version').eq('user_id',data.user.id);
+      const membership=await this.client.from('mop_members').select('workspace_id,user_id,username,display_name,role,condos,access_version').eq('user_id',data.user.id);
       if(membership.error)throw connectionFailure(membership.error,'Não foi possível consultar a autorização na central. Confira a conexão e a configuração do projeto.');
       if(membership.data.length!==1)throw Object.assign(Error('O operador não está autorizado nesta central.'),{code:'AUTH_DENIED'});
       this.membership=membership.data[0];

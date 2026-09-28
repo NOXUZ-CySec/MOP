@@ -7,7 +7,7 @@ const roles=['operator','supervisor','admin','viewer'];
 function policy(member={}){return {role:roles.includes(member.role)?member.role:'operator',condos:Array.isArray(member.condos)?member.condos:null,display_name:privacy.label(member.display_name,member.user_id),access_version:member.access_version||1};}
 function allows(session,condo){return session.condos===null||session.condos===undefined||session.condos.includes(condo);}
 function visible(s,session){
-  s=domain.normalize(structuredClone(s));s.items=s.items.filter(x=>allows(session,x.condo));const ids=new Set(s.items.map(x=>x.id));
+  s=domain.normalize(structuredClone(s));s.items=s.items.filter(x=>allows(session,x.condo)&&(session.role==='admin'||!x.deleted_at));const ids=new Set(s.items.map(x=>x.id));
   s.events=s.events.filter(x=>ids.has(x.item_id));s.attachments=s.attachments.filter(x=>ids.has(x.item_id));
   s.handovers=s.handovers.filter(h=>session.condos==null||h.condo&&allows(session,h.condo)||(h.snapshot?.length&&h.snapshot.every(x=>allows(session,x.condo))));
   for(const kind of ['templates','runs','receipts'])s[kind]=s[kind].filter(x=>allows(session,x.condo));return privacy.clean(s);
@@ -36,6 +36,9 @@ function stampWrite(previous,input,session,now=new Date().toISOString()){
       if(kind==='templates'&&!['admin','supervisor'].includes(session.role))throw Error('Somente supervisores podem configurar rotinas.');
       if(old&&['items','templates'].includes(kind)&&row.condo!==old.condo)throw Error('O condomínio do registro não pode ser alterado.');
       if(kind==='items'){
+        if(!old&&row.deleted_at)throw Error('Um registro novo não pode ser criado como removido.');
+        if(old?.deleted_at)throw Error('Registros removidos não podem ser alterados.');
+        if(row.deleted_at){if(session.role!=='admin')throw Error('Somente administradores podem remover registros.');if(typeof row.deleted_reason!=='string'||!row.deleted_reason.trim()||row.deleted_reason.length>1000)throw Error('Informe o motivo da remoção.');row.deleted_by=who.display_name;row.deleted_identity=who;}else if(row.deleted_reason||row.deleted_by||row.deleted_identity)throw Error('Dados de remoção inválidos.');
         if(!old){row.created_by=who.display_name;row.created_identity=who;}
         else {row.created_by=privacy.clean(old).created_by;row.created_identity=privacy.clean(old.created_identity);}
         row.updated_by=who.display_name;row.updated_identity=who;row.updated_at=now;
