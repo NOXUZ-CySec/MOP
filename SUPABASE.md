@@ -1,5 +1,15 @@
 # Configurar a central compartilhada
 
+## Identificação dos operadores — próxima build
+
+A migração `20260928163826_mop_operator_privacy.sql` acrescenta `display_name` ao cadastro de membros, mantém o UUID de autoria e remove e-mails dos registros e recibos operacionais da central. O nome não concede permissões: a autorização continua vinculada à conta autenticada e ao workspace/condomínios.
+
+Na nova interface, **Gestão → Acessos → Editar** permite alterar o nome de exibição de uma conta existente. Para vincular uma nova conta, utilize seu identificador de cadastro, nome, perfil e condomínios. A lista não retorna e-mails. Um administrador pode editar o próprio nome, mas precisa de outro administrador para mudar o próprio perfil/escopo. Alterações invalidam a autorização online anterior; entre novamente. A autorização offline expira conforme o prazo já existente.
+
+Aplique a migração antes de distribuir a nova build. Ela limpa dados textuais existentes e normaliza envios antigos no servidor, preservando a repetição segura dos envios. A interface antiga ainda usa e-mail em campos de autoria e precisa ser atualizada. A autenticação mantém o e-mail; arquivos anexados, backups externos e caches offline antigos não são apagados por essa migração. Novas exportações JSON da build atualizada são protegidas.
+
+Na central deste projeto, os nomes autorizados pelo responsável são Marcelo (administrador) e Evelyn (operadora). Novas contas sem nome recebem uma identificação neutra até o administrador preencher o nome; não se deduz o nome pelo endereço de e-mail.
+
 ![NOXUZ — Cybersecurity & Technology](assets/noxuz-logo.png)
 
 **MOP — desenvolvido por NOXUZ**

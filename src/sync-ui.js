@@ -28,7 +28,7 @@
     badge.textContent=(labels[s.state]||s.state)+(s.pending?' · '+s.pending+' pendente(s)':'');
     q('#syncDetail').textContent=s.message;
     q('#syncCounts').textContent=s.pending+' alteração(ões) pendente(s) · '+s.conflicts+' conflito(s)';
-    q('#syncLast').textContent=(s.email?'Conta: '+s.email+' · ':'')+(s.lastSync?'Última sincronização: '+new Date(s.lastSync).toLocaleString('pt-BR'):'Ainda não sincronizado.');
+    q('#syncLast').textContent=(s.display_name?'Conta: '+s.display_name+' · ':'')+(s.lastSync?'Última sincronização: '+new Date(s.lastSync).toLocaleString('pt-BR'):'Ainda não sincronizado.');
 
     if(s.dataChanged){
       if(dirty){update.hidden=false;}

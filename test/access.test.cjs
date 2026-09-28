@@ -8,7 +8,7 @@ function fixture(){
     encryptString:text=>{const iv=randomBytes(12),cipher=createCipheriv('aes-256-gcm',key,iv);const body=Buffer.concat([cipher.update(text,'utf8'),cipher.final()]);return Buffer.concat([iv,cipher.getAuthTag(),body]);},
     decryptString:b=>{const d=createDecipheriv('aes-256-gcm',key,b.subarray(0,12));d.setAuthTag(b.subarray(12,28));return Buffer.concat([d.update(b.subarray(28)),d.final()]).toString('utf8');}
   };
-  const sync={config:{url:'https://test.supabase.co',key:'sb_publishable_test'},
+  const sync={membership:{display_name:'Marcelo'},config:{url:'https://test.supabase.co',key:'sb_publishable_test'},
     local:{setting:k=>data.get(k),set:(k,v)=>data.set(k,v),bound:()=>data.get('binding'),db:{prepare:()=>({run:()=>data.delete('access:offline')})}},
     connect:async input=>{if(!network)throw Object.assign(Error('Sem rede'),{code:'NETWORK_UNAVAILABLE'});if(input.password!=='correct-password')throw Object.assign(Error('Senha incorreta'),{code:'LOGIN_REJECTED'});if(!allowed)throw Object.assign(Error('Sem permissão'),{code:'AUTH_DENIED'});sync.authenticated=true;sync.userId='authorized-user';data.set('binding','https://test.supabase.co|workspace');},
     subscribe:()=>{},kick:()=>{},start:()=>{},stopClient:async()=>{}
@@ -30,7 +30,7 @@ test('offline exige login online anterior, senha correta, mesma central e autori
   const f=fixture();t.after(()=>f.access.close());f.network(false);await assert.rejects(f.access.login(credentials),/login online/);
   f.network(true);await f.access.login(credentials);await f.access.lock();f.network(false);
   await assert.rejects(f.access.login({...credentials,password:'incorrect'}),/incorretos/);
-  await f.access.login(credentials);assert.equal(f.access.require().mode,'offline');await f.access.lock();
+  await f.access.login(credentials);assert.equal(f.access.require().mode,'offline');assert.equal(f.access.status().display_name,'Marcelo');assert.ok(!JSON.stringify(f.access.status()).includes('@'));await f.access.lock();
   f.advance(OFFLINE_VALIDITY+1);await assert.rejects(f.access.login(credentials),/login online/);assert.throws(()=>f.access.require());
 });
 test('negação online não usa credencial offline; revogação apaga autorização local',async t=>{

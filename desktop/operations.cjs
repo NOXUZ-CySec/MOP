@@ -2,19 +2,20 @@
 const {randomUUID}=require('node:crypto');
 const domain=require('../src/operations.js');
 const {stable}=require('./sync-store.cjs');
+const privacy=require('../src/privacy.js');
 const roles=['operator','supervisor','admin','viewer'];
-function policy(member={}){return {role:roles.includes(member.role)?member.role:'operator',condos:Array.isArray(member.condos)?member.condos:null,access_version:member.access_version||1};}
+function policy(member={}){return {role:roles.includes(member.role)?member.role:'operator',condos:Array.isArray(member.condos)?member.condos:null,display_name:privacy.label(member.display_name,member.user_id),access_version:member.access_version||1};}
 function allows(session,condo){return session.condos===null||session.condos===undefined||session.condos.includes(condo);}
 function visible(s,session){
   s=domain.normalize(structuredClone(s));s.items=s.items.filter(x=>allows(session,x.condo));const ids=new Set(s.items.map(x=>x.id));
   s.events=s.events.filter(x=>ids.has(x.item_id));s.attachments=s.attachments.filter(x=>ids.has(x.item_id));
   s.handovers=s.handovers.filter(h=>session.condos==null||h.condo&&allows(session,h.condo)||(h.snapshot?.length&&h.snapshot.every(x=>allows(session,x.condo))));
-  for(const kind of ['templates','runs','receipts'])s[kind]=s[kind].filter(x=>allows(session,x.condo));return s;
+  for(const kind of ['templates','runs','receipts'])s[kind]=s[kind].filter(x=>allows(session,x.condo));return privacy.clean(s);
 }
-function author(session){if(!session?.userId||!session.email)throw Error('Conta autenticada obrigatória.');return {user_id:session.userId,email:session.email};}
+function author(session){if(!session?.userId)throw Error('Conta autenticada obrigatória.');return {user_id:session.userId,display_name:privacy.label(session.display_name,session.userId)};}
 function stampWrite(previous,input,session,now=new Date().toISOString()){
   if(session.role==='viewer')throw Error('Seu perfil permite somente consulta.');
-  const who=author(session),next=domain.normalize(JSON.parse(JSON.stringify(input))),oldVisible=visible(previous,session);
+  const who=author(session),next=domain.normalize(privacy.clean(input)),oldVisible=visible(previous,session);
   // IDs/counters belong to the full local store. Hidden rows must never be replaced.
   for(const [kind,counter] of Object.entries({items:'nextItem',events:'nextEvent',handovers:'nextHandover',...domain.collections})){
     const before=new Map(previous[kind].map(x=>[x.id,x]));
@@ -22,7 +23,7 @@ function stampWrite(previous,input,session,now=new Date().toISOString()){
     for(const row of next[kind]){
       const old=before.get(row.id);
       if(old&&!oldVisible[kind].some(x=>x.id===row.id))throw Error('Registro fora do seu acesso.');
-      if(old&&stable(old)===stable(row))continue;
+      if(old&&stable(privacy.clean(old))===stable(row)){Object.keys(row).forEach(k=>delete row[k]);Object.assign(row,old);continue;}
       if(old&&!['items','templates'].includes(kind))throw Error('Histórico, anexos, execuções e passagens são imutáveis.');
       const parent=['events','attachments'].includes(kind)?next.items.find(x=>x.id===row.item_id):null;
       if(parent)row.condo=parent.condo;
@@ -30,16 +31,16 @@ function stampWrite(previous,input,session,now=new Date().toISOString()){
         if((row.snapshot||[]).some(x=>!allows(session,x.condo)))throw Error('Passagem fora do seu acesso.');
         const critical=next.items.filter(x=>allows(session,x.condo)&&x.status!=='Resolvido'&&(x.priority==='Urgente'||domain.alerts({...next,items:[x]}).some(a=>a.level==='late')));
         if(critical.some(x=>!row.critical_protocols?.includes(x.protocol)))throw Error('Confirme a leitura de cada pendência crítica.');
-        row.incoming=session.email;
+        row.incoming=who.display_name;row.incoming_identity=who;
       }else if(!allows(session,row.condo))throw Error('Condomínio fora do seu acesso.');
       if(kind==='templates'&&!['admin','supervisor'].includes(session.role))throw Error('Somente supervisores podem configurar rotinas.');
       if(old&&['items','templates'].includes(kind)&&row.condo!==old.condo)throw Error('O condomínio do registro não pode ser alterado.');
       if(kind==='items'){
-        if(!old){row.created_by=session.email;row.created_identity=who;}
-        else {row.created_by=old.created_by;row.created_identity=old.created_identity;}
-        row.updated_by=session.email;row.updated_identity=who;row.updated_at=now;
+        if(!old){row.created_by=who.display_name;row.created_identity=who;}
+        else {row.created_by=privacy.clean(old).created_by;row.created_identity=privacy.clean(old.created_identity);}
+        row.updated_by=who.display_name;row.updated_identity=who;row.updated_at=now;
         if(row.status==='Resolvido')row.resolved_at=old?.resolved_at||now;
-      }else{row.author=who;if(kind==='events')row.actor=session.email;}
+      }else{row.author=who;if(kind==='events')row.actor=who.display_name;}
       if(!old)row.recorded_at=now;
       if(kind==='attachments')validateAttachment(row);
       if(kind==='templates')validateTemplate(row);

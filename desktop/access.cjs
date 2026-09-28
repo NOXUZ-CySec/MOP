@@ -2,6 +2,7 @@
 const {randomBytes,scrypt,timingSafeEqual}=require('node:crypto');
 const {promisify}=require('node:util');
 const derive=promisify(scrypt);
+const privacy=require('../src/privacy.js');
 const OFFLINE_VALIDITY=7*24*60*60*1000;
 const failure=(message,code)=>Object.assign(Error(message),{code});
 class Access {
@@ -9,7 +10,7 @@ class Access {
     this.sync=sync;this.safeStorage=safeStorage;this.onLock=onLock;this.now=now;
     this.session=null;this.epoch=0;this.busy=false;this.failures=0;this.retryAt=0;this.expiryTimer=null;
   }
-  status(){return {authenticated:!!this.session,mode:this.session?.mode||null,firstConnection:!this.sync.local.bound(),email:this.session?.email,userId:this.session?.userId,role:this.session?.role,condos:this.session?.condos};}
+  status(){return {authenticated:!!this.session,mode:this.session?.mode||null,firstConnection:!this.sync.local.bound(),display_name:this.session?privacy.label(this.session.display_name,this.session.userId):undefined,userId:this.session?.userId,role:this.session?.role,condos:this.session?.condos};}
   require(){
     if(this.session&&this.now()>=this.session.expiresAt)this.lock();
     if(!this.session)throw failure('Entre com seu e-mail e senha para acessar o MOP.','LOGIN_REQUIRED');
@@ -27,7 +28,7 @@ class Access {
     if(!this.safeStorage?.isEncryptionAvailable())return expiresAt;
     const salt=randomBytes(32).toString('hex');
     const verifier=(await derive(password,salt,64)).toString('hex');
-    const grant={...require('./operations.cjs').policy(this.sync.membership),email,userId:this.sync.userId,binding:this.sync.local.bound(),salt,verifier,validatedAt:this.now(),expiresAt};
+    const grant={...require('./operations.cjs').policy(this.sync.membership),email,display_name:privacy.label(this.sync.membership?.display_name,this.sync.userId),userId:this.sync.userId,binding:this.sync.local.bound(),salt,verifier,validatedAt:this.now(),expiresAt};
     this.sync.local.set('access:offline',this.safeStorage.encryptString(JSON.stringify(grant)).toString('base64'));
     return expiresAt;
   }
@@ -38,7 +39,7 @@ class Access {
     const expected=Buffer.from(grant.verifier,'hex');
     const actual=await derive(password,grant.salt,64);
     if(expected.length!==actual.length||!timingSafeEqual(expected,actual))throw failure('E-mail ou senha incorretos.','LOGIN_REJECTED');
-    return {...require('./operations.cjs').policy(grant),email,userId:grant.userId,mode:'offline',expiresAt:grant.expiresAt};
+    return {...require('./operations.cjs').policy(grant),email,display_name:privacy.label(grant.display_name,grant.userId),userId:grant.userId,mode:'offline',expiresAt:grant.expiresAt};
   }
   async login(input={}){
     if(this.busy)throw failure('Aguarde a tentativa de login em andamento.','LOGIN_BUSY');

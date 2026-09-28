@@ -3,7 +3,7 @@ const {test}=require('node:test');const assert=require('node:assert/strict');
 const {empty,Store}=require('../desktop/store.cjs');const {SyncStore}=require('../desktop/sync-store.cjs');
 const O=require('../desktop/operations.cjs'),D=require('../src/operations.js'),W=require('../src/workbook.js');
 const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
-const admin={userId:'11111111-1111-4111-8111-111111111111',email:'admin@example.com',role:'admin',condos:null};
+const admin={userId:'11111111-1111-4111-8111-111111111111',email:'admin@example.com',display_name:'Marcelo',role:'admin',condos:null};
 function fixture(){const s=empty();s.items=[{id:1,condo:'A',subject:'Portão',protocol:'MOP-20260928-AAAAAA',status:'Pendente',priority:'Normal',created_at:'2026-09-28T10:00:00Z',updated_at:'2026-09-28T10:00:00Z'},{id:2,condo:'B',subject:'Câmera',protocol:'MOP-20260928-BBBBBB',status:'Pendente',priority:'Urgente',created_at:'2026-09-28T10:00:00Z',updated_at:'2026-09-28T10:00:00Z'}];s.nextItem=3;return s;}
 test('escopo local não expõe itens, anexos, eventos ou passagens de outro condomínio',()=>{
  const s=fixture();s.events=[{id:1,item_id:2}];s.attachments=[{id:1,item_id:2}];s.handovers=[{id:1,snapshot:s.items},{id:2,snapshot:[s.items[0]]}];
@@ -11,13 +11,13 @@ test('escopo local não expõe itens, anexos, eventos ou passagens de outro cond
 });
 test('autoria vem da sessão e gravação restrita preserva dados não visíveis',()=>{
  const s=fixture(),session={...admin,role:'operator',condos:['A']},next=O.visible(s,session);next.items[0].subject='Corrigido';next.items[0].updated_by='Falso';next.events.push({id:1,item_id:1,actor:'Falso',at:'2026-09-28T12:00:00Z',kind:'Atualizado',detail:'Correção'});next.nextEvent=2;
- const saved=O.stampWrite(s,next,session);assert.equal(saved.items.length,2);assert.equal(saved.items[0].updated_by,session.email);assert.equal(saved.events[0].author.user_id,session.userId);assert.equal(saved.events[0].actor,session.email);
+ const saved=O.stampWrite(s,next,session);assert.equal(saved.items.length,2);assert.equal(saved.items[0].updated_by,session.display_name);assert.equal(saved.events[0].author.user_id,session.userId);assert.equal(saved.events[0].actor,session.display_name);
  assert.throws(()=>O.stampWrite(s,next,{...session,role:'viewer'}),/consulta/);
  next.items[0].condo='B';assert.throws(()=>O.stampWrite(s,next,session),/acesso/);
 });
 test('passagem exige ciência crítica apenas no escopo autorizado',()=>{
  const s=fixture(),session={...admin,role:'operator',condos:['A']},next=O.visible(s,session);next.handovers.push({id:1,at:new Date().toISOString(),incoming:'Falso',outgoing:'Anterior',open_ids:'[1]',snapshot:next.items,critical_protocols:[]});next.nextHandover=2;
- assert.equal(O.stampWrite(s,next,session).handovers[0].incoming,session.email);
+ assert.equal(O.stampWrite(s,next,session).handovers[0].incoming,session.display_name);
  const all=fixture();all.handovers.push({id:1,open_ids:'[1,2]',snapshot:all.items});all.nextHandover=2;assert.throws(()=>O.stampWrite(s,all,admin),/Confirme/);
 });
 test('recorrência respeita virada da noite, início e fim de mês',()=>{

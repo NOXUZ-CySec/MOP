@@ -6,6 +6,7 @@ const {Store} = require('./store.cjs');
 const {visible,stampWrite}=require('./operations.cjs');
 const operations=require('../src/operations.js');
 const fs=require('node:fs');
+const privacy=require('../src/privacy.js');
 let store,win,sync,access,readVersion;
 let alertTimer;
 const index = path.join(__dirname,'../src/index.html');
@@ -22,7 +23,7 @@ else {
       const trusted = event => {
         if (!win || event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame || event.senderFrame.url !== indexURL) throw Error('Origem não autorizada.');
       };
-      const response = (event,fn) => {try{trusted(event);return {ok:true,value:fn()};}catch(e){return {ok:false,error:e.message};}};
+      const response = (event,fn) => {try{trusted(event);return {ok:true,value:fn()};}catch(e){return {ok:false,error:privacy.clean(e.message)};}};
       const authorized=()=>{if(!access)throw Error('Entre com seu e-mail e senha para acessar o MOP.');return access.require();};
       ipcMain.handle('mop:shown',async event=>{
         try {trusted(event);await shown;return {ok:true,value:true};}
@@ -59,7 +60,7 @@ else {
       ipcMain.handle('mop:auth-status',event=>{try{trusted(event);synchronization();return {ok:true,value:access.status()};}catch{return {ok:false,error:'Não foi possível preparar o login.'};}});
       ipcMain.handle('mop:auth-login',async(event,input)=>{
         try{trusted(event);synchronization();return {ok:true,value:await access.login(input)};}
-        catch(e){return {ok:false,error:e.message};}
+        catch(e){return {ok:false,error:privacy.clean(e.message)};}
       });
       ipcMain.handle('mop:auth-logout',async event=>{try{trusted(event);if(access)await access.lock();return {ok:true,value:true};}catch{return {ok:false,error:'Não foi possível encerrar a sessão.'};}});
       for(const [name,action] of Object.entries({
@@ -67,9 +68,9 @@ else {
         connect:()=>{throw Error('Use a tela de login para entrar no MOP.');},
         disconnect:async()=>{await access.lock();return {authenticated:false};},
         now:async()=>{await synchronization().kick();return sync.status();},
-        conflicts:()=>{const s=visible(store.read(),authorized());return synchronization().local.conflicts().filter(c=>s[c.kind]?.some(x=>x.id===c.localId));},
+        conflicts:()=>{const s=visible(store.read(),authorized());return privacy.clean(synchronization().local.conflicts().filter(c=>s[c.kind]?.some(x=>x.id===c.localId)));},
         resolve:input=>{const session=authorized(),s=visible(store.read(),session),c=sync.local.conflicts().find(c=>c.id===input.id);if(session.role==='viewer'||!c||!s[c.kind]?.some(x=>x.id===c.localId))throw Error('Conflito fora do seu acesso.');return synchronization().resolve(input.id,input.choice,input.version);}
-      }))ipcMain.handle('mop:sync-'+name,async(event,input)=>{try{trusted(event);authorized();const value=await action(input);if(name!=='disconnect')authorized();return {ok:true,value};}catch(e){return {ok:false,error:e.message};}});
+      }))ipcMain.handle('mop:sync-'+name,async(event,input)=>{try{trusted(event);authorized();const value=await action(input);if(name!=='disconnect')authorized();return {ok:true,value};}catch(e){return {ok:false,error:privacy.clean(e.message)};}});
       ipcMain.on('mop:read',event=>{event.returnValue=response(event,()=>{const session=authorized();const state=store.read();readVersion=JSON.stringify(state);return visible(state,session);});});
       ipcMain.on('mop:write',(event,state)=>{event.returnValue=response(event,()=>{
         authorized();
@@ -83,15 +84,15 @@ else {
           authorized();
           if(result.canceled)return {ok:true,value:false};
           store.exportTo(result.filePath);return {ok:true,value:true};
-        } catch(e){return {ok:false,error:e.message};}
+        } catch(e){return {ok:false,error:privacy.clean(e.message)};}
       });
-      ipcMain.handle('mop:open-data',async event=>{try{trusted(event);if(authorized().role!=='admin')throw Error('Somente administradores podem abrir a pasta de dados.');const error=await shell.openPath(store.directory);if(error)throw Error(error);return {ok:true,value:true};}catch(e){return {ok:false,error:e.message};}});
+      ipcMain.handle('mop:open-data',async event=>{try{trusted(event);if(authorized().role!=='admin')throw Error('Somente administradores podem abrir a pasta de dados.');const error=await shell.openPath(store.directory);if(error)throw Error(error);return {ok:true,value:true};}catch(e){return {ok:false,error:privacy.clean(e.message)};}});
       ipcMain.handle('mop:management',async(event,action,input)=>{
         try{trusted(event);if(authorized().role!=='admin')throw Error('Acesso exclusivo de administradores.');
           if(!['list','save'].includes(action))throw Error('Ação inválida.');
-          const params=action==='list'?{p_workspace:sync.workspace()}:{p_workspace:sync.workspace(),p_email:input.email,p_role:input.role,p_condos:input.condos};
-          const {data,error}=await sync.client.rpc(action==='list'?'mop_list_members':'mop_set_member',params);if(error)throw error;authorized();return {ok:true,value:data};
-        }catch(e){return {ok:false,error:e.message};}
+          const params=action==='list'?{p_workspace:sync.workspace()}:{p_workspace:sync.workspace(),p_user_id:input.user_id,p_display_name:input.display_name,p_role:input.role,p_condos:input.condos};
+          const {data,error}=await sync.client.rpc(action==='list'?'mop_list_members':'mop_set_operator',params);if(error)throw error;authorized();return {ok:true,value:privacy.clean(data)};
+        }catch(e){return {ok:false,error:privacy.clean(e.message)};}
       });
       ipcMain.handle('mop:download',async(event,input)=>{
         let preview;
@@ -110,7 +111,7 @@ else {
           }else throw Error('Formato inválido.');
           const result=await dialog.showSaveDialog(win,{title:'Salvar arquivo',defaultPath:path.join(app.getPath('documents'),name),filters:[{name:'Arquivo '+extension.toUpperCase(),extensions:[extension]}]});
           authorized();if(result.canceled)return {ok:true,value:false};fs.writeFileSync(result.filePath,data);return {ok:true,value:true};
-        }catch(e){return {ok:false,error:e.message};}finally{if(preview&&!preview.isDestroyed())preview.destroy();}
+        }catch(e){return {ok:false,error:privacy.clean(e.message)};}finally{if(preview&&!preview.isDestroyed())preview.destroy();}
       });
       win = new BrowserWindow({width:1380,height:900,minWidth:760,minHeight:600,title:'MOP — desenvolvido por NOXUZ',icon:path.join(__dirname,'../assets/icon.ico'),show:false,webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true}});
       Menu.setApplicationMenu(null);

@@ -36,6 +36,7 @@ O primeiro acesso exige internet, conta autenticada e autorização na central S
 - **Indicadores:** total de registros, abertos, atrasados e resolvidos; média até a resolução; percentual de registros com prazo concluídos no prazo; agrupamento por condomínio e categoria.
 - **Perfis de acesso:** administrador, supervisor, operador e consulta. O administrador atribui acesso a condomínios e gerencia contas já cadastradas na central.
 - **Autoria autenticada:** operações registram a conta que criou ou atualizou os dados. Os nomes de operador permanecem associados às atividades e à passagem de turno.
+- **Privacidade da identificação (código da próxima versão):** autoria com nome de exibição e identificador interno, sem usar o e-mail como nome. Administradores cadastram e editam o nome em **Acessos → Editar**. A proteção abrange interface, históricos, checklists, metadados de anexos, conflitos, relatórios e novos backups JSON; o e-mail permanece no fluxo de autenticação.
 - **Portal web e celular:** estrutura presente em `portal/`, mas **não liberada**. A tela informativa no desktop não equivale a um serviço publicado nem a um aplicativo mobile disponível.
 
 ### Ferramentas e proteção dos dados
@@ -70,6 +71,7 @@ Todos os perfis estão sujeitos aos condomínios autorizados. Criar uma conta n�
 
 - **2.1.0 / base atual:** checklists, alertas e ciência, anexos, relatórios, indicadores, perfis por condomínio e sincronização autenticada com fila offline e revisão de conflitos estão implementados. A documentação acima descreve essa base, sem limitar o produto à antiga apresentação da 2.0.
 - **Presentes nas alterações locais para a 2.2.0, ainda em validação:** corretor ortográfico em português com sugestões no menu de contexto; remoção lógica de registros exclusiva do administrador, com motivo e autoria, preservando auditoria. Essas alterações não significam que um instalador 2.2.0 já foi publicado. A remoção inclui alteração SQL e migração que precisam ser verificadas na central antes da distribuição.
+- **Privacidade dos operadores:** nomes administráveis em Acessos, identificação operacional sem e-mail e migração de registros/recibos da central. Validação automatizada inclui autoria, autorização, relatórios, backups e reenvio idempotente de versões antigas. A proteção completa da interface exige instalar a nova build em cada estação.
 - **Pendentes na 2.2.0:** passagem registrada pelo operador que sai, com seleção de quem entra entre contas autorizadas do workspace; verificação de atualizações e download do instalador pelo canal público. Não estão disponíveis na base inspecionada.
 - **Não liberado:** portal web/mobile. Sua existência no repositório não indica disponibilidade operacional.
 
@@ -128,6 +130,8 @@ O aplicativo cria cópias automáticas antes de alterações e mantém até 30 b
 Cada anexo pode ter até 512 KB. As bases têm limite de 64 MB por estado local e as operações sincronizadas têm limite de 1 MB por registro. A importação JSON substitui dados e não fica disponível para bases vinculadas à central. Confirme sempre o condomínio e os registros antes da primeira conexão.
 
 O login online e a sincronização precisam de internet. Sem internet, os dados deste computador permanecem disponíveis após um login autorizado recente. Uma revogação de acesso na central é recebida quando o dispositivo volta a se conectar.
+
+A migração de privacidade remove e-mails dos dados textuais operacionais da central, preservando os identificadores internos de autoria e avançando as versões para propagação às estações. Endereços em textos livres são substituídos por `[e-mail protegido]`. Imagens/PDFs anexados não são inspecionados nem alterados. Exportações e backups já existentes, cópias externas e caches de estações antigas precisam seguir um procedimento próprio de retenção/eliminação; atualizar a interface não apaga essas cópias retroativamente. O banco de autenticação continua contendo o e-mail necessário ao login.
 
 ## Testes
 

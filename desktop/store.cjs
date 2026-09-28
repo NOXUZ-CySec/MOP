@@ -52,7 +52,7 @@ class Store {
     let fd;
     try {
       fd = fs.openSync(tmp,'wx',0o600);
-      fs.writeFileSync(fd,JSON.stringify(this.read(),null,2),'utf8');
+      fs.writeFileSync(fd,JSON.stringify(require('../src/privacy.js').clean(this.read()),null,2),'utf8');
       fs.fsyncSync(fd); fs.closeSync(fd); fd = undefined;
       fs.renameSync(tmp,destination);
     } finally {

@@ -71,7 +71,8 @@
       const password=document.querySelector('#loginPassword').value;document.querySelector('#loginPassword').value='';
       const status=await window.mopDesktop.auth('login',{email:document.querySelector('#loginEmail').value,password,uploadExisting:document.querySelector('#loginUpload').checked});
       if(locked)return;
-      if(!status.authenticated)throw Error('Não foi possível autorizar o acesso.');
+      document.querySelector('#loginEmail').value='';
+        if(!status.authenticated)throw Error('Não foi possível autorizar o acesso.');
       try{await application();}catch(reason){if(!locked)initializationError(reason);}
     }catch(reason){
       if(!locked){showLogin({firstConnection:!document.querySelector('#loginConsent').hidden});error.textContent=reason.message;document.querySelector('#loginPassword').focus();}
