@@ -18,7 +18,7 @@ test('fluxo real: criar, assumir turno, resolver, corrigir, exportar e importar'
   vm.runInContext(code,context);const {request,validateImport}=context.api;
   const {id}=await request('/api/items','POST',{condo:'CEA',category:'Solicitação de Vídeo/Imagens',subject:'Portão',description:'Conferir acesso',created_by:'Valor forjado',deadline:'2026-10-01T18:00',assignee:'Equipe',next_action:'Verificar câmera'});
   assert.match(store.read().items[0].protocol,/^MOP-/);assert.equal(store.read().items[0].created_by,'Operador Teste');
-  await request('/api/handovers','POST',{incoming:'Operador B',outgoing:'Operador A',note:'Acompanhar solicitação'});
+  await request('/api/handovers','POST',{incoming:'Nome forjado',outgoing:'Operador A',note:'Acompanhar solicitação'});assert.equal(store.read().handovers[0].incoming,'Operador Teste');assert.equal(store.read().handovers[0].receipt_user_id,'user-test');
   await request('/api/items/'+id+'/update','POST',{actor:'Outro valor forjado',note:'Concluído',status:'Resolvido',action_taken:'Conferido',next_action:''});
   await assert.rejects(request('/api/items/'+id+'/update','POST',{}),/resolvido/i);
   await assert.rejects(request('/api/items/'+id+'/resolved-edit','POST',{note:'x',status:'Pendente'}),/Somente/);
