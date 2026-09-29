@@ -33,20 +33,20 @@ test('acoes usam o instante de gravacao; backups novos e antigos preservados',as
  let now='2026-09-26T05:59:59-03:00',state=empty();
  class Clock extends Date{constructor(...args){super(...(args.length?args:[now]));}static now(){return Date.parse(now);}}
  const app=fs.readFileSync(path.join(__dirname,'../src/app.js'),'utf8');
- const context=vm.createContext({window:{mopDesktop:{read:()=>structuredClone(state),write:s=>{state=structuredClone(s);}}},MOPShift:shift,crypto:webcrypto,Intl,Date:Clock});
+ const context=vm.createContext({window:{mopAccount:{display_name:'Operador Turno',userId:'user-turno'},mopDesktop:{read:()=>structuredClone(state),write:s=>{state=structuredClone(s);}}},MOPShift:shift,crypto:webcrypto,Intl,Date:Clock});
  let code=app.slice(0,app.indexOf('let toastTimer;'));
  for(const prefix of ['function createProtocol(','function ensureProtocols(','const planningKeys=','const requestCategories=','function validLocalDate(','function planningValues(','const calendarZone=','function calendarDate('])code+='\n'+app.split('\n').find(line=>line.startsWith(prefix));
  code+='\n'+app.slice(app.indexOf('function validateImport('),app.indexOf("$('#importFile').onchange"));
  code+='\nglobalThis.api={request,validateImport};';vm.runInContext(code,context);
  const {request,validateImport}=context.api;
- const {id}=await request('/api/items','POST',{condo:'CEA',category:'Outros',subject:'Teste',description:'Teste',created_by:'A'});
+ const {id}=await request('/api/items','POST',{condo:'CEA',category:'Outros',subject:'Teste',description:'Teste',created_by:'A'});assert.equal(state.items[0].created_by,'Operador Turno');
  assert.equal(state.items[0].created_shift.id,'2026-09-25/Noturno');
  now='2026-09-26T06:00:00-03:00';
- await request('/api/items/'+id+'/planning','POST',{actor:'B',assignee:'Equipe'});
+ await request('/api/items/'+id+'/planning','POST',{actor:'B',assignee:'Equipe'});assert.equal(state.items[0].updated_by,'Operador Turno');assert.equal(state.events.at(-1).actor,'Operador Turno');
  assert.equal(state.items[0].updated_shift.id,'2026-09-26/Diurno');
  assert.equal(state.events.at(-1).shift.id,'2026-09-26/Diurno');
  now='2026-09-26T18:00:00-03:00';
- await request('/api/items/'+id+'/update','POST',{actor:'B',note:'Feito',status:'Resolvido'});
+ await request('/api/items/'+id+'/update','POST',{actor:'B',note:'Feito',status:'Resolvido'});assert.equal(state.items[0].updated_by,'Operador Turno');assert.equal(state.events.at(-1).actor,'Operador Turno');
  assert.equal(state.events.at(-1).shift.id,'2026-09-26/Noturno');
  now='2026-09-27T00:00:00-03:00';
  await request('/api/items/'+id+'/resolved-edit','POST',{note:'Nota',action_taken:'Conferido'});

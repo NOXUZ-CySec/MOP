@@ -29,7 +29,7 @@ test('motor: conecta, salva sem rede, reconecta e exige permissão; senha não �
   await f.engine.connect({url:'https://test.supabase.co',key:'sb_publishable_test',email:'a@example.com',password:'never-store-me',uploadExisting:true});await f.engine.kick();
   f.offline(true);const state=f.store.read();state.items.push({id:1,protocol:'MOP-20260927-ABCDEF',subject:'Offline',status:'Pendente',condo:'CEA'});state.nextItem=2;f.store.write(state);await f.engine.kick();
   assert.equal(f.engine.status().state,'offline');assert.equal(f.engine.status().pending,1);assert.equal(f.rows.size,0);
-  f.offline(false);await f.engine.kick();assert.equal(f.engine.status().state,'online');assert.equal(f.rows.size,1);assert.equal(f.engine.status().pending,0);
+  f.offline(false);await f.engine.kick();assert.equal(f.engine.status().state,'online');assert.equal(f.rows.size,1);assert.equal(f.engine.status().pending,0);assert.equal([...f.rows.values()][0].payload.subject,'Offline');
   assert.equal(f.options().auth.persistSession,false);assert.ok(!JSON.stringify(f.store.db.prepare('select * from sync_settings').all()).includes('never-store-me'));
   f.allow(false);await f.engine.kick();assert.equal(f.engine.status().state,'offline');assert.match(f.engine.status().message,/permissão/);
   await f.engine.disconnect();assert.equal(f.engine.status().state,'local');assert.equal(f.store.read().items.length,1);
