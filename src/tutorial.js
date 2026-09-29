@@ -19,13 +19,13 @@
   function focusStep(step){if(step.tab&&typeof window.tab==='function')window.tab(step.tab);return new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));}
   async function show(force=false){
     if(!force&&seen())return;
-    let index=0;const dialog=document.createElement('dialog');dialog.className='tutorial-dialog';
-    dialog.innerHTML='<div class="tutorial-card"><div class="tutorial-head"><div><p class="eyebrow">TUTORIAL GUIADO</p><h2 id="tutorialTitle"></h2></div><button id="tutorialClose" type="button" aria-label="Pular tutorial">×</button></div><p id="tutorialText"></p><div class="tutorial-progress"><span id="tutorialCount"></span><div><button id="tutorialPrev" type="button">Voltar</button><button id="tutorialNext" class="primary" type="button">Próximo</button></div></div><button id="tutorialSkip" class="quiet" type="button">Pular tutorial</button></div>';
-    document.body.append(dialog);const title=dialog.querySelector('#tutorialTitle'),text=dialog.querySelector('#tutorialText'),count=dialog.querySelector('#tutorialCount'),prev=dialog.querySelector('#tutorialPrev'),next=dialog.querySelector('#tutorialNext');
-    async function render(){document.querySelectorAll('.tutorial-target').forEach(x=>x.classList.remove('tutorial-target'));const s=steps[index];await focusStep(s);title.textContent=s.title;text.textContent=s.text;count.textContent=(index+1)+' de '+steps.length;prev.disabled=index===0;next.textContent=index===steps.length-1?'Concluir':'Próximo';if(s.selector){const el=document.querySelector(s.selector);if(el){el.classList.add('tutorial-target');el.scrollIntoView({behavior:'smooth',block:'center'});}}}
-    function finish(){document.querySelectorAll('.tutorial-target').forEach(x=>x.classList.remove('tutorial-target'));mark();dialog.close();dialog.remove();}
-    prev.onclick=()=>{if(index>0){index--;render();}};next.onclick=()=>{if(index===steps.length-1)finish();else{index++;render();}};dialog.querySelector('#tutorialSkip').onclick=finish;dialog.querySelector('#tutorialClose').onclick=finish;
-    dialog.showModal();await render();
+    let index=0;const panel=document.createElement('aside');panel.className='tutorial-panel';panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','false');
+    panel.innerHTML='<div class="tutorial-card"><div class="tutorial-head"><div><p class="eyebrow">TUTORIAL GUIADO</p><h2 id="tutorialTitle"></h2></div><button id="tutorialClose" type="button" aria-label="Pular tutorial">×</button></div><p id="tutorialText"></p><div class="tutorial-progress"><span id="tutorialCount"></span><div><button id="tutorialPrev" type="button">Voltar</button><button id="tutorialNext" class="primary" type="button">Próximo</button></div></div><button id="tutorialSkip" class="quiet" type="button">Pular tutorial</button></div>';
+    document.body.append(panel);const title=panel.querySelector('#tutorialTitle'),text=panel.querySelector('#tutorialText'),count=panel.querySelector('#tutorialCount'),prev=panel.querySelector('#tutorialPrev'),next=panel.querySelector('#tutorialNext');
+    async function render(){document.querySelectorAll('.tutorial-target').forEach(x=>x.classList.remove('tutorial-target'));const s=steps[index];await focusStep(s);title.textContent=s.title;text.textContent=s.text;count.textContent=(index+1)+' de '+steps.length;prev.disabled=index===0;next.textContent=index===steps.length-1?'Concluir':'Próximo';const el=s.selector?document.querySelector(s.selector):document.querySelector('main section:not(.hidden)');if(el){el.classList.add('tutorial-target');el.scrollIntoView({behavior:'smooth',block:'center'});}panel.dataset.side=(el&&el.getBoundingClientRect().right>innerWidth*.62)?'left':'right';}
+    function finish(){document.querySelectorAll('.tutorial-target').forEach(x=>x.classList.remove('tutorial-target'));mark();panel.remove();}
+    prev.onclick=()=>{if(index>0){index--;render();}};next.onclick=()=>{if(index===steps.length-1)finish();else{index++;render();}};panel.querySelector('#tutorialSkip').onclick=finish;panel.querySelector('#tutorialClose').onclick=finish;
+    await render();
   }
   window.MOPTutorial={show,seen};
 })();
