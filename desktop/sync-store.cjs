@@ -76,7 +76,7 @@ class SyncStore {
           m=this.map(kind,row.id);
           this.db.prepare('INSERT INTO sync_pending(remote_id,op_id,payload) VALUES(?,?,?)').run(remote,randomUUID(),payload);
         }else if(m.payload!==payload){
-          if(!['items','templates'].includes(kind)&&m.version>0)throw Error('Históricos e passagens já sincronizados não podem ser alterados.');
+          if(!['items','templates','handovers'].includes(kind)&&m.version>0)throw Error('Históricos já sincronizados não podem ser alterados.');if(kind==='handovers'&&m.version>0){const previous=JSON.parse(m.payload);if(previous.receipt_at)throw Error('Passagem de turno já recebida não pode ser alterada.');if(!row.receipt_at)throw Error('Entrega de turno sincronizada só pode ser alterada para registrar o recebimento.');}
           this.db.prepare('UPDATE sync_map SET payload=? WHERE remote_id=?').run(payload,m.remote_id);
           this.db.prepare('INSERT INTO sync_pending(remote_id,op_id,payload) VALUES(?,?,?) ON CONFLICT(remote_id) DO UPDATE SET op_id=excluded.op_id,payload=excluded.payload').run(m.remote_id,randomUUID(),payload);
         }
