@@ -63,7 +63,7 @@ async function assumeShift(e){if(e)e.preventDefault();if(assumingShift)return;co
  assumingShift=true;button.disabled=true;feedback.innerHTML='<div class="notice">Registrando recebimento do turno…</div>';
  const result=await request('/api/handovers','POST',d),saved=await request('/api/handovers'),entry=saved.find(h=>h.id===result.id);
  if(!entry||entry.incoming!==incoming||entry.receipt_user_id!==window.mopAccount.userId||entry.outgoing!==d.outgoing.trim()||entry.note!==d.note.trim()||JSON.parse(entry.open_ids).length!==result.count)throw Error('Não foi possível confirmar a passagem. Consulte o histórico antes de tentar novamente.');
- items=await request('/api/items');handovers=saved;render();form.reset();const incomingLabel=form.querySelector('[data-authenticated-incoming]');if(incomingLabel)incomingLabel.textContent=window.mopAccount?.display_name||'usuário autenticado';feedback.innerHTML='<div class="notice">Passagem #'+entry.id+' registrada em '+esc(fmt(entry.at))+'. '+esc(entry.incoming)+' assumiu o turno de '+esc(entry.outgoing)+'. '+result.count+' pendência(s) aberta(s) vinculada(s). Consulte o histórico abaixo.</div>';toast('Recebimento do turno registrado e conferido.');feedback.scrollIntoView({block:'nearest'});
+ items=await request('/api/items');handovers=saved;render();form.reset();feedback.innerHTML='<div class="notice">Passagem #'+entry.id+' registrada em '+esc(fmt(entry.at))+'. '+esc(entry.incoming)+' assumiu o turno de '+esc(entry.outgoing)+'. '+result.count+' pendência(s) aberta(s) vinculada(s). Consulte o histórico abaixo.</div>';toast('Recebimento do turno registrado e conferido.');feedback.scrollIntoView({block:'nearest'});
  }catch(err){feedback.innerHTML='<div class="notice error">'+esc(err.message||String(err))+'</div>';toast(err.message||String(err),true)}finally{assumingShift=false;button.disabled=false}}
 $('#handoverForm').onsubmit=assumeShift;$('#assumeShift').onclick=assumeShift;
 $('#newForm select[name="condo"]').innerHTML+=['Barão de Maua','CEA','Extrema','Gaia Ar','Gaia Theia','Gaia Terra','Jundiai 1','Jundiai 2'].map(name=>`<option>${esc(name)}</option>`).join('');$('#newForm select[name="category"]').innerHTML+=categories.map(x=>`<option>${x}</option>`).join('');
@@ -148,7 +148,7 @@ if(window.mopDesktop?.onResume)window.mopDesktop.onResume(tickShift);
 window.initializeMop=async()=>{
  mopReady=false;clearTimeout(shiftTimer);
  checkStorage(true);await refresh(true);
- const author=$('#newRecordAuthor');if(author)author.textContent=window.mopAccount?.display_name||'usuário autenticado';document.querySelectorAll('[data-authenticated-incoming]').forEach(el=>el.textContent=window.mopAccount?.display_name||'usuário autenticado');
+
  mopReady=true;tickShift();
 };
 window.lockMop=()=>{mopReady=false;clearTimeout(shiftTimer);clearTimeout(toastTimer);items=[];handovers=[];};
