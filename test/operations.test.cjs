@@ -16,9 +16,9 @@ test('autoria vem da sessão e gravação restrita preserva dados não visíveis
  next.items[0].condo='B';assert.throws(()=>O.stampWrite(s,next,session),/acesso/);
 });
 test('passagem exige ciência crítica apenas no escopo autorizado',()=>{
- const s=fixture(),session={...admin,role:'operator',condos:['A']},next=O.visible(s,session);next.handovers.push({id:1,at:new Date().toISOString(),incoming:'Falso',outgoing:'Anterior',open_ids:'[1]',snapshot:next.items,critical_protocols:[]});next.nextHandover=2;
- assert.equal(O.stampWrite(s,next,session).handovers[0].incoming,session.display_name);
- const all=fixture();all.handovers.push({id:1,open_ids:'[1,2]',snapshot:all.items});all.nextHandover=2;assert.throws(()=>O.stampWrite(s,all,admin),/Confirme/);
+ const s=fixture(),session={...admin,role:'operator',condos:['A']},next=O.visible(s,session);next.handovers.push({id:1,at:new Date().toISOString(),delivered_at:new Date().toISOString(),delivery_slot:'2026-09-29-D',outgoing:'Falso',incoming:'',open_ids:'[1]',snapshot:next.items,critical_protocols:[]});next.nextHandover=2;
+ const delivered=O.stampWrite(s,next,session).handovers[0];assert.equal(delivered.outgoing,session.display_name);assert.equal(delivered.incoming,'');
+ const all=fixture();all.handovers.push({id:1,at:new Date().toISOString(),delivered_at:new Date().toISOString(),delivery_slot:'2026-09-29-D',receipt_at:new Date().toISOString(),receipt_slot:'2026-09-29-D',incoming:'Falso',outgoing:'Anterior',open_ids:'[1,2]',snapshot:all.items,critical_protocols:[]});all.nextHandover=2;assert.throws(()=>O.stampWrite(fixture(),all,admin),/Confirme/);
 });
 test('recorrência respeita virada da noite, início e fim de mês',()=>{
  const t={frequency:'shift',start_date:'2026-09-01'};assert.equal(D.slot(t,new Date('2026-09-28T23:00:00-03:00')),D.slot(t,new Date('2026-09-29T05:00:00-03:00')));assert.notEqual(D.slot(t,new Date('2026-09-29T06:00:00-03:00')),D.slot(t,new Date('2026-09-29T05:00:00-03:00')));

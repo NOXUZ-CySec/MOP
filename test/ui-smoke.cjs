@@ -40,7 +40,7 @@ app.whenReady().then(async()=>{
    await new Promise(r=>setTimeout(r,1100));
    assertShift('Diurno · 26/09/2026','12:00:00',true);
    document.querySelector('[data-tab="handover"]').click();
-   const f=document.querySelector('#handoverForm');f.elements.namedItem('incoming').value='B';f.elements.namedItem('outgoing').value='A';
+   const f=document.querySelector('#handoverForm');f.elements.namedItem('outgoing').value='A';
    await assumeShift();assertShift('Diurno · 26/09/2026','12:00:00',false);
    testNow='2026-09-26T17:59:59-03:00';tickShift();assertShift('Diurno · 26/09/2026','00:00:01',false);
    testNow='2026-09-26T18:00:00-03:00';
@@ -51,7 +51,7 @@ app.whenReady().then(async()=>{
    await new Promise(r=>setTimeout(r,50));
    assertShift('Noturno · 26/09/2026','12:00:00',true);
    if(readStore().handovers.length!==1)throw Error('Recebimento criado automaticamente');
-   const f=document.querySelector('#handoverForm');f.elements.namedItem('incoming').value='C';f.elements.namedItem('outgoing').value='B';
+   const f=document.querySelector('#handoverForm');f.elements.namedItem('outgoing').value='B';
    await assumeShift();assertShift('Noturno · 26/09/2026','12:00:00',false);
    testNow='2026-09-27T00:00:00-03:00';window.dispatchEvent(new Event('focus'));
    assertShift('Noturno · 26/09/2026','06:00:00',false);

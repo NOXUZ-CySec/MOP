@@ -24,14 +24,14 @@ function stampWrite(previous,input,session,now=new Date().toISOString()){
       const old=before.get(row.id);
       if(old&&!oldVisible[kind].some(x=>x.id===row.id))throw Error('Registro fora do seu acesso.');
       if(old&&stable(privacy.clean(old))===stable(row)){Object.keys(row).forEach(k=>delete row[k]);Object.assign(row,old);continue;}
-      if(old&&!['items','templates'].includes(kind))throw Error('Histórico, anexos, execuções e passagens são imutáveis.');
+      if(old&&!['items','templates','handovers'].includes(kind))throw Error('Histórico, anexos e execuções são imutáveis.');if(old&&kind==='handovers'&&old.receipt_at)throw Error('Passagem de turno já recebida não pode ser alterada.');
       const parent=['events','attachments'].includes(kind)?next.items.find(x=>x.id===row.item_id):null;
       if(parent)row.condo=parent.condo;
       if(kind==='handovers'){
         if((row.snapshot||[]).some(x=>!allows(session,x.condo)))throw Error('Passagem fora do seu acesso.');
-        const critical=next.items.filter(x=>allows(session,x.condo)&&x.status!=='Resolvido'&&(x.priority==='Urgente'||domain.alerts({...next,items:[x]}).some(a=>a.level==='late')));
-        if(critical.some(x=>!row.critical_protocols?.includes(x.protocol)))throw Error('Confirme a leitura de cada pendência crítica.');
-        row.incoming=who.display_name;row.incoming_identity=who;
+        const isReceipt=!!row.receipt_at||!!row.receipt_slot;
+        if(isReceipt){const critical=next.items.filter(x=>allows(session,x.condo)&&x.status!=='Resolvido'&&(x.priority==='Urgente'||domain.alerts({...next,items:[x]}).some(a=>a.level==='late')));if(critical.some(x=>!row.critical_protocols?.includes(x.protocol)))throw Error('Confirme a leitura de cada pendência crítica.');row.incoming=who.display_name;row.incoming_identity=who;}
+        else {row.outgoing=who.display_name;row.outgoing_identity=who;}
       }else if(!allows(session,row.condo))throw Error('Condomínio fora do seu acesso.');
       if(kind==='templates'&&!['admin','supervisor'].includes(session.role))throw Error('Somente supervisores podem configurar rotinas.');
       if(old&&['items','templates'].includes(kind)&&row.condo!==old.condo)throw Error('O condomínio do registro não pode ser alterado.');

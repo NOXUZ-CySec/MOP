@@ -45,7 +45,7 @@
     screen.dataset.state='ready';document.body.classList.remove('starting');
     if(!matchMedia('(prefers-reduced-motion: reduce)').matches)await Promise.all(screen.getAnimations().map(a=>a.finished.catch(()=>{})));
     if(locked)return;
-    screen.hidden=true;if(window.MOPReleaseNotes)await window.MOPReleaseNotes.show(false);await window.MOPShiftGate?.ensure();content.querySelector('[data-tab="overview"]').focus({preventScroll:true});
+    screen.hidden=true;if(window.MOPReleaseNotes)await window.MOPReleaseNotes.show(false);if(window.MOPTutorial)await window.MOPTutorial.show(false);await window.MOPShiftGate?.ensure();content.querySelector('[data-tab="overview"]').focus({preventScroll:true});
   }
   function initializationError(reason){
     screen.dataset.state='error';screen.setAttribute('aria-busy','false');
