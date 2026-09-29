@@ -50,8 +50,8 @@ test('acoes usam o instante de gravacao; backups novos e antigos preservados',as
  assert.equal(state.events.at(-1).shift.id,'2026-09-26/Noturno');
  now='2026-09-27T00:00:00-03:00';
  await request('/api/items/'+id+'/resolved-edit','POST',{note:'Nota',action_taken:'Conferido'});
- await request('/api/handovers','POST',{incoming:'Nome forjado',outgoing:'B'});
- assert.equal(state.handovers[0].incoming,'Operador Turno');assert.equal(state.handovers[0].receipt_user_id,'user-turno');assert.equal(state.handovers[0].receipt_slot,'2026-09-26-N');
+ await request('/api/handovers','POST',{incoming:'Nome forjado',outgoing:'B',handover_note:'Pendência anterior',receipt_note:'Sem ressalvas'});
+ assert.equal(state.handovers[0].incoming,'Operador Turno');assert.equal(state.handovers[0].receipt_user_id,'user-turno');assert.equal(state.handovers[0].receipt_slot,'2026-09-26-N');assert.equal(state.handovers[0].handover_note,'Pendência anterior');assert.equal(state.handovers[0].receipt_note,'Sem ressalvas');
  assert.equal(state.handovers[0].shift.id,'2026-09-26/Noturno');
  assert.equal(state.events.at(-1).shift.id,'2026-09-26/Noturno');
  assert.equal(state.items[0].created_shift.id,'2026-09-25/Noturno');

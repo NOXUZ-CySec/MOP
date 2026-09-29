@@ -111,3 +111,4 @@ details[open]>summary::after{transform:rotate(225deg);vertical-align:-1px}
 .handover-field input,.handover-auth{min-height:45px}
 .handover-auth{display:flex;align-items:center;margin:0;padding:11px 12px;border:1px solid transparent}
 @media(max-width:650px){.handover-operators{grid-template-columns:1fr;gap:0}}
+.handover-flow-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:8px}.handover-flow-grid textarea{min-height:110px}.handover-notes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}.handover-notes p{margin:0;padding:12px;border:1px solid #e3e9f0;border-radius:9px;background:#f9fbfd}@media(max-width:750px){.handover-flow-grid,.handover-notes{grid-template-columns:1fr}}
