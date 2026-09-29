@@ -92,3 +92,22 @@ details[open]>summary::after{transform:rotate(225deg);vertical-align:-1px}
 .compact-pending>summary::after{justify-self:end;color:#64748b}
 .optional-fields>details>summary::after,.record-body>details>summary::after,.module-content details.panel>summary::after{float:right;margin-top:3px;color:#087d9e}
 @media(max-width:700px){.record-card>summary.record-summary::after{grid-column:2;grid-row:1}}
+/* Compacta os cards de pendências da página Início. */
+#highlights{display:grid;gap:10px}
+#highlights .shift-highlight{margin:0;padding:14px 16px}
+.shift-highlight-main{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.shift-highlight-title{min-width:0}.shift-highlight-title strong{display:block;font-size:13px}.shift-highlight-title small{display:block;margin-top:3px}
+.shift-highlight-meta{display:grid;grid-template-columns:minmax(120px,.7fr) minmax(140px,.9fr) minmax(220px,1.5fr);gap:12px;margin-top:11px;padding-top:10px;border-top:1px solid #edf1f5}
+.shift-highlight-meta span{min-width:0;color:#51657b;font-size:12px;overflow-wrap:anywhere}
+.shift-highlight-meta b{display:block;margin-bottom:2px;font-size:10px;letter-spacing:.4px;text-transform:uppercase;color:#7a8ca0}
+.shift-highlight-updated{display:block;margin-top:9px;font-size:10px}
+@media(max-width:900px){.shift-highlight-meta{grid-template-columns:1fr 1fr}.shift-highlight-next{grid-column:1/-1}}
+@media(max-width:550px){.shift-highlight-main{flex-direction:column}.shift-highlight-meta{grid-template-columns:1fr}.shift-highlight-next{grid-column:auto}}
+
+/* Alinha os dois campos de recebimento da passagem de turno. */
+.handover-operators{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:end}
+.handover-field{display:flex;flex-direction:column;min-width:0}
+.handover-field label,.handover-label{display:block;color:#40546b;font-size:12px;font-weight:600;margin:15px 0 6px;line-height:1.55}
+.handover-field input,.handover-auth{min-height:45px}
+.handover-auth{display:flex;align-items:center;margin:0;padding:11px 12px;border:1px solid transparent}
+@media(max-width:650px){.handover-operators{grid-template-columns:1fr;gap:0}}
