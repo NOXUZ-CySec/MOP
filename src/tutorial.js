@@ -17,14 +17,15 @@
   const seen=()=>localStorage.getItem(key())==='done';
   const mark=()=>localStorage.setItem(key(),'done');
   function focusStep(step){if(step.tab&&typeof window.tab==='function')window.tab(step.tab);return new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));}
+  function allowedSteps(){const role=window.mopAccount?.role||'operator';return steps.filter(step=>step.tab!=='permissions'||role==='admin').filter(step=>step.tab!=='reports'&&step.tab!=='indicators'||['supervisor','admin'].includes(role));}
   async function show(force=false){
     if(!force&&seen())return;
-    let index=0;const panel=document.createElement('aside');panel.className='tutorial-panel';panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','false');
+    const activeSteps=allowedSteps();let index=0;const panel=document.createElement('aside');panel.className='tutorial-panel';panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','false');
     panel.innerHTML='<div class="tutorial-card"><div class="tutorial-head"><div><p class="eyebrow">TUTORIAL GUIADO</p><h2 id="tutorialTitle"></h2></div><button id="tutorialClose" type="button" aria-label="Pular tutorial">×</button></div><p id="tutorialText"></p><div class="tutorial-progress"><span id="tutorialCount"></span><div><button id="tutorialPrev" type="button">Voltar</button><button id="tutorialNext" class="primary" type="button">Próximo</button></div></div><button id="tutorialSkip" class="quiet" type="button">Pular tutorial</button></div>';
     document.body.append(panel);const title=panel.querySelector('#tutorialTitle'),text=panel.querySelector('#tutorialText'),count=panel.querySelector('#tutorialCount'),prev=panel.querySelector('#tutorialPrev'),next=panel.querySelector('#tutorialNext');
-    async function render(){document.querySelectorAll('.tutorial-target').forEach(x=>x.classList.remove('tutorial-target'));const s=steps[index];await focusStep(s);title.textContent=s.title;text.textContent=s.text;count.textContent=(index+1)+' de '+steps.length;prev.disabled=index===0;next.textContent=index===steps.length-1?'Concluir':'Próximo';const el=s.selector?document.querySelector(s.selector):document.querySelector('main section:not(.hidden)');if(el){el.classList.add('tutorial-target');el.scrollIntoView({behavior:'smooth',block:'center'});}panel.dataset.side=(el&&el.getBoundingClientRect().right>innerWidth*.62)?'left':'right';}
+    async function render(){document.querySelectorAll('.tutorial-target').forEach(x=>x.classList.remove('tutorial-target'));const s=activeSteps[index];await focusStep(s);title.textContent=s.title;text.textContent=s.text;count.textContent=(index+1)+' de '+activeSteps.length;prev.disabled=index===0;next.textContent=index===activeSteps.length-1?'Concluir':'Próximo';const el=s.selector?document.querySelector(s.selector):document.querySelector('main section:not(.hidden)');if(el){el.classList.add('tutorial-target');el.scrollIntoView({behavior:'smooth',block:'center'});}panel.dataset.side=(el&&el.getBoundingClientRect().right>innerWidth*.62)?'left':'right';}
     function finish(){document.querySelectorAll('.tutorial-target').forEach(x=>x.classList.remove('tutorial-target'));mark();panel.remove();}
-    prev.onclick=()=>{if(index>0){index--;render();}};next.onclick=()=>{if(index===steps.length-1)finish();else{index++;render();}};panel.querySelector('#tutorialSkip').onclick=finish;panel.querySelector('#tutorialClose').onclick=finish;
+    prev.onclick=()=>{if(index>0){index--;render();}};next.onclick=()=>{if(index===activeSteps.length-1)finish();else{index++;render();}};panel.querySelector('#tutorialSkip').onclick=finish;panel.querySelector('#tutorialClose').onclick=finish;
     await render();
   }
   window.MOPTutorial={show,seen};
