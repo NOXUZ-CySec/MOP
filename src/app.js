@@ -139,7 +139,7 @@ if(window.mopDesktop?.onResume)window.mopDesktop.onResume(tickShift);
 window.initializeMop=async()=>{
  mopReady=false;clearTimeout(shiftTimer);
  checkStorage(true);await refresh(true);
-
+ const tutorialButton=$('#startTutorial');if(tutorialButton)tutorialButton.onclick=()=>window.MOPTutorial?.show(true);
  mopReady=true;tickShift();
 };
 window.lockMop=()=>{mopReady=false;clearTimeout(shiftTimer);clearTimeout(toastTimer);items=[];handovers=[];};
