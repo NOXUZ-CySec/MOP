@@ -4,11 +4,27 @@
 
 **Aplicativo de livro de turno, ocorrências e continuidade operacional para Windows.** Desenvolvido por **NOXUZ**.
 
-> **Versão atual: 2.2.1.** Esta é a versão mais recente do repositório privado de desenvolvimento. O canal público de distribuição permanece em [MOP-Releases](https://github.com/NOXUZ-CySec/MOP-Releases/releases). O portal web/mobile ainda não está liberado.
+> **Versão atual: 2.2.2.** Esta é a versão mais recente do repositório privado de desenvolvimento. O canal público de distribuição permanece em [MOP-Releases](https://github.com/NOXUZ-CySec/MOP-Releases/releases). O portal web/mobile ainda não está liberado.
 
 Este é o repositório **privado de desenvolvimento** do MOP. Ele concentra o código-fonte, testes, migrações, documentação e fluxo de build. Os instaladores destinados a testadores e usuários são publicados separadamente no repositório público de releases.
 
 O MOP reúne registros operacionais, pendências, checklists, alertas, anexos, relatórios, indicadores e passagem de turno em uma única aplicação, com sincronização entre estações autorizadas e operação offline controlada.
+
+## Versão 2.2.2
+
+A versão **2.2.2** consolida as correções de patch aplicadas desde a 2.2.1 e reformula o fluxo operacional de passagem de turno.
+
+Principais mudanças:
+
+- Passagem de turno dividida em **entrega** e **recebimento**, sem campos manuais redundantes de autoria.
+- Operador que encerra o turno registra apenas o resumo necessário para continuidade; o próximo operador recebe a passagem em etapa separada.
+- Ciência de pendências críticas exigida somente no recebimento.
+- Sincronização permite complementar uma entrega pendente com o recebimento, mantendo a passagem imutável depois de concluída.
+- Tutorial guiado no primeiro login, com opção de pular, refazer pela aba **Sobre** e conteúdo adaptado ao perfil do usuário.
+- Tutorial redesenhado para não escurecer a aplicação inteira e manter visível o conteúdo que está sendo explicado.
+- Correções de autoria confiável e consistência de testes operacionais.
+
+A versão foi validada com **45/45 testes automatizados aprovados** e `MANAGEMENT_UI_OK`.
 
 ## Versão 2.2.1
 
@@ -52,7 +68,7 @@ A correção foi validada com a suíte automatizada e teste de interface de gest
 
 A atualização automática foi introduzida na **2.1.1**. O cliente consulta o canal `NOXUZ-CySec/MOP-Releases`, detecta uma versão superior, baixa o instalador e o `.blockmap` e oferece reinicialização para instalação.
 
-A **2.2.1** foi publicada especificamente para atualizar automaticamente os clientes 2.2.0 com a correção do fluxo de status **Resolvido**.
+A **2.2.2** é a release atual do canal de testes e consolida as correções de patch posteriores à 2.2.1, incluindo o novo fluxo de passagem de turno e o tutorial guiado por perfil.
 
 Os artefatos oficiais de uma release Windows são:
 
@@ -88,7 +104,7 @@ npm run test:management
 npm run dist:win
 ```
 
-O instalador atual é gerado em `dist/MOP-Instalador-2.2.1.exe`.
+O instalador atual é gerado em `dist/MOP-Instalador-2.2.2.exe`.
 
 ## Central Supabase
 
@@ -110,7 +126,7 @@ O aplicativo mantém backups locais automáticos antes de alterações. Backups 
 
 A suíte automatizada cobre autenticação, autorização, armazenamento, regras SQL, sincronização offline, conflitos, checklists, anexos, relatórios e fluxos operacionais. O teste `test:management` abre uma instância temporária do Electron para validar a interface de gestão.
 
-Para a **2.2.1**, o resultado de validação antes da publicação foi **45/45 testes aprovados** e `MANAGEMENT_UI_OK`.
+Para a **2.2.2**, o resultado de validação antes da publicação foi **45/45 testes aprovados** e `MANAGEMENT_UI_OK`.
 
 ## Estrutura principal
 

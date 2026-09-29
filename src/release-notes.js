@@ -1,6 +1,8 @@
 'use strict';
 (() => {
   const releases=[
+    {version:'2.2.2',title:'Passagem de turno e onboarding',items:['Passagem de turno reformulada em duas etapas independentes: entrega e recebimento.','Autoria automática pelo usuário autenticado, sem campos manuais redundantes.','Ciência de pendências críticas aplicada somente no recebimento do turno.','Tutorial guiado no primeiro acesso, com opção de pular e refazer pela aba Sobre.','Tutorial adaptado ao perfil do usuário e apresentação visual menos intrusiva.','Sincronização atualizada para permitir completar uma entrega com o recebimento sem reabrir passagens já concluídas.']},
+    {version:'2.2.1',title:'Correção do status Resolvido',items:['Correção do travamento ao marcar registros como Resolvido pelo seletor rápido.','Confirmação migrada para modal próprio do MOP, preservando foco e interação no Electron.']},
     {version:'2.2.0',title:'Fluxo operacional e experiência',items:['Novidades do MOP exibidas após o login e antes da operação.','Recebimento obrigatório do turno antes de qualquer escrita operacional.','Login com usuário ou e-mail + senha.','Indicador permanente de turno assumido e trilha de auditoria.','Melhorias visuais do status, expansores e estabilidade da interface.']},
     {version:'2.1.2',title:'Registros e permissões',items:['Troca rápida de status direto no registro, com diferenciação visual.','Atualizações identificadas automaticamente pelo usuário autenticado.','Backup manual restrito a supervisor e administrador.','Remoção da importação/exportação da base operacional; relatórios permanecem disponíveis.']},
     {version:'2.1.1',title:'Atualização automática',items:['Primeira versão com verificação e download de atualizações pelo próprio MOP.']}
