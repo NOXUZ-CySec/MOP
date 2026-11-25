@@ -3,6 +3,7 @@ const crypto=require('node:crypto');
 const shift=require('../src/shift.js');
 const {visible,stampWrite}=require('./operations.cjs');
 const handover=require('./handover107.cjs');
+const H=require('../src/handover-automation.js');
 const WINDOW=12*3600000;
 function table(db){db.exec('CREATE TABLE IF NOT EXISTS shift_gate108 (user_id TEXT NOT NULL,shift_id TEXT NOT NULL,delivery_id INTEGER NOT NULL,token TEXT NOT NULL,accepted_at TEXT NOT NULL,PRIMARY KEY(user_id,shift_id))')}
 function latest(scope){return scope.handovers.filter(h=>h.automation_version===1&&!h.receipt_at).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')))[0]}
@@ -14,7 +15,7 @@ function gather(state,session,now=new Date()){
  const created=rows.filter(x=>{const t=Date.parse(x.created_at||x.recorded_at||x.at);return Number.isFinite(t)&&t>=incomingStart-WINDOW&&t<incomingStart});
  const currentRows=rows.filter(x=>{const t=Date.parse(x.created_at||x.recorded_at||x.at);return Number.isFinite(t)&&t>=incomingStart&&t<=+now});
  const open=rows.filter(x=>x.status!=='Resolvido'&&x.status!=='Concluído');
- const critical=open.filter(x=>['Urgente','Alta','Crítica','Atenção'].includes(x.priority)||(x.deadline&&Number.isFinite(Date.parse(x.deadline))&&Date.parse(x.deadline)<+now));
+ const critical=open.filter(x=>H.isCritical(x,now));
  const map=new Map();
  for(const x of [...created,...currentRows,...open])map.set(String(x.protocol||x.id),x);
  const items=[...map.values()].sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at))||String(a.protocol).localeCompare(String(b.protocol))).map(x=>({

@@ -1,53 +1,204 @@
-import './handover66.css';
-import React,{useMemo,useState} from 'react';
-import {ArrowLeftRight,Users,ClipboardCheck,ShieldCheck,ClipboardList,CalendarDays,Sun,Clock3,UserRound,CheckCircle2,RotateCw,AlertTriangle,FileText,ChevronRight,ChevronDown,Info,ClipboardPenLine} from 'lucide-react';
-import type {LucideIcon} from 'lucide-react';
-import type {OperationalRecord} from './RecordsPage';
-export type HandoverStage='delivery'|'receipt'|'awaiting-receipt'|'pending'|'complete';
-export type HandoverItem={id:string,title:string,description:string,status:'Concluído'|'Em andamento'|'Pendente',category:string,occurredAt:string,priority:'Normal'|'Urgente',critical:boolean,assignee:string,nextAction:string,readVersion:string,icon:LucideIcon};
-export type HandoverSnapshot={stage:HandoverStage;shift:'Diurno'|'Noturno';date:string;period:string;outgoing:string;incoming:string|null;items:HandoverItem[];deliverySummary:string;receiptNote:string;reviewToken?:string;deliveryId?:number;criticalConfirmations:Record<string,boolean>};
-export type HandoverCommand=
- |{kind:'prepareDelivery';summary:string;reviewToken?:string;checklist:string[]}
- |{kind:'confirmReceipt';deliveryId:number;receiptNote:string;criticalProtocols:string[];readVersions:Record<string,string>}
- |{kind:'assignPending';protocol:string;assignee:string;nextAction:string};
-export interface HandoverAdapter{readonly mode:'demo'|'operational';load():Promise<HandoverSnapshot>;execute(command:HandoverCommand):Promise<{ok:boolean;message:string}>}
-export const demoSnapshot:HandoverSnapshot={stage:'delivery',shift:'Diurno',date:'17/11/2026',period:'06:00 – 18:00',outgoing:'Operador Demo',incoming:null,deliverySummary:'',receiptNote:'',criticalConfirmations:{},items:[
-{id:'R-0142',title:'Acesso não autorizado (Portaria B)',description:'Tentativa de acesso com credencial inválida.',status:'Concluído',category:'Segurança',occurredAt:'Hoje, 14:20',priority:'Normal',critical:false,assignee:'Operador',nextAction:'Encerrado',readVersion:'1',icon:CheckCircle2},
-{id:'R-0141',title:'Backup de sistemas',description:'Execução do backup diário dos servidores.',status:'Em andamento',category:'Sistemas',occurredAt:'Hoje, 13:47',priority:'Normal',critical:false,assignee:'Equipe de TI',nextAction:'Confirmar término do backup',readVersion:'2',icon:RotateCw},
-{id:'R-0139',title:'Manutenção preventiva – CFTV',description:'Ajuste e limpeza da câmera C-07.',status:'Concluído',category:'Manutenção',occurredAt:'Hoje, 11:08',priority:'Normal',critical:false,assignee:'Técnico',nextAction:'Encerrado',readVersion:'1',icon:CheckCircle2},
-{id:'R-0138',title:'Falha de comunicação – Leitura de crachá',description:'Instabilidade temporária no leitor da Portaria A.',status:'Pendente',category:'Infraestrutura',occurredAt:'Hoje, 10:22',priority:'Urgente',critical:true,assignee:'Equipe técnica',nextAction:'Finalizar ajuste do leitor – Portaria A',readVersion:'3',icon:AlertTriangle}
-]};
-export const demoHandoverAdapter:HandoverAdapter={mode:'demo',async load(){return structuredClone(demoSnapshot)},async execute(){return {ok:false,message:'Ação disponível apenas após integração autenticada e homologação.'}}};
-type Tab='records'|'pending'|'incidents'|'checklists';
-const tabs:{key:Tab;label:string;icon:LucideIcon}[]=[{key:'records',label:'Registros do Turno',icon:FileText},{key:'pending',label:'Pendências',icon:AlertTriangle},{key:'incidents',label:'Ocorrências',icon:ShieldCheck},{key:'checklists',label:'Checklists',icon:ClipboardCheck}];
-const stages:{key:HandoverStage;title:string;subtitle:string;icon:LucideIcon}[]=[{key:'delivery',title:'Entrega do Turno',subtitle:'Registrar e resumir o período',icon:Users},{key:'receipt',title:'Recebimento',subtitle:'Conferir informações',icon:Users},{key:'pending',title:'Pendências',subtitle:'Definir responsáveis',icon:ClipboardCheck},{key:'complete',title:'Concluir',subtitle:'Finalizar passagem',icon:ShieldCheck}];
-type Props={initial?:HandoverSnapshot,onOpenRecord?:(id:string)=>void,onCommand?:(command:HandoverCommand)=>Promise<void>,mode?:'demo'|'operational'};
-export default function HandoverPage({initial=demoSnapshot,onOpenRecord,onCommand,mode='demo'}:Props){
- const [deliveryChecks,setDeliveryChecks]=useState<Record<string,boolean>>({});const [snapshot]=useState<HandoverSnapshot>(initial);const [activeTab,setActiveTab]=useState<Tab>('records'),[summary,setSummary]=useState(snapshot.deliverySummary),[note,setNote]=useState(snapshot.receiptNote),[checked,setChecked]=useState<Record<string,boolean>>({}),[expanded,setExpanded]=useState<string|null>(null),[message,setMessage]=useState('');
- const pending=snapshot.items.filter(item=>item.status!=='Concluído'),critical=pending.filter(item=>item.critical);
- const counts={records:snapshot.items.length,pending:pending.length,incidents:snapshot.items.filter(item=>item.category==='Segurança').length,checklists:3};
- const visible=activeTab==='records'?snapshot.items:activeTab==='pending'?pending:activeTab==='incidents'?snapshot.items.filter(item=>item.category==='Segurança'):[];
- const stage=snapshot.stage;const isDemo=mode==='demo';const waiting=stage==='awaiting-receipt';
- const completedItems=snapshot.items.filter(item=>item.status==='Concluído');const urgentPending=pending.filter(item=>item.priority==='Urgente'||item.critical);const assignedPending=pending.filter(item=>item.assignee?.trim());
- const act=async(command:HandoverCommand)=>{if(isDemo){setMessage('Demonstração visual: nenhum turno foi entregue, recebido ou alterado.');return}if(!onCommand){setMessage('A integração deste comando ainda não foi configurada.');return}try{await onCommand(command);setMessage('Comando enviado ao adaptador operacional para validação.')}catch(err){setMessage(err instanceof Error?err.message:'Não foi possível concluir a ação.')}};
- const deliver=()=>act({kind:'prepareDelivery',summary:summary.trim(),reviewToken:snapshot.reviewToken,checklist:Object.keys(deliveryChecks).filter(k=>deliveryChecks[k])});
- const receive=()=>{if(!snapshot.deliveryId){setMessage('Não há entrega confirmada para recebimento.');return}const missing=critical.filter(item=>!checked[item.id]);if(missing.length){setMessage('Confirme a leitura de todas as pendências críticas antes de assumir o turno.');return}act({kind:'confirmReceipt',deliveryId:snapshot.deliveryId,receiptNote:note,criticalProtocols:critical.map(item=>item.id),readVersions:Object.fromEntries(critical.map(item=>[item.id,item.readVersion]))})};
- return <section className="handover-screen">
-  <div className="handover-page-title"><ArrowLeftRight size={34}/><div><h1>Passagem de Turno</h1><p>Registro de entrega, recebimento e pendências do turno</p></div></div>
-  <div className="handover-stages" aria-label="Etapas da passagem de turno">{stages.map((s,i)=>{const Icon=s.icon;return <React.Fragment key={s.key}><div className={'handover-stage '+(s.key===stage?'current':'')} aria-current={s.key===stage?'step':undefined}><span className="handover-stage-icon"><Icon size={23}/></span><span><b>{i+1}. {s.title}</b><small>{s.subtitle}</small></span></div>{i<stages.length-1&&<div className="handover-stage-connector"/>}</React.Fragment>})}</div>
-  <section className="handover66-overview" aria-label="Resumo de continuidade do turno">
-   <div className="handover66-overview-head"><div><ShieldCheck size={19}/><strong>{stage==='receipt'?'Conferência para recebimento':waiting?'Entrega registrada · aguardando outro operador':'Conferência para entrega'}</strong></div><span>Dados da passagem atual</span></div>
-   <div className="handover66-metrics"><div><strong>{snapshot.items.length}</strong><span>Registros transmitidos</span></div><div><strong>{pending.length}</strong><span>Em acompanhamento</span></div><div className={urgentPending.length?'attention':''}><strong>{urgentPending.length}</strong><span>Urgentes ou críticos</span></div><div><strong>{completedItems.length}</strong><span>Concluídos</span></div></div>
-   <div className="handover66-next"><span>{pending.length?assignedPending.length+' de '+pending.length+' pendências com responsável informado':'Nenhuma pendência aberta nesta passagem'}</span>{pending.length>0&&<button type="button" onClick={()=>{setActiveTab('pending');setExpanded(null)}}>Revisar pendências <ChevronRight size={15}/></button>}</div>
-  </section>
-  <div className="handover-layout"><div className="handover-primary">
-  <section className="handover-panel handover-summary"><div className="handover-panel-title"><span><ClipboardList size={21}/><b>{stage==='receipt'?'Resumo do Turno (Recebimento)':waiting?'Resumo entregue ao próximo operador':'Resumo do Turno (Entrega)'}</b></span><span className="handover-summary-tags"><span><Sun size={16}/> Turno Atual: {snapshot.shift}</span><span><CalendarDays size={15}/> {snapshot.date}</span></span></div>
-  {(stage==='receipt'||waiting)?<div className="handover-readonly-summary"><p className="handover41-stage-note">{waiting?'Sua entrega foi registrada. Outro operador autenticado deverá conferir as pendências e confirmar o recebimento. Não é permitido receber o próprio turno.':'Há uma entrega aguardando aceite. O resumo abaixo pertence ao operador que entregou o turno e não pode ser alterado. Para continuar, registre ressalvas se necessário e utilize Assumir Turno (Recebimento).'}</p><p>{snapshot.deliverySummary||'Nenhum resumo fornecido pelo turno anterior.'}</p>{!waiting&&<label>Ressalvas no recebimento (opcional)<textarea maxLength={1500} value={note} onChange={e=>setNote(e.target.value)} placeholder="Registre divergências antes de assumir o turno."/></label>}</div>:<div className="handover-textarea"><textarea value={summary} onChange={e=>setSummary(e.target.value)} maxLength={1000} placeholder="Informe o resumo geral do turno..." aria-label="Resumo geral para o próximo turno" /><span>{summary.length} / 1000</span></div>}</section>
-  <section className="handover-panel handover-records"><div className="handover-tabs" role="tablist" aria-label="Informações da passagem">{tabs.map(t=>{const Icon=t.icon;return <button role="tab" aria-selected={activeTab===t.key} key={t.key} onClick={()=>{setActiveTab(t.key);setExpanded(null)}} className={activeTab===t.key?'active':''}><Icon size={18}/>{t.label} <small>({counts[t.key]})</small></button>})}</div>
-  <div className="handover-items">{activeTab==='checklists'?<div className="handover-checklist-preview"><ClipboardCheck size={23}/><div><b>Checklist de entrega</b><p>Os itens de leitura, revisão e execução serão vinculados às rotinas e execuções existentes após a integração.</p>{isDemo?<span>3 de 3 itens demonstrativos</span>:<span>Consulte Checklist e Rotinas para acompanhar execuções reais.</span>}</div></div>:visible.length?visible.map(item=>{const Icon=item.icon;return <div className={'handover-item '+(expanded===item.id?'expanded':'')} key={item.id}><button type="button" className="handover-item-summary" onClick={()=>setExpanded(expanded===item.id?null:item.id)} aria-expanded={expanded===item.id}><span className={'handover-item-icon '+item.status.replaceAll(' ','-')}><Icon size={21}/></span><span className="handover-item-description"><strong>{item.title}</strong><small>{item.description}</small></span><span className="handover-item-time"><Clock3 size={15}/>{item.occurredAt}</span><span className={'handover-item-status '+item.status.replaceAll(' ','-')}>{item.status}</span><ChevronRight className="handover-item-chevron" size={19}/></button>{expanded===item.id&&<div className="handover-item-details"><span>Responsável: <b>{item.assignee}</b></span><span>Próxima ação: <b>{item.nextAction}</b></span>{item.critical&&<span className="handover-critical-tag">Leitura obrigatória no recebimento</span>}{onOpenRecord&&<button onClick={()=>onOpenRecord(item.id)}>Ver registro <ChevronRight size={16}/></button>}</div>}</div>}):<div className="handover-empty">Nenhum registro nesta categoria para esta passagem.</div>}</div>
-  </section></div>
-  <aside className="handover-aside"><section className="handover-panel handover-meta"><div className="handover-panel-title"><span><ClipboardList size={21}/><b>Informações do Turno</b></span></div><dl>{[['Turno',snapshot.shift],['Data',snapshot.date],['Período',snapshot.period],['Operador (Entrega)',snapshot.outgoing],['Operador (Recebimento)',snapshot.incoming||'—']].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></section>
-  <section className="handover-panel handover-priorities"><div className="handover-panel-title"><span><AlertTriangle size={21}/><b>Pendências em Destaque</b></span></div>{pending.length?pending.map(item=><div className="handover-priority" key={item.id}><i/>{item.nextAction}</div>):<p className="handover-no-pending">Sem pendências.</p>}</section>
-  {stage==='receipt'&&critical.length>0&&<section className="handover-panel handover-readings"><h3><ShieldCheck size={19}/> Ciência das Pendências Críticas</h3>{critical.map(item=><label key={item.id}><input type="checkbox" checked={!!checked[item.id]} onChange={e=>setChecked(old=>({...old,[item.id]:e.target.checked}))}/>{item.title}</label>)}</section>}
-  <div className="handover-actions">{!isDemo&&stage==='delivery'&&<div className="handover36-checklist"><strong>Conferência obrigatória antes da entrega</strong>{[['pending','Revisei as pendências, responsáveis e próximas ações'],['deadlines','Conferi os prazos e registros críticos'],['continuity','Registrei orientações para continuidade do turno']].map(([key,label])=><label key={key}><input type="checkbox" checked={!!deliveryChecks[key]} onChange={e=>setDeliveryChecks(v=>({...v,[key]:e.target.checked}))}/>{label}</label>)}</div>}<button className="handover-deliver" disabled={stage!=='delivery'||(!isDemo&&!(['pending','deadlines','continuity'].every(k=>deliveryChecks[k])))} onClick={deliver}><CheckCircle2 size={21}/> Registrar Entrega do Turno</button><button className="handover-receive" disabled={stage!=='receipt'} onClick={receive}><ArrowLeftRight size={21}/> Assumir Turno (Recebimento)</button><span><Info size={14}/> {isDemo?'Ações de demonstração; não alteram a operação.':waiting?'Aguardando conferência e aceite de outro operador.':'Ações protegidas pelas regras operacionais existentes.'}</span>{message&&<p role="status" className="handover-feedback">{message}</p>}</div></aside></div></section>
+import { useEffect, useMemo, useState } from 'react';
+import { AlertTriangle, ArrowLeftRight, ArrowRight, CalendarDays, Check, CheckCircle2, ClipboardCheck, ClipboardList, Clock3, FileText, Info, ListChecks, LoaderCircle, Moon, PencilLine, Search, ShieldCheck, Sparkles, Sun, UserRound, X, ChevronDown, ExternalLink } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import './handover110.css';
+
+export type HandoverStage = 'delivery'|'receipt'|'awaiting-receipt'|'pending'|'complete';
+export type HandoverItem = {
+  id:string; title:string; description:string; status:'Concluído'|'Em andamento'|'Pendente';
+  category:string; occurredAt:string; priority:'Normal'|'Urgente'; critical:boolean;
+  assignee:string; nextAction:string; readVersion:string; icon:LucideIcon;
+  condo?:string; deadline?:string|null; actionTaken?:string; sourcePriority?:string; updatedAt?:string;
+  overdue?:boolean; dueSoon?:boolean; stale?:boolean; missingAssignee?:boolean; missingNextAction?:boolean; canEditContinuity?:boolean;
+};
+export type HandoverSnapshot = {
+  stage:HandoverStage; shift:'Diurno'|'Noturno'; date:string; period:string; outgoing:string; incoming:string|null;
+  items:HandoverItem[]; deliverySummary:string; receiptNote:string; reviewToken?:string; deliveryId?:number;
+  criticalConfirmations:Record<string,boolean>; shiftId?:string; updatedAt?:string; deliveredAt?:string|null;
+  deliveredShift?:{id:string;type:string;date:string;period:string}|null; deliveredItems?:HandoverItem[];
+  changes?:Array<{id:string;kind:'added'|'updated'|'resolved'|'unavailable';deliveredVersion?:string;currentVersion?:string}>;
+  counts?:{open:number;critical:number;overdue:number;created:number;updated:number;soon:number;stale:number;missingAssignee?:number;missingNextAction?:number;continuityReady?:number;changedSinceDelivery?:number};
+};
+export type HandoverDraft110 = {
+  contextKey:string; summary:string; receiptNote:string; deliveryChecks:Record<string,boolean>;
+  reviewedVersions:Record<string,string>; reviewToken?:string; reviewContext?:string;
+};
+export type HandoverCommand =
+  |{kind:'prepareDelivery';summary:string;reviewToken?:string;checklist:string[]}
+  |{kind:'confirmReceipt';deliveryId:number;receiptNote:string;criticalProtocols:string[];readVersions:Record<string,string>}
+  |{kind:'assignPending';protocol:string;readVersion:string;assignee:string;nextAction:string};
+export interface HandoverAdapter { readonly mode:'demo'|'operational'; load():Promise<HandoverSnapshot>; execute(command:HandoverCommand):Promise<{ok:boolean;message:string}> }
+export const demoSnapshot:HandoverSnapshot = {
+  stage:'delivery',shift:'Diurno',date:'25/11/2026',period:'06:00 – 18:00',outgoing:'Operador Demo',incoming:null,
+  deliverySummary:'',receiptNote:'',criticalConfirmations:{},items:[
+    {id:'R-0141',title:'Verificação do backup de sistemas',description:'Cópia iniciada. A equipe aguarda a verificação final de integridade.',status:'Em andamento',category:'Sistemas',occurredAt:'25/11/2026, 13:47',priority:'Normal',critical:false,assignee:'Equipe de TI',nextAction:'Confirmar o término e registrar o resultado da verificação.',readVersion:'2',icon:Clock3,condo:'Condomínio demonstrativo',canEditContinuity:true},
+    {id:'R-0138',title:'Falha no leitor da Portaria A',description:'Leitor de credenciais com falhas intermitentes. Acesso acompanhado pela equipe local.',status:'Pendente',category:'Infraestrutura',occurredAt:'25/11/2026, 10:22',priority:'Urgente',critical:true,assignee:'Equipe técnica',nextAction:'Testar o leitor após o ajuste e confirmar a normalização com a portaria.',readVersion:'3',icon:AlertTriangle,condo:'Condomínio demonstrativo',sourcePriority:'Urgente',canEditContinuity:true},
+    {id:'R-0143',title:'Retorno de manutenção do CFTV',description:'Aguardando definição de quem acompanhará o retorno técnico.',status:'Pendente',category:'Manutenção',occurredAt:'25/11/2026, 14:20',priority:'Normal',critical:false,assignee:'',nextAction:'',readVersion:'1',icon:Clock3,condo:'Condomínio demonstrativo',missingAssignee:true,missingNextAction:true,canEditContinuity:true},
+  ],
+};
+export const demoHandoverAdapter:HandoverAdapter = {mode:'demo',async load(){return {...demoSnapshot,items:demoSnapshot.items.map(item=>({...item}))}},async execute(){return {ok:false,message:'Demonstração: nenhuma passagem operacional foi registrada.'}}};
+type Props = {
+  initial?:HandoverSnapshot; onOpenRecord?:(id:string)=>void; onNavigateRoutines?:()=>void;
+  onCommand?:(command:HandoverCommand)=>Promise<void>; mode?:'demo'|'operational';
+  draft?:HandoverDraft110; onDraftChange?:(draft:HandoverDraft110)=>void;
+  disabled?:boolean; refreshing?:boolean; stale?:boolean; lastUpdated?:string; onRefresh?:()=>void; reviewMessage?:string;
+};
+type View = 'all'|'critical'|'incomplete'|'overdue'|'deadlines';
+type Edit = {id:string;readVersion:string;assignee:string;nextAction:string};
+const checklist = [
+  {key:'pending',title:'Pendências revisadas',description:'Conferi responsáveis e próximas ações dos registros em aberto.'},
+  {key:'deadlines',title:'Riscos e prazos conferidos',description:'Revisei as pendências importantes, os vencimentos e os atrasos.'},
+  {key:'continuity',title:'Continuidade orientada',description:'Registrei o que o próximo plantão precisa acompanhar.'},
+];
+const template = 'Situação geral do plantão:\n\nOcorrências e providências:\n\nOrientações para continuidade:\n';
+const contextOf = (value:HandoverSnapshot)=>(value.shiftId||value.date+'|'+value.shift)+'|'+value.stage+'|'+(value.deliveryId||'');
+const draftFor = (value:HandoverSnapshot):HandoverDraft110=>({contextKey:contextOf(value),summary:value.stage==='delivery'?'':value.deliverySummary||'',receiptNote:value.receiptNote||'',deliveryChecks:{},reviewedVersions:{},reviewToken:value.reviewToken});
+const hasSummary = (value:string)=>!!value.replace(/^(Situação geral do plantão|Ocorrências e providências|Orientações para continuidade):\s*$/gmi,'').trim();
+const fold = (value:string)=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const missingAssignee = (item:HandoverItem)=>item.missingAssignee??(!item.assignee?.trim()||item.assignee.trim()==='A definir');
+const missingAction = (item:HandoverItem)=>item.missingNextAction??!item.nextAction?.trim();
+const incomplete = (item:HandoverItem)=>missingAssignee(item)||missingAction(item);
+function dateLabel(value?:string|null,withTime=true){
+  if(!value)return 'Não informado';
+  if(/^\d{4}-\d{2}-\d{2}$/.test(value))return value.split('-').reverse().join('/');
+  if(!/^\d{4}-\d{2}-\d{2}T/.test(value))return value;
+  const date=new Date(value);if(!Number.isFinite(+date))return value;
+  return new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit',year:'numeric',...(withTime?{hour:'2-digit',minute:'2-digit'}:{})}).format(date);
+}
+const changeNames = {added:'Incluída após a entrega',updated:'Atualizada após a entrega',resolved:'Resolvida após a entrega',unavailable:'Não disponível no escopo atual'};
+
+export default function HandoverPage({initial=demoSnapshot,onOpenRecord,onNavigateRoutines,onCommand,mode='demo',draft:controlledDraft,onDraftChange,disabled=false,refreshing=false,stale=false,lastUpdated,onRefresh,reviewMessage}:Props){
+  const snapshot=initial,isDemo=mode==='demo',receipt=snapshot.stage==='receipt',waiting=snapshot.stage==='awaiting-receipt',delivery=snapshot.stage==='delivery';
+  const [localDraft,setLocalDraft]=useState(()=>draftFor(snapshot));
+  const draft=controlledDraft||localDraft;
+  const [view,setView]=useState<View>('all'),[query,setQuery]=useState(''),[expanded,setExpanded]=useState<string|null>(null);
+  const [editing,setEditing]=useState<Edit|null>(null),[saving,setSaving]=useState(false),[editError,setEditError]=useState(''),[message,setMessage]=useState('');
+  const changeDraft=(patch:Partial<HandoverDraft110>)=>{const next={...draft,...patch};if(onDraftChange)onDraftChange(next);else setLocalDraft(next)};
+  const context=contextOf(snapshot);
+  useEffect(()=>{setEditing(null);setEditError('');setMessage('');setExpanded(null);if(!controlledDraft)setLocalDraft(draftFor(snapshot))},[context]);
+  const pending=useMemo(()=>snapshot.items.filter(item=>item.status!=='Concluído'),[snapshot.items]);
+  const critical=pending.filter(item=>item.critical),overdue=pending.filter(item=>item.overdue),gaps=pending.filter(incomplete);
+  const due=pending.filter(item=>item.deadline),unread=critical.filter(item=>draft.reviewedVersions[item.id]!==item.readVersion);
+  const reviewed=critical.length-unread.length,checkCount=checklist.filter(item=>draft.deliveryChecks[item.key]).length;
+  const summaryReady=hasSummary(draft.summary),readyCount=checkCount+(summaryReady?1:0);
+  const editingCurrent=editing?pending.find(item=>item.id===editing.id):null;
+  const editChanged=!!editing&&(editing.assignee!==(editingCurrent?.assignee||'')||editing.nextAction!==(editingCurrent?.nextAction||''));
+  const staleEdit=!!editing&&(!editingCurrent||editingCurrent.readVersion!==editing.readVersion);
+  const working=disabled||refreshing||saving||stale;
+  const canDeliver=delivery&&!working&&summaryReady&&checkCount===3&&!editChanged;
+  const canReceive=receipt&&!working&&!!snapshot.deliveryId&&!unread.length&&!editChanged;
+  const visible=useMemo(()=>{
+    const needle=fold(query.trim());
+    return pending.filter(item=>(view==='all'||view==='critical'&&item.critical||view==='incomplete'&&incomplete(item)||view==='overdue'&&item.overdue||view==='deadlines'&&!!item.deadline)&&(!needle||fold([item.id,item.title,item.description,item.condo,item.category,item.assignee,item.nextAction].filter(Boolean).join(' ')).includes(needle)));
+  },[pending,view,query]);
+  const counts:Record<View,number>={all:pending.length,critical:critical.length,incomplete:gaps.length,overdue:overdue.length,deadlines:due.length};
+  const phase=receipt?'Conferência para recebimento':waiting?'Entrega registrada':delivery?'Preparação da entrega':'Continuidade do plantão';
+  const submit=async()=>{
+    setMessage('');
+    if(isDemo){setMessage('Demonstração: nenhuma entrega, leitura ou recebimento foi registrado.');return}
+    if(!onCommand){setMessage('O canal operacional está indisponível. Atualize a passagem.');return}
+    try{
+      if(canDeliver)await onCommand({kind:'prepareDelivery',summary:draft.summary.trim(),reviewToken:snapshot.reviewToken,checklist:checklist.filter(item=>draft.deliveryChecks[item.key]).map(item=>item.key)});
+      else if(canReceive)await onCommand({kind:'confirmReceipt',deliveryId:snapshot.deliveryId!,receiptNote:draft.receiptNote.trim(),criticalProtocols:critical.map(item=>item.id),readVersions:Object.fromEntries(critical.map(item=>[item.id,draft.reviewedVersions[item.id]]))});
+    }catch(error){setMessage(error instanceof Error?error.message:'Não foi possível preparar a confirmação.')}
+  };
+  const saveContinuity=async()=>{
+    if(!editing||working||staleEdit)return;
+    setEditError('');
+    if(isDemo){setEditError('Demonstração: orientações não são gravadas na operação.');return}
+    if(!onCommand){setEditError('Canal operacional indisponível.');return}
+    setSaving(true);
+    try{await onCommand({kind:'assignPending',protocol:editing.id,readVersion:editing.readVersion,assignee:editing.assignee.trim(),nextAction:editing.nextAction.trim()});setEditing(null)}
+    catch(error){setEditError(error instanceof Error?error.message:'Não foi possível salvar a orientação. Seus campos foram mantidos.')}
+    finally{setSaving(false)}
+  };
+  const showFilter=(next:View)=>{setView(next);setQuery('');document.getElementById('handover110-queue')?.scrollIntoView({block:'start'})};
+  const deliveryBlock=stale?'Atualize os dados para concluir a conferência.':editChanged?'Salve ou cancele a orientação em edição.':!summaryReady?'Escreva um resumo com orientações para o próximo plantão.':checkCount<3?'Conclua os três itens de conferência.':working?'Aguarde a operação em andamento.':'Tudo conferido. Revise os dados na confirmação final.';
+  const receiptBlock=stale?'Atualize os dados antes de confirmar o recebimento.':editChanged?'Salve ou cancele a orientação em edição.':unread.length?unread.length+' pendência(s) importante(s) ainda precisam de leitura.':working?'Aguarde a operação em andamento.':'Leituras conferidas. Registre eventuais ressalvas antes de confirmar.';
+  return <section className="handover110" aria-labelledby="handover110-title">
+    <header className="handover110-heading">
+      <span className="handover110-heading-icon" aria-hidden="true"><ArrowLeftRight size={26}/></span>
+      <div><span className="handover110-eyebrow">CONTINUIDADE OPERACIONAL</span><h1 id="handover110-title">Passagem de Turno</h1><p>Deixe claro o que aconteceu, o que continua aberto e qual é o próximo passo.</p></div>
+      <span className={'handover110-phase '+(waiting?'is-waiting':receipt?'is-receipt':'')}><span/>{isDemo?'Demonstração · ':''}{phase}</span>
+    </header>
+    {onRefresh&&<div className="handover110-connection" aria-label="Atualização dos dados da passagem"><span>{stale?<AlertTriangle size={16}/>:refreshing?<LoaderCircle size={16} className="handover110-spin"/>:<CheckCircle2 size={16}/>}<span>{stale?'Dados precisam ser atualizados':refreshing?'Atualizando a passagem…':lastUpdated?'Dados atualizados em '+dateLabel(lastUpdated):'Dados da passagem atual'}</span></span><Button type="button" variant="ghost" disabled={disabled||refreshing||saving} onClick={onRefresh}><Clock3 size={14}/>Atualizar dados</Button></div>}
+    <section className="handover110-context" aria-label="Contexto do plantão">
+      <div className="handover110-shift">{snapshot.shift==='Noturno'?<Moon size={23}/>:<Sun size={23}/>}<div><span>Plantão atual</span><strong>{snapshot.shift} <small>{snapshot.period}</small></strong><p><CalendarDays size={13}/>{dateLabel(snapshot.date,false)}</p></div></div>
+      <div className="handover110-people"><div><span>Quem entrega</span><strong><UserRound size={15}/>{snapshot.outgoing||'Não informado'}</strong></div><ArrowRight className="handover110-flow-arrow" size={19}/><div><span>Quem recebe</span><strong><UserRound size={15}/>{snapshot.incoming||'Aguardando confirmação'}</strong></div></div>
+      {snapshot.deliveredAt&&<div className="handover110-delivered"><span>Entrega #{snapshot.deliveryId}</span><strong>{dateLabel(snapshot.deliveredAt)}</strong><small>{snapshot.deliveredShift?snapshot.deliveredShift.type+' · '+snapshot.deliveredShift.period:'Conferência pelo próximo operador'}</small></div>}
+    </section>
+    <div className="handover110-metrics" aria-label="Indicadores da passagem">
+      {([{view:'all',value:pending.length,label:'Pendências abertas',icon:ClipboardList},{view:'critical',value:critical.length,label:'Exigem leitura',icon:ShieldCheck},{view:'overdue',value:overdue.length,label:'Prazos vencidos',icon:Clock3},{view:'incomplete',value:gaps.length,label:'Orientação incompleta',icon:UserRound}] as const).map(metric=><button key={metric.view} type="button" className={'handover110-metric '+(metric.view!=='all'&&metric.value?'attention':'')} onClick={()=>showFilter(metric.view)}><metric.icon size={19}/><strong>{metric.value}</strong><span>{metric.label}</span><ArrowRight size={14}/></button>)}
+    </div>
+    {reviewMessage&&<div className="handover110-review-message" role="status"><Info size={18}/><p>{reviewMessage}</p></div>}
+    {!!snapshot.changes?.length&&<details className="handover110-changes"><summary><Info size={17}/><span><strong>{snapshot.changes.length} alteração(ões) desde a entrega</strong> · confira o estado atual das pendências</span><ChevronDown size={16}/></summary><ul>{snapshot.changes.map(change=><li key={change.id}><strong>{change.id}</strong><span>{changeNames[change.kind]}</span></li>)}</ul></details>}
+    <div className="handover110-layout">
+      <div className="handover110-main">
+        <section className="handover110-panel handover110-queue" id="handover110-queue" aria-labelledby="handover110-queue-title">
+          <header className="handover110-panel-header"><div><span className="handover110-panel-icon"><ClipboardList size={21}/></span><div><h2 id="handover110-queue-title">Pendências para continuidade</h2><p>Dados atuais dos registros. Priorize os riscos e deixe a próxima ação clara.</p></div></div><span className="handover110-count">{pending.length} aberta(s)</span></header>
+          <div className="handover110-toolbar"><label className="handover110-search"><Search size={17} aria-hidden="true"/><input aria-label="Buscar pendência" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Protocolo, assunto, condomínio ou responsável"/>{query&&<button type="button" aria-label="Limpar busca" onClick={()=>setQuery('')}><X size={15}/></button>}</label>
+            <div className="handover110-filters" role="group" aria-label="Filtrar pendências">{([{key:'all',label:'Todas'},{key:'critical',label:'Críticas'},{key:'incomplete',label:'Sem orientação'},{key:'overdue',label:'Vencidas'},{key:'deadlines',label:'Prazos'}] as const).map(option=><button type="button" key={option.key} aria-pressed={view===option.key} onClick={()=>setView(option.key)}>{option.label}<span>{counts[option.key]}</span></button>)}</div>
+          </div>
+          <div className="handover110-list-status"><span>{visible.length} de {pending.length} pendência(s)</span>{receipt&&critical.length>0&&<span><ShieldCheck size={13}/>{reviewed} de {critical.length} leituras confirmadas</span>}</div>
+          <div className="handover110-items">
+            {visible.map(item=>{
+              const open=expanded===item.id,editingThis=editing?.id===item.id,read=draft.reviewedVersions[item.id]===item.readVersion;
+              return <article className={'handover110-item '+(item.critical?'is-critical ':'')+(open?'is-open':'')} key={item.id}>
+                <button type="button" className="handover110-item-toggle" aria-expanded={open} aria-controls={'handover110-details-'+item.id} onClick={()=>setExpanded(open?null:item.id)}>
+                  <span className={'handover110-item-symbol '+(read&&receipt?'is-reviewed':'')}>{read&&receipt?<Check size={19}/>:item.critical?<AlertTriangle size={19}/>:<FileText size={19}/>}</span>
+                  <span className="handover110-item-copy"><span className="handover110-item-meta"><b>{item.id}</b><span>{item.condo||item.category}</span></span><strong>{item.title}</strong><span className="handover110-item-caption">{item.assignee?.trim()&&!missingAssignee(item)?item.assignee:'Responsável não informado'}{item.deadline?' · Prazo '+dateLabel(item.deadline):''}</span></span>
+                  <span className="handover110-item-badges">{item.critical&&<span className="handover110-badge is-critical">Leitura obrigatória</span>}{item.overdue?<span className="handover110-badge is-overdue">Vencida</span>:item.dueSoon?<span className="handover110-badge is-soon">Próximas 12h</span>:<span className="handover110-badge">{item.status}</span>}{incomplete(item)&&<span className="handover110-badge is-gap">Completar orientação</span>}</span>
+                  <ChevronDown className="handover110-item-chevron" size={17}/>
+                </button>
+                {open&&<div className="handover110-item-details" id={'handover110-details-'+item.id}>
+                  <p className="handover110-description">{item.description||'Sem descrição adicional neste registro.'}</p>
+                  {item.actionTaken&&<div className="handover110-taken"><span>Providências já tomadas</span><p>{item.actionTaken}</p></div>}
+                  <dl className="handover110-item-facts"><div><dt>Prioridade</dt><dd>{item.sourcePriority||item.priority}</dd></div><div><dt>Última atualização</dt><dd>{dateLabel(item.updatedAt||item.occurredAt)}</dd></div><div><dt>Prazo</dt><dd className={item.overdue?'is-overdue':''}>{item.deadline?dateLabel(item.deadline):'Sem prazo definido'}</dd></div></dl>
+                  {editingThis?<div className="handover110-editor" aria-label={'Editar orientação de '+item.id}>
+                    <label>Responsável pelo acompanhamento<input aria-label="Responsável pelo acompanhamento" maxLength={160} value={editing.assignee} onChange={event=>setEditing({...editing,assignee:event.target.value})} disabled={disabled||saving} placeholder="Pessoa ou equipe responsável"/></label>
+                    <label>Próxima ação<textarea aria-label="Próxima ação" maxLength={1000} rows={3} value={editing.nextAction} onChange={event=>setEditing({...editing,nextAction:event.target.value})} disabled={disabled||saving} placeholder="O que deve ser feito, quando e com quem acompanhar"/></label>
+                    <small>Deixar um campo vazio remove a informação correspondente do registro.</small>
+                    {staleEdit&&<p className="handover110-inline-error" role="alert">Este registro mudou durante a edição. Cancele a edição, confira os dados atuais e revise sua orientação antes de salvar.</p>}
+                    {editError&&<p className="handover110-inline-error" role="alert">{editError}</p>}
+                    <div className="handover110-editor-actions"><Button type="button" variant="outline" disabled={saving} onClick={()=>{setEditing(null);setEditError('')}}>Cancelar edição</Button><Button type="button" className="handover110-primary" disabled={working||staleEdit||!editChanged} onClick={()=>void saveContinuity()}>{saving?<LoaderCircle className="handover110-spin" size={16}/>:<Check size={16}/>}Salvar orientação</Button></div>
+                  </div>:<div className="handover110-continuity"><div className={missingAssignee(item)?'is-missing':''}><span><UserRound size={14}/>Responsável</span><strong>{missingAssignee(item)?'Não informado':item.assignee}</strong></div><div className={missingAction(item)?'is-missing':''}><span><ArrowRight size={14}/>Próxima ação</span><p>{missingAction(item)?'Defina o próximo passo para orientar o plantão seguinte.':item.nextAction}</p></div></div>}
+                  <div className="handover110-item-actions">
+                    {!editingThis&&item.canEditContinuity&&<Button type="button" variant="outline" disabled={working||editChanged} onClick={()=>{setEditing({id:item.id,readVersion:item.readVersion,assignee:item.assignee||'',nextAction:item.nextAction||''});setEditError('')}}><PencilLine size={15}/>Editar orientação</Button>}
+                    {onOpenRecord&&<Button type="button" variant="ghost" disabled={working||editChanged} onClick={()=>onOpenRecord(item.id)}><ExternalLink size={15}/>Abrir registro</Button>}
+                    {!item.canEditContinuity&&!isDemo&&<small>A orientação pode ser editada pelo autor ou pela supervisão.</small>}
+                  </div>
+                  {receipt&&item.critical&&<label className={'handover110-reading '+(read?'is-checked':'')}><input type="checkbox" checked={read} disabled={working||editChanged} onChange={event=>{const versions={...draft.reviewedVersions};if(event.target.checked)versions[item.id]=item.readVersion;else delete versions[item.id];changeDraft({reviewedVersions:versions})}}/><ShieldCheck size={18}/><span><strong>Li e compreendi esta pendência</strong><small>A ciência será vinculada à versão atual deste registro.</small></span></label>}
+                </div>}
+              </article>;
+            })}
+            {!visible.length&&<div className="handover110-empty">{pending.length?<Search size={28}/>:<CheckCircle2 size={30}/>}<strong>{pending.length?'Nenhuma pendência encontrada':'Sem pendências abertas'}</strong><p>{pending.length?'Ajuste a busca ou o filtro para localizar outros registros.':'Registre no resumo o que o próximo plantão precisa saber.'}</p>{pending.length>0&&<Button type="button" variant="ghost" onClick={()=>{setView('all');setQuery('')}}>Limpar filtros</Button>}</div>}
+          </div>
+          {snapshot.counts&&<footer className="handover110-activity"><Clock3 size={14}/><span>No plantão atual: <strong>{snapshot.counts.created}</strong> registro(s) criado(s) · <strong>{snapshot.counts.updated}</strong> com eventos de atualização.</span></footer>}
+        </section>
+        <section className="handover110-panel handover110-summary" aria-labelledby="handover110-summary-title">
+          <header className="handover110-panel-header"><div><span className="handover110-panel-icon"><FileText size={21}/></span><div><h2 id="handover110-summary-title">{receipt?'Resumo entregue pelo plantão anterior':waiting?'Resumo enviado ao próximo plantão':'Resumo para o próximo plantão'}</h2><p>{receipt||waiting?'Orientações registradas no momento da entrega.':'Explique o contexto e destaque o que merece acompanhamento.'}</p></div></div></header>
+          {delivery?<div className="handover110-summary-body"><div className="handover110-summary-guide"><Sparkles size={16}/><p>Situação geral, providências tomadas e orientações para continuidade.</p>{!draft.summary.trim()&&<Button type="button" variant="ghost" disabled={working} onClick={()=>changeDraft({summary:template})}>Usar roteiro</Button>}</div><label className="handover110-sr-only" htmlFor="handover110-summary-input">Resumo para o próximo plantão</label><textarea id="handover110-summary-input" aria-label="Resumo para o próximo plantão" maxLength={1000} rows={6} value={draft.summary} onChange={event=>changeDraft({summary:event.target.value})} disabled={disabled||saving} placeholder="O que aconteceu no plantão? Quais providências foram tomadas? O que o próximo operador deve acompanhar?"/><div className="handover110-field-foot"><span><Info size={13}/>Rascunho até confirmar a entrega.</span><span>{draft.summary.length} / 1000</span></div></div>:<div className="handover110-summary-body"><div className="handover110-delivery-note">{snapshot.deliverySummary||'Esta entrega não contém um resumo textual.'}</div>{receipt&&<><label className="handover110-label" htmlFor="handover110-receipt-note">Ressalvas no recebimento <span>opcional</span></label><textarea id="handover110-receipt-note" aria-label="Ressalvas no recebimento" maxLength={1500} rows={4} value={draft.receiptNote} onChange={event=>changeDraft({receiptNote:event.target.value})} disabled={disabled||saving} placeholder="Registre divergências, informações que precisam de confirmação ou observações sobre o recebimento."/><div className="handover110-field-foot"><span>As ressalvas acompanham o recebimento.</span><span>{draft.receiptNote.length} / 1500</span></div></>}</div>}
+          {!!snapshot.deliveredItems?.length&&<details className="handover110-delivered-records"><summary><ClipboardList size={16}/>Registros no momento da entrega <span>{snapshot.deliveredItems.length}</span><ChevronDown size={15}/></summary><p>Referência preservada da entrega. A conferência acima utiliza os dados atuais.</p>{snapshot.deliveredItems.map(item=><div key={item.id}><strong>{item.id} · {item.title}</strong><span>Responsável: {item.assignee||'Não informado'}</span><p>Próxima ação: {item.nextAction||'Não informada'}</p></div>)}</details>}
+        </section>
+      </div>
+      <aside className="handover110-aside" aria-label="Conferência e confirmação">
+        <section className="handover110-panel handover110-review">
+          <header className="handover110-panel-header"><div><span className="handover110-panel-icon"><ClipboardCheck size={21}/></span><div><h2>{receipt?'Conferência do recebimento':waiting?'Aguardando recebimento':'Conferência da entrega'}</h2><p>{receipt?'Assuma o plantão com ciência das prioridades.':waiting?'A entrega será concluída com o aceite de outra conta.':'Uma revisão clara antes de passar o plantão.'}</p></div></div></header>
+          <div className="handover110-review-body">
+            {delivery&&<><div className="handover110-readiness"><div><span>Requisitos conferidos</span><strong>{readyCount} de 4</strong></div><progress value={readyCount} max={4} aria-label="Requisitos da entrega conferidos"/></div><div className={'handover110-summary-check '+(summaryReady?'is-ready':'')}><CheckCircle2 size={18}/><div><strong>Resumo para continuidade</strong><span>{summaryReady?'Orientação preenchida.':'Preencha o resumo do plantão.'}</span></div></div><div className="handover110-checklist">{checklist.map(item=><label className={draft.deliveryChecks[item.key]?'is-checked':''} key={item.key}><input type="checkbox" checked={!!draft.deliveryChecks[item.key]} disabled={working||editChanged} onChange={event=>changeDraft({deliveryChecks:{...draft.deliveryChecks,[item.key]:event.target.checked}})}/><span><strong>{item.title}</strong><small>{item.description}</small></span></label>)}</div>
+              {gaps.length>0&&<div className="handover110-quality-note"><AlertTriangle size={17}/><div><strong>{gaps.length} pendência(s) com orientação incompleta</strong><p>Confira os responsáveis e próximos passos. Se algo ainda não estiver definido, explique no resumo.</p><button type="button" onClick={()=>showFilter('incomplete')}>Revisar orientações <ArrowRight size={13}/></button></div></div>}
+              <Button type="button" className="handover110-primary handover110-submit" disabled={!canDeliver} onClick={()=>void submit()}><ArrowRight size={18}/>Registrar entrega do turno</Button><p className="handover110-action-help" role="status">{deliveryBlock}</p>
+            </>}
+            {receipt&&<><div className="handover110-readiness"><div><span>Leituras obrigatórias</span><strong>{reviewed} de {critical.length}</strong></div><progress value={critical.length?reviewed:1} max={critical.length||1} aria-label="Leituras obrigatórias conferidas"/></div><p className="handover110-review-explanation">{critical.length?'Abra cada pendência importante, confira a orientação e registre sua leitura.':'Não há pendências classificadas para leitura obrigatória. Confira o resumo e registre ressalvas, se necessário.'}</p>{unread.length>0&&<div className="handover110-unread">{unread.map(item=><button type="button" key={item.id} onClick={()=>{setView('critical');setQuery('');setExpanded(item.id);document.getElementById('handover110-queue')?.scrollIntoView({block:'start'})}}><span/><span>{item.id}<strong>{item.title}</strong></span><ArrowRight size={14}/></button>)}</div>}<Button type="button" className="handover110-primary handover110-submit" disabled={!canReceive} onClick={()=>void submit()}><ShieldCheck size={18}/>Confirmar recebimento</Button><p className="handover110-action-help" role="status">{receiptBlock}</p></>}
+            {waiting&&<div className="handover110-waiting"><Clock3 size={32}/><strong>Entrega #{snapshot.deliveryId} registrada</strong><p>Outro operador deverá conferir o resumo, as pendências e confirmar o recebimento com a própria conta.</p><span>O estado atual dos registros continua disponível para acompanhamento.</span></div>}
+            {!delivery&&!receipt&&!waiting&&<p className="handover110-review-explanation">Consulte as informações da passagem e atualize os dados para acompanhar a próxima etapa.</p>}
+            {message&&<p className="handover110-local-message" role="status">{message}</p>}
+            {isDemo&&<p className="handover110-demo-note">Modo de demonstração. As ações desta tela não registram uma passagem operacional.</p>}
+          </div>
+        </section>
+        <section className="handover110-assist"><div><ListChecks size={19}/><h3>Antes de encerrar o plantão</h3></div><p>Confira também as rotinas previstas e registre qualquer execução pendente nas orientações da passagem.</p>{onNavigateRoutines&&<Button type="button" variant="ghost" disabled={working||editChanged} onClick={onNavigateRoutines}>Abrir Checklist e Rotinas <ArrowRight size={15}/></Button>}<div className="handover110-audit-note"><ShieldCheck size={15}/><span>A entrega e o recebimento ficam associados às contas dos operadores e ao histórico da operação.</span></div></section>
+      </aside>
+    </div>
+  </section>;
 }

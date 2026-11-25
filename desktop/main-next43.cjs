@@ -294,7 +294,7 @@ else {
         try{
           trusted(event);const session=authorized();
           if(action==='snapshot')return {ok:true,value:snapshot36()};
-          if(!['deliver','receive'].includes(action))throw Error('Comando inválido.');
+          if(!['deliver','receive','assignPending'].includes(action))throw Error('Comando inválido.');
           if(!require('./startup-gate108.cjs').snapshot(store,session).accepted)throw Error('Confirme a ciência das pendências importantes antes da passagem de turno.');
           const result=require('./handover107.cjs').checkout(store,session,action,input);
           readVersion=JSON.stringify(store.read());

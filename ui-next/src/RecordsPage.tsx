@@ -43,14 +43,14 @@ export default function RecordsPage({onCreate,records=sampleRecords,onAction,mod
  const [revealRecordId,setRevealRecordId]=useState<string|null>(null),[revealToken,setRevealToken]=useState(0);
  const [resetToken,setResetToken]=useState(0);
  useEffect(()=>{
-  if(!openRecordId)return;
+  if(!openRecordId||loading)return;
   setQuery('');setPeriod(emptyRecordFilters.period);setCategory(emptyRecordFilters.category);setStatus(emptyRecordFilters.status);
   setCondo(emptyRecordFilters.condo);setAuthor(emptyRecordFilters.author);
   if(records.some(record=>record.id===openRecordId)){
    setSelectedId(openRecordId);setRevealRecordId(openRecordId);setRevealToken(token=>token+1);setNotice('');
   }else setNotice('O registro solicitado n\u00e3o est\u00e1 dispon\u00edvel nesta consulta.');
   onOpenRecordHandled?.();
- },[openRecordId,records,onOpenRecordHandled]);
+ },[openRecordId,records,onOpenRecordHandled,loading]);
  const categories=[emptyRecordFilters.category,...new Set(records.map(record=>record.category))];
  const condos=[emptyRecordFilters.condo,...Array.from(new Set(records.map(record=>record.condo))).sort((a,b)=>a.localeCompare(b,'pt-BR'))];
  const authors=[emptyRecordFilters.author,...Array.from(new Set(records.map(record=>record.author))).sort((a,b)=>a.localeCompare(b,'pt-BR'))];

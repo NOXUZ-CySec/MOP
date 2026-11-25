@@ -1,5 +1,19 @@
 [
   {
+    "version": "2.3.0-preview.110",
+    "date": "2026-11-25",
+    "title": "MOP Preview 110 — passagem de turno e continuidade",
+    "changes": [
+      "Passagem de Turno redesenhada com contexto do plantão, indicadores reais, busca e filtros de prioridade, prazo e orientação incompleta.",
+      "Responsável e próxima ação podem ser editados na própria aba pelo autor ou pela supervisão, com validação de versão, histórico e auditoria.",
+      "Rascunho de resumo e ressalvas preservado durante atualizações e ao abrir registros na mesma sessão.",
+      "Conferência de entrega renovada quando os dados relevantes mudam; leituras de recebimento vinculadas à versão atual de cada pendência importante.",
+      "Classificação de leitura obrigatória alinhada à ciência inicial, incluindo prioridades Urgente, Alta, Crítica e Atenção, além de prazos vencidos.",
+      "Estado atual dos registros separado do retrato da entrega, com identificação das alterações posteriores.",
+      "Confirmação acessível por teclado, proteção contra comandos repetidos e retorno claro sobre gravação local ou confirmação pela central."
+    ]
+  },
+  {
     "version": "2.3.0-preview.109.9",
     "date": "2026-11-25",
     "title": "MOP Preview 109.9 — central de atualizações refinada",

@@ -4,7 +4,7 @@
 
 **Aplicativo para Windows que reúne registros, turnos, acompanhamento e continuidade operacional. Desenvolvido por NOXUZ.**
 
-Esta árvore contém o código da **Preview 109.9 de homologação**, com versão de pacote `2.3.0-preview.109.9`. O código e as prereleases desta linha usam o repositório [NOXUZ-CySec/MOP](https://github.com/NOXUZ-CySec/MOP). A construção local não publica uma release automaticamente.
+Esta árvore contém o código da **Preview 110 de homologação**, com versão de pacote `2.3.0-preview.110`. O código e as prereleases desta linha usam o repositório [NOXUZ-CySec/MOP](https://github.com/NOXUZ-CySec/MOP). A construção local não publica uma release automaticamente.
 
 ## O que o aplicativo oferece
 
@@ -17,16 +17,20 @@ Esta árvore contém o código da **Preview 109.9 de homologação**, com versã
 
 A interface atual fica em `ui-next`, com componentes React e o catálogo visual do projeto. O processo principal do Electron controla armazenamento, sessões, permissões, IPC e integrações com o Windows.
 
-## Preview 109.9
+## Preview 110
 
-Esta preview refina a central de atualizações no mesmo padrão visual de Backup e recuperação:
+Esta preview refina a Passagem de Turno para orientar a continuidade entre os plantões:
 
-- Cards para a versão instalada e o estado da atualização, com progresso e mensagens claras.
-- Histórico de versões com cabeçalho fixo, datas e identificação da versão instalada.
-- Confirmação de reinício com o diálogo padrão do MOP, foco acessível e cancelamento por teclado.
-- Proteção contra respostas antigas de status e recuperação da interface após erro tardio do instalador.
+- Pendências organizadas por risco, prazo e informações de continuidade ausentes, com busca e filtros.
+- Responsável e próxima ação editáveis na própria aba pelo autor do registro ou pela supervisão, com validação de versão e auditoria.
+- Rascunho do resumo e das ressalvas preservado durante atualizações e navegação na mesma sessão.
+- Conferência renovada quando os dados relevantes mudam, com leitura obrigatória vinculada à versão atual das pendências importantes.
+- Separação entre o retrato da entrega e o estado atual dos registros, incluindo alterações posteriores.
+- Confirmação acessível e indicação clara de gravação local pendente ou sincronização confirmada.
 
-Os recursos de backup integral, coordenação de leituras e build canônico introduzidos na 109.8 continuam disponíveis. O backend mantém o canal de homologação e baixa novas versões automaticamente; a instalação depende de confirmação.
+A entrega continua exigindo o resumo e os três itens de conferência. Campos de orientação ausentes são destacados para revisão. A classificação para leitura obrigatória segue a mesma regra da ciência inicial: prioridade Urgente, Alta, Crítica ou Atenção, ou prazo vencido.
+
+Os recursos de backup integral, atualização e build canônico das previews anteriores continuam disponíveis. As alterações de continuidade usam os campos e a fila de sincronização existentes.
 
 Os resultados de validação do executável distribuído devem acompanhar as notas da respectiva release. A existência do código ou do template de CI não comprova, por si só, a aprovação de um pacote.
 
@@ -53,10 +57,10 @@ npm.cmd run dist:preview
 
 O procedimento completo, os requisitos e os comandos alternativos estão em [BUILDING.md](BUILDING.md).
 
-A saída desta versão é `dist-ui-next-109-9`:
+A saída desta versão é `dist-ui-next-110`:
 
-- `MOP-Preview109.9-Instalador.exe`;
-- `MOP-Preview109.9-Portable.exe`;
+- `MOP-Preview110-Instalador.exe`;
+- `MOP-Preview110-Portable.exe`;
 - metadados e arquivos auxiliares da construção.
 
 `dist:preview`, `dist:win` e `dist:portable` usam `--publish never`. A publicação no GitHub é uma etapa separada.
