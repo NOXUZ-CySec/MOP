@@ -4,6 +4,7 @@
     "date": "2026-11-25",
     "title": "MOP Preview 110 — passagem de turno e continuidade",
     "changes": [
+      "Novo ícone do MOP, somente com o símbolo e fundo transparente, integrado à janela, lembretes, notificações e pacotes Windows.",
       "Passagem de Turno redesenhada com contexto do plantão, indicadores reais, busca e filtros de prioridade, prazo e orientação incompleta.",
       "Responsável e próxima ação podem ser editados na própria aba pelo autor ou pela supervisão, com validação de versão, histórico e auditoria.",
       "Rascunho de resumo e ressalvas preservado durante atualizações e ao abrir registros na mesma sessão.",

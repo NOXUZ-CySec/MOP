@@ -377,7 +377,7 @@ else {
           if(!signature||signature===sync.local.setting(key))return;
           sync.local.set(key,signature);
           const overdue=alerts.filter(a=>a.level==='late').length;
-          const notification=new Notification({title:'MOP Â· AtenÃ§Ã£o Ã s pendÃªncias',body:alerts.length+' alerta(s), '+overdue+' prazo(s) vencido(s). Abra o painel de alertas para conferir.'});
+          const notification=new Notification({icon:path.join(__dirname,'../assets/mop-icon-1024.png'),title:'MOP Â· AtenÃ§Ã£o Ã s pendÃªncias',body:alerts.length+' alerta(s), '+overdue+' prazo(s) vencido(s). Abra o painel de alertas para conferir.'});
           notification.on('click',()=>{if(win&&!win.isDestroyed()){win.show();win.focus();win.webContents.send('mop:alert');}});notification.show();
         }catch{}
       },30000);alertTimer.unref();
