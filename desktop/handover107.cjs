@@ -33,7 +33,7 @@ const checkout=(store,session,command,input={},now=new Date().toISOString())=>{
   return {id:row.id,protocol:protocol(row),action:'assignPending',changed:true,readVersion:H.version(written.items.find(item=>item.id===row.id)),at};
  }
  if(command==='deliver'){
-  if(typeof input.summary!=='string'||!input.summary.trim()||input.summary.length>1000)throw Error('Informe o resumo da entrega (até 1000 caracteres).');
+  if(typeof input.summary!=='string'||input.summary.length>1000)throw Error('Resumo opcional da entrega (até 1000 caracteres).');
   if(!Array.isArray(input.checklist)||!['pending','deadlines','continuity'].every(k=>input.checklist.includes(k)))throw Error('Confirme os três itens da conferência de entrega.');
   if(input.reviewToken!==H.token(before,session))throw Error('Pendências alteradas. Atualize antes de entregar.');
   if(scope.handovers.some(h=>!h.receipt_at&&h.automation_version===1))throw Error('Existe uma entrega pendente de recebimento.');

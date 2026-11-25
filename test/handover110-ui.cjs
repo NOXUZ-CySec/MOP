@@ -125,12 +125,12 @@ async function runTests(){
   await expect(panel.getByText("Nenhuma pend\u00eancia encontrada",{exact:true})).toBeVisible();
   await panel.getByRole("button",{name:"Limpar filtros",exact:true}).click();await expect(rows(f)).toHaveCount(4);
  });
- await check("Blank template cannot satisfy delivery quality and missing orientation is advisory",async()=>{
+ await check("Optional summary and missing orientation are advisory",async()=>{
   await panel.getByRole("button",{name:"Usar roteiro",exact:true}).click();await checksAll(f);
-  await expect(summary(f)).toHaveValue(/Situa\u00e7\u00e3o geral/);await expect(submit(f)).toBeDisabled();
+  await expect(summary(f)).toHaveValue(/Situa\u00e7\u00e3o geral/);await expect(submit(f)).toBeEnabled();await summary(f).fill("");await expect(submit(f)).toBeEnabled();
   await ready(f);
   await expect(panel.locator(".handover110-quality-note")).toContainText("2 pend\u00eancia(s)");
-  await expect(panel.getByRole("progressbar",{name:"Requisitos da entrega conferidos"})).toHaveAttribute("value","4");
+  await expect(panel.getByRole("progressbar",{name:"Requisitos da entrega conferidos"})).toHaveAttribute("value","3");
  });
  await check("Refresh timestamps and navigation preserve text and completed delivery checklist",async()=>{
   const text=await summary(f).inputValue();
@@ -288,7 +288,7 @@ async function runTests(){
  await check("A shift without open records still permits a meaningful reviewed delivery",async()=>{
   await expect(e.panel.getByText("Sem pend\u00eancias abertas",{exact:true})).toBeVisible();await expect(rows(e)).toHaveCount(0);
   await ready(e,"Plant\u00e3o sem pend\u00eancias. Acessos e equipamentos conferidos; manter acompanhamento de rotina.");
-  await expect(e.panel.getByRole("progressbar",{name:"Requisitos da entrega conferidos"})).toHaveAttribute("value","4");await dispose(e);lastPage=page;
+  await expect(e.panel.getByRole("progressbar",{name:"Requisitos da entrega conferidos"})).toHaveAttribute("value","3");await dispose(e);lastPage=page;
  });
  const late=await make();
  await check("Late refresh after unmount cannot replace the fresh view or erase its draft",async()=>{
@@ -350,7 +350,7 @@ async function runTests(){
  await dispose(f);
 }
 (async()=>{
- assert.equal(version,"2.3.0-preview.110");
+ assert.equal(version,"2.3.0-preview.110.2");
  browser=await chromium.launch({headless:true});
  await runTests();
  const report={status:"passed",checks:checks.length,details:checks,buildVersion:version,bridge:"synthetic handover/read bridge; no native updater, real database, central account or operational profile accessed",externalRequests:external.length};
