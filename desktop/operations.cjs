@@ -4,12 +4,12 @@ const domain=require('../src/operations.js');
 const {stable}=require('./sync-store.cjs');
 const privacy=require('../src/privacy.js');
 const roles=['operator','supervisor','admin','viewer'];
-function policy(member={}){return {role:roles.includes(member.role)?member.role:'operator',condos:Array.isArray(member.condos)?member.condos:null,display_name:privacy.label(member.display_name,member.user_id),access_version:member.access_version||1};}
+function policy(member={}){return {username:member.username||null,role:roles.includes(member.role)?member.role:'operator',condos:Array.isArray(member.condos)?member.condos:null,display_name:privacy.label(member.display_name,member.user_id),access_version:member.access_version||1};}
 function allows(session,condo){return session.condos===null||session.condos===undefined||session.condos.includes(condo);}
 function visible(s,session){
   s=domain.normalize(structuredClone(s));s.items=s.items.filter(x=>allows(session,x.condo)&&(session.role==='admin'||!x.deleted_at));const ids=new Set(s.items.map(x=>x.id));
   s.events=s.events.filter(x=>ids.has(x.item_id));s.attachments=s.attachments.filter(x=>ids.has(x.item_id));
-  s.handovers=s.handovers.filter(h=>session.condos==null||h.condo&&allows(session,h.condo)||(h.snapshot?.length&&h.snapshot.every(x=>allows(session,x.condo))));
+  s.handovers=s.handovers.filter(h=>!h.auto_summary?.condos||session.condos==null||h.auto_summary.condos.every(c=>allows(session,c))).filter(h=>(Array.isArray(h.snapshot)&&h.snapshot.length===0&&!h.condo&&(h.receipt_user_id===session.userId||h.automation_version===1&&(!Array.isArray(h.auto_summary?.condos)||h.auto_summary.condos.every(c=>allows(session,c)))))||session.condos==null||h.condo&&allows(session,h.condo)||(h.snapshot?.length&&h.snapshot.every(x=>allows(session,x.condo))));
   for(const kind of ['templates','runs','receipts'])s[kind]=s[kind].filter(x=>allows(session,x.condo));return privacy.clean(s);
 }
 function author(session){if(!session?.userId)throw Error('Conta autenticada obrigatória.');return {user_id:session.userId,display_name:privacy.label(session.display_name,session.userId)};}
@@ -30,7 +30,12 @@ function stampWrite(previous,input,session,now=new Date().toISOString()){
       if(kind==='handovers'){
         if((row.snapshot||[]).some(x=>!allows(session,x.condo)))throw Error('Passagem fora do seu acesso.');
         const isReceipt=!!row.receipt_at||!!row.receipt_slot;
-        if(isReceipt){const critical=next.items.filter(x=>allows(session,x.condo)&&x.status!=='Resolvido'&&(x.priority==='Urgente'||domain.alerts({...next,items:[x]}).some(a=>a.level==='late')));if(critical.some(x=>!row.critical_protocols?.includes(x.protocol)))throw Error('Confirme a leitura de cada pendência crítica.');row.incoming=who.display_name;row.incoming_identity=who;}
+        const H=require('../src/handover-automation.js');
+        if(old&&isReceipt){row.auto_summary=old.auto_summary;row.delivery_checklist=old.delivery_checklist;row.automation_version=old.automation_version;}
+        if(!isReceipt&&row.automation_version===1)H.validateDelivery(row,next,session,now);
+        if(isReceipt&&(row.automation_version===1)&&!row.receipt_override){const required=H.analyze(next,session,new Date(now)).critical;if(required.some(x=>row.read_versions?.[x.protocol]!==H.version(x)))throw Error('Confirme a leitura da versão atual de cada pendência crítica.');}
+        if(isReceipt){row.read_versions??={};const open=H.analyze(next,session,new Date(now)).open;row.read_confirmations=Object.entries(row.read_versions).map(([protocol,version])=>{const x=open.find(x=>x.protocol===protocol);if(!x||H.version(x)!==version)throw Error('Registro alterado desde a leitura. Atualize e confirme novamente.');return {protocol,version,user_id:session.userId,at:now};});delete row.read_versions;}
+        if(isReceipt){const critical=next.items.filter(x=>allows(session,x.condo)&&!x.deleted_at&&x.status!=='Resolvido'&&(x.priority==='Urgente'||domain.alerts({...next,items:[x]}).some(a=>a.level==='late')));const missing=critical.filter(x=>!row.critical_protocols?.includes(x.protocol));if(row.receipt_override&&!['supervisor','admin'].includes(session.role))throw Error('Override de recebimento disponível apenas para supervisor ou administrador.');if(missing.length){const privileged=['supervisor','admin'].includes(session.role),reason=String(row.receipt_note||'').trim();if(!(row.receipt_override&&privileged&&reason))throw Error('Confirme a leitura de cada pendência crítica ou use Override autorizado com justificativa.');}row.receipt_user_id=session.userId;row.incoming=who.display_name;row.incoming_identity=who;}
         else {row.outgoing=who.display_name;row.outgoing_identity=who;}
       }else if(!allows(session,row.condo))throw Error('Condomínio fora do seu acesso.');
       if(kind==='templates'&&!['admin','supervisor'].includes(session.role))throw Error('Somente supervisores podem configurar rotinas.');

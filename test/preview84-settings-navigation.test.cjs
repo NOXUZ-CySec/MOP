@@ -1,0 +1,15 @@
+'use strict';
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const source=fs.readFileSync(path.resolve(__dirname,'../ui-next/src/main.tsx'),'utf8');
+const begin=source.indexOf('const roleCan=');
+const end=source.indexOf(';const tabPermission=',begin);
+assert.ok(begin>=0&&end>begin,'permission helper found');
+const roleSource=source.slice(begin,end+1).replace('(role:string|undefined,action:string)','(role,action)').replace('const rules:Record<string,string[]>','const rules');
+const roleCan=Function(roleSource+';return roleCan;')();
+test('Preview84: Settings accessible to all authenticated role types',()=>{for(const role of ['admin','supervisor','operator','viewer'])assert.equal(roleCan(role,'settings'),true,role);assert.equal(roleCan('','settings'),false)});
+test('Preview84: Settings does not grant administrative actions',()=>{for(const role of ['supervisor','operator','viewer'])assert.equal(roleCan(role,'users'),false,role);for(const role of ['operator','viewer'])assert.equal(roleCan(role,'audit'),false,role)});
+test('Preview84: Settings appears once in sidebar, directly before profile card',()=>{const start=source.indexOf('<aside className="ref-sidebar">');const end=source.indexOf('</aside>',start);const sidebar=source.slice(start,end);assert.equal((sidebar.match(/<Settings2 size=\{21\}/g)||[]).length,1);assert.ok(sidebar.indexOf('<nav aria-label=')<sidebar.indexOf('className="mop-sidebar-settings84"'));assert.ok(sidebar.indexOf('className="mop-sidebar-settings84"')<sidebar.indexOf('className="mop-profile52-root"'));assert.ok(!/\['Configurações',Settings2\]/.test(source));});
+test('Preview84: Settings renders the original updater without later appearance controls',()=>{assert.ok(source.includes('<section className="mop-settings84"'));assert.ok(source.includes('<Updater71/>'));assert.ok(source.includes("import Updater71 from './Updater71'"));assert.ok(!source.includes('<Settings86'));});

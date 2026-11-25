@@ -30,6 +30,15 @@ else {
       const sendUpdate=(patch={})=>{updateState={...updateState,...patch};if(win&&!win.isDestroyed())win.webContents.send('mop:update-status',updateState);};
       const setupUpdater=()=>{if(updaterReady||!app.isPackaged)return;updaterReady=true;autoUpdater.autoDownload=true;autoUpdater.autoInstallOnAppQuit=true;autoUpdater.allowPrerelease=false;autoUpdater.on('checking-for-update',()=>sendUpdate({state:'checking',message:'Verificando atualizações…'}));autoUpdater.on('update-available',info=>sendUpdate({state:'available',version:info.version,message:'Nova versão '+info.version+' encontrada. Download iniciado.'}));autoUpdater.on('update-not-available',()=>sendUpdate({state:'current',version:app.getVersion(),percent:0,message:'Você já está usando a versão mais recente.'}));autoUpdater.on('download-progress',p=>sendUpdate({state:'downloading',percent:Math.round(p.percent||0),message:'Baixando atualização… '+Math.round(p.percent||0)+'%'}));autoUpdater.on('update-downloaded',info=>sendUpdate({state:'ready',version:info.version,percent:100,message:'Atualização '+info.version+' pronta para instalar.'}));autoUpdater.on('error',error=>sendUpdate({state:'error',message:'Não foi possível verificar atualizações agora: '+privacy.clean(error.message)}));setTimeout(()=>autoUpdater.checkForUpdates().catch(()=>{}),5000);setInterval(()=>autoUpdater.checkForUpdates().catch(()=>{}),6*60*60*1000).unref();};
       const authorized=()=>{if(!access)throw Error('Entre com seu e-mail e senha para acessar o MOP.');return access.require();};
+      let notificationService;
+      ipcMain.handle('mop:notifications',(event,action,input)=>response(event,()=>{
+        const session=authorized();
+        notificationService ||= new (require('./intelligence.cjs').Intelligence)(store);
+        if(action==='snapshot')return notificationService.snapshot(session);
+        if(action==='read')return notificationService.mark(session,input?.key);
+        if(action==='readAll')return notificationService.markAll(session);
+        throw Error('Ação desconhecida.');
+      }));
       ipcMain.handle('mop:shown',async event=>{
         try {trusted(event);await shown;return {ok:true,value:true};}
         catch(error){return {ok:false,error:error.message};}

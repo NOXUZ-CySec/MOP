@@ -29,7 +29,7 @@ class SyncStore {
   prepareProtocols(){
     const state=this.store.read(),used=new Set();let changed=false;
     for(const row of state.items)if(row.protocol){
-      if(typeof row.protocol!=='string'||!/^MOP-\d{8}-[A-Z0-9]{6,32}$/.test(row.protocol)||used.has(row.protocol))throw Error('Protocolo local inválido ou repetido. Confira os dados antes de sincronizar.');
+      if(typeof row.protocol!=='string'||!/^MOP-\d{8}-[A-Z0-9]{5,32}$/.test(row.protocol)||used.has(row.protocol))throw Error('Protocolo local inválido ou repetido. Confira os dados antes de sincronizar.');
       used.add(row.protocol);
     }
     for(const row of state.items)if(!row.protocol){
@@ -58,7 +58,7 @@ class SyncStore {
     const reference=id=>{const m=this.map('items',id);if(!m)throw Error('Referência de registro não encontrada: '+id);return m.remote_id;};
     if(kind==='events'||kind==='attachments')p.item_id=reference(p.item_id);
     if(kind==='handovers'){
-      p.open_ids=JSON.parse(p.open_ids).map(reference);
+      const ids=typeof p.open_ids==='string'?JSON.parse(p.open_ids):Array.isArray(p.open_ids)?p.open_ids:Array.isArray(p.snapshot)?p.snapshot.map(x=>x.id):[];p.open_ids=ids.map(reference);
       if(p.snapshot)p.snapshot=p.snapshot.map(x=>({...x,id:reference(x.id)}));
     }
     return p;

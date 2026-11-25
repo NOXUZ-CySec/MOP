@@ -1,0 +1,40 @@
+
+/* Premium Motion 47: GPU-friendly, non-blocking, accessible */
+.mop-premium47{--mop-ease47:cubic-bezier(.22,1,.36,1);--mop-speed47:210ms}
+.mop-motion47-toggle{font:inherit;font-size:11px;font-weight:600;letter-spacing:.02em;color:#8cdefd;background:#0d3048;border:1px solid #236587;border-radius:999px;padding:7px 11px;cursor:pointer;white-space:nowrap;transition:background .2s,border-color .2s}
+.mop-motion47-toggle:hover{background:#164664;border-color:#4bb5e6}
+.mop-page47{min-width:0;min-height:0}
+.mop-motion-on .mop-page47{animation:mop-page-in47 240ms var(--mop-ease47) both}
+@keyframes mop-page-in47{from{opacity:.35;transform:translate3d(0,8px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+.mop-motion-on .ref-nav-item{transition:background-color .18s,color .18s,border-color .18s,transform .18s var(--mop-ease47)}
+.mop-motion-on .ref-nav-item:hover{transform:translate3d(3px,0,0)}
+.mop-motion-on .ref-nav-item.active{position:relative}
+.mop-motion-on .ref-nav-item.active:before{content:"";position:absolute;left:0;top:20%;height:60%;width:3px;border-radius:3px;background:#44c8ff;box-shadow:0 0 9px #2eb8f7a6;animation:mop-rail47 .22s var(--mop-ease47) both}
+@keyframes mop-rail47{from{opacity:0;transform:scaleY(.35)}to{opacity:1;transform:scaleY(1)}}
+.mop-motion-on .ref-kpi{animation:mop-card47 .4s var(--mop-ease47) both;transition:transform .22s var(--mop-ease47),border-color .22s,box-shadow .22s}
+.mop-motion-on .ref-kpi:nth-child(2){animation-delay:55ms}.mop-motion-on .ref-kpi:nth-child(3){animation-delay:100ms}.mop-motion-on .ref-kpi:nth-child(4){animation-delay:145ms}
+.mop-motion-on .ref-kpi:hover{transform:translate3d(0,-3px,0);box-shadow:0 12px 32px #0002}
+@keyframes mop-card47{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+.mop-motion-on .ref-event{animation:mop-card47 .32s var(--mop-ease47) both}
+.mop-motion-on .ref-event:nth-child(2){animation-delay:45ms}.mop-motion-on .ref-event:nth-child(3){animation-delay:90ms}.mop-motion-on .ref-event:nth-child(4){animation-delay:135ms}.mop-motion-on .ref-event:nth-child(5){animation-delay:180ms}
+.mop-motion-on .donut{animation:mop-donut47 .65s var(--mop-ease47) both}
+@keyframes mop-donut47{from{opacity:.3;transform:scale(.93) rotate(-12deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.mop-motion-on .records-row{transition:background-color .18s,border-color .18s,box-shadow .18s}
+.mop-motion-on .records-row:hover{box-shadow:inset 3px 0 #3cbcf0}
+.mop-motion-on .records-detail{animation:mop-detail47 .25s var(--mop-ease47) both}
+@keyframes mop-detail47{from{opacity:.5;transform:translate3d(6px,0,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+.mop-motion-on .records-detail-top svg,.mop-motion-on .ref-event-icon svg{transition:transform .2s var(--mop-ease47)}
+.mop-motion-on .records-detail:hover .records-detail-top svg{transform:scale(1.06)}
+.mop-motion-on .new33-panel,.mop-motion-on .handover-screen,.mop-motion-on .mop-profile43,.mop-motion-on .mop-notification-popover,.mop-motion-on .mop-confirm46{animation:mop-card47 .22s var(--mop-ease47) both}
+.mop-motion-on .new33-form input:focus-visible,.mop-motion-on .new33-form textarea:focus-visible,.mop-motion-on .new33-form select:focus-visible{outline:2px solid #42c4fa;outline-offset:2px;transition:outline-color .15s}
+.mop-motion-on .new33-save,.mop-motion-on .new33-back,.mop-motion-on .ref-all{transition:background-color .18s,border-color .18s,transform .18s var(--mop-ease47)}
+.mop-motion-on .new33-save:hover,.mop-motion-on .ref-all:hover{transform:translate3d(0,-1px,0)}
+.mop-motion-on .integration-error,.mop-motion-on [role="status"]{animation:mop-card47 .2s var(--mop-ease47) both}
+.mop-motion-on .mop-confirm46-overlay{animation:mop-overlay47 .18s ease-out both}
+@keyframes mop-overlay47{from{opacity:0}to{opacity:1}}
+.mop-motion-on .mop-confirm46{animation:mop-card47 .25s var(--mop-ease47) both}
+.mop-motion-on .ref-panel{transition:border-color .2s,box-shadow .2s}
+.mop-motion-on .ref-panel:hover{box-shadow:0 10px 28px #0000001c}
+.mop-motion-off *, .mop-motion-off *:before,.mop-motion-off *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media(prefers-reduced-motion:reduce){.mop-premium47 *, .mop-premium47 *:before,.mop-premium47 *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media(max-width:850px){.mop-motion47-toggle{font-size:10px;padding:6px 8px}.mop-motion-on .ref-nav-item:hover{transform:none}}

@@ -1,75 +1,40 @@
 {
   "name": "mop-desktop",
-  "version": "2.2.2",
+  "version": "2.3.0-preview.109.8",
   "private": true,
   "description": "MOP — desenvolvido por NOXUZ. Livro de turno e gestão de pendências.",
   "author": "NOXUZ",
-  "main": "desktop/main.cjs",
+  "main": "desktop/main-next43.cjs",
   "engines": {
     "node": ">=24.0.0"
   },
   "scripts": {
     "start": "electron .",
     "test": "node --test test/*.test.cjs",
-    "dist:win": "electron-builder --win nsis --x64",
-    "dist:portable": "electron-builder --win portable --x64",
-    "test:management": "electron test/management-ui-smoke.cjs"
+    "dist:win": "node scripts/build-preview.cjs --target nsis",
+    "dist:portable": "node scripts/build-preview.cjs --target portable",
+    "test:management": "electron test/management-ui-smoke.cjs",
+    "start:preview": "electron .",
+    "check:release-config": "node scripts/export-preview-config.cjs --check",
+    "config:preview": "node scripts/export-preview-config.cjs",
+    "check:types": "npm --prefix ui-next run check:types",
+    "build:ui": "npm --prefix ui-next run build",
+    "build:catalog": "npm --prefix ui-next run build-storybook",
+    "dist:preview": "node scripts/build-preview.cjs",
+    "test:foundation": "node --test test/store.test.cjs test/sync.test.cjs test/sync-engine.test.cjs test/access.test.cjs test/session-identity.test.cjs test/permissions.test.cjs test/backup1098.test.cjs test/backup1098-ipc.test.cjs test/reads1098.test.cjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",
+    "@playwright/test": "1.65.1",
     "electron": "44.4.5",
     "electron-builder": "26.15.3"
   },
   "build": {
-    "appId": "br.com.mop.desktop",
-    "productName": "MOP",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "src/**/*",
-      "desktop/**/*",
-      "assets/**/*",
-      "package.json"
-    ],
-    "asar": true,
-    "win": {
-      "icon": "assets/icon.ico",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "artifactName": "MOP-Instalador-${version}.${ext}"
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "shortcutName": "MOP",
-      "deleteAppDataOnUninstall": false,
-      "installerLanguages": [
-        "pt_BR"
-      ],
-      "language": "1046"
-    },
-    "portable": {
-      "artifactName": "MOP-Executavel-${version}.${ext}"
-    },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "NOXUZ-CySec",
-        "repo": "MOP-Releases"
-      }
-    ]
+    "extends": "./electron-builder-preview.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
-    "electron-updater": "^6.8.9"
+    "electron-updater": "^6.8.9",
+    "exceljs": "4.4.0"
   }
 }

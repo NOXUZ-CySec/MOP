@@ -10,7 +10,7 @@ class Access {
     this.sync=sync;this.safeStorage=safeStorage;this.onLock=onLock;this.now=now;
     this.session=null;this.epoch=0;this.busy=false;this.failures=0;this.retryAt=0;this.expiryTimer=null;
   }
-  status(){return {authenticated:!!this.session,mode:this.session?.mode||null,firstConnection:!this.sync.local.bound(),display_name:this.session?privacy.label(this.session.display_name,this.session.userId):undefined,userId:this.session?.userId,role:this.session?.role,condos:this.session?.condos};}
+  status(){return {authenticated:!!this.session,mode:this.session?.mode||null,firstConnection:!this.sync.local.bound(),display_name:this.session?privacy.label(this.session.display_name,this.session.userId):undefined,userId:this.session?.userId,username:this.session?.username,role:this.session?.role,condos:this.session?.condos};}
   require(){
     if(this.session&&this.now()>=this.session.expiresAt)this.lock();
     if(!this.session)throw failure('Entre com seu e-mail e senha para acessar o MOP.','LOGIN_REQUIRED');
@@ -64,7 +64,7 @@ class Access {
         if(error.code!=='NETWORK_UNAVAILABLE')throw error;
         session=await this.offline(login,password);
       }
-      if(epoch!==this.epoch)throw failure('Login interrompido. Entre novamente.','LOGIN_CANCELLED');
+      if(epoch!==this.epoch){await this.sync.stopClient().catch(()=>{});throw failure('Login interrompido. Entre novamente.','LOGIN_CANCELLED');}
       this.session=session;this.failures=0;this.retryAt=0;
       clearTimeout(this.expiryTimer);this.expiryTimer=setTimeout(()=>this.lock(),Math.max(1,session.expiresAt-this.now()));this.expiryTimer.unref?.();
       if(session.mode==='online'){this.sync.subscribe();this.sync.kick();}
@@ -81,7 +81,14 @@ class Access {
     this.onLock();
     // Retain the encrypted server session for reconnecting after a new password
     // check, but never let a saved server token unlock the application by itself.
-    this.stopping=this.sync.stopClient();return this.stopping;
+    // Lock immediately and serialize asynchronous cleanup. A failed network unsubscribe
+    // must never turn a locked session into an unhandled promise rejection.
+    const previous=this.stopping||Promise.resolve();
+    this.stopping=Promise.resolve(previous).catch(()=>{}).then(()=>this.sync.stopClient()).catch(()=>{
+      // Session remains locked even when the remote channel cannot be closed.
+      try{this.sync.close?.()}catch{}
+    });
+    return this.stopping;
   }
   revoke(){this.clearGrant();return this.lock();}
   close(){clearTimeout(this.expiryTimer);this.session=null;this.epoch++;}

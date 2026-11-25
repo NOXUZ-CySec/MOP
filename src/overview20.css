@@ -1,0 +1,28 @@
+/* Preview.20 — shadcn-inspired operational summary; no external runtime dependencies */
+#overview.overview20{max-width:1420px}
+#overview .page-heading{margin-bottom:24px}
+#overview .page-heading h1{font-size:30px}
+#overview .overview20-hero{display:flex;align-items:center;justify-content:space-between;gap:32px;min-height:208px;padding:30px 34px;background:linear-gradient(115deg,#162c44 0%,#122338 62%,#102034 100%);border:1px solid #386187;border-radius:18px;box-shadow:0 14px 45px #020c182b}
+#overview .overview20-hero h2{font-size:26px;letter-spacing:-.04em;color:#f4f8fc;margin:9px 0}
+#overview .overview20-hero p{color:#b0c3d5;line-height:1.5}
+#overview .overview20-state{display:inline-flex;align-items:center;gap:9px;margin-top:16px;color:#d1e6f4;font-size:13px;font-weight:650}
+#overview .overview20-state-dot{width:8px;height:8px;border-radius:50%;background:#e9b862;box-shadow:0 0 0 4px #e9b86219}
+#overview .overview20-state[data-accepted=true] .overview20-state-dot{background:#3cd49a;box-shadow:0 0 0 4px #3cd49a20}
+#overview .overview20-hero-action{text-align:center;min-width:215px}
+#overview .overview20-hero-action button{padding:13px 21px;min-height:46px;font-size:13px}
+#overview .overview20-hero-action p{font-size:11px;margin-top:10px}
+#overview .overview20-metrics{margin:22px 0}
+#overview .overview20-metrics .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#overview .overview20-metrics .cards>*{background:#14283b;border:1px solid #2e485f;border-radius:13px;box-shadow:none;min-height:108px}
+#overview .overview20-metrics .cards>*:nth-child(n+4){display:none!important}
+#overview .overview20-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 24px}
+#overview .overview20-shortcuts button{display:flex;align-items:center;justify-content:center;gap:12px;min-height:70px;background:#14273a;border:1px solid #30475d;color:#dcecf7;border-radius:12px;font-weight:680;font-size:13px;cursor:pointer}
+#overview .overview20-shortcuts button:hover{background:#1b354e;border-color:#4d7899}
+#overview .overview20-shortcuts button span{color:#80c4f3;font-size:20px}
+#overview .overview20-priorities{padding:24px}
+#overview .overview20-priorities .panel-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}
+#overview .overview20-priorities .panel-heading h2{font-size:19px;margin:4px 0}
+#overview .overview20-priorities #highlights>*:nth-child(n+4){display:none!important}
+#overview .overview20-hidden-data{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);pointer-events:none}
+@media(max-width:950px){#overview .overview20-hero{flex-direction:column;align-items:stretch}#overview .overview20-hero-action{text-align:left}#overview .overview20-metrics .cards,#overview .overview20-shortcuts{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){#overview *{transition:none!important}}

@@ -1,0 +1,45 @@
+/* Preview 56: compact operational home and actionable status */
+.mop-home54{gap:13px}
+.mop-home54-hero{min-height:155px}
+.mop-home54-hero-content{padding:17px 23px}
+.mop-home54-hero h2{font-size:clamp(20px,2.3vw,26px);margin:5px 0 6px}
+.mop-home54-hero p{font-size:12px;margin-bottom:10px}
+.mop-home54-hero small{margin-top:8px}
+.mop-home54-chips>span{padding:5px 9px;font-size:11px}
+.mop-home54-stat{min-height:84px;padding:12px}
+.mop-home54-stat-icon{width:43px;height:43px}
+.mop-home54-stat-icon svg{width:21px}
+.mop-home54-stat strong{font-size:25px}
+.mop-home56-status{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 15px;background:#0b2a40;border:1px solid #28526a;border-radius:13px}
+.mop-home56-status-main{display:flex;align-items:center;gap:10px;flex:1;min-width:260px}
+.mop-home56-status-main strong{font-size:12px;white-space:nowrap}
+.mop-home56-status-main>span:last-child{font-size:11px;color:#a8c6d7}
+.mop-home56-status-led{flex:none;width:9px;height:9px;border-radius:50%;background:#16cfa2;box-shadow:0 0 9px #16cfa255}
+.mop-home56-status-led.waiting{background:#f0b45a;box-shadow:0 0 9px #f0b45a55}
+.mop-home56-status>button{display:flex;gap:7px;align-items:center;background:#103c56;border:1px solid #286f94;color:#d4efff;border-radius:9px;padding:7px 10px;font-size:11px;cursor:pointer}
+.mop-home56-status>button:disabled{opacity:.5;cursor:wait}
+.mop-home56-status>small{color:#8aaec4;font-size:10px}
+.mop-home56-spin{animation:mop-home56-rotate 1s linear infinite}
+@keyframes mop-home56-rotate{to{transform:rotate(360deg)}}
+.mop-home56-focus{border:1px solid #285a76;border-radius:16px;background:linear-gradient(145deg,#0c2b40,#081c2c);padding:15px 17px}
+.mop-home56-focus header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.mop-home56-focus header>div{display:flex;align-items:center;gap:9px;color:#75d3f5}
+.mop-home56-focus h3{font-size:15px;color:#eef7ff;margin:0}
+.mop-home56-focus header>span{color:#8eb3c9;font-size:10px}
+.mop-home56-focus-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mop-home56-focus-grid button{display:flex;align-items:center;gap:10px;text-align:left;min-width:0;min-height:65px;padding:10px 12px;border:1px solid #22526d;border-radius:10px;background:#10334a;color:#eaf6ff;cursor:pointer;transition:background .2s,transform .2s}
+.mop-home56-focus-grid button:hover{background:#174760;transform:translateY(-1px)}
+.mop-home56-focus-grid button:focus-visible{outline:2px solid #73d6ff}
+.mop-home56-focus-bar{width:3px;align-self:stretch;flex:none;border-radius:4px;background:#53bfff}
+.mop-home56-focus-bar.danger{background:#f08484}.mop-home56-focus-bar.warning{background:#f4c36d}
+.mop-home56-focus-grid button>span:nth-child(2){flex:1;min-width:0;display:grid;gap:5px}
+.mop-home56-focus-grid strong{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mop-home56-focus-grid small{font-size:10px;color:#9fbcd0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mop-home56-focus-grid button>svg{color:#8fc8e3;flex:none}
+.mop-home56-noactions{display:flex;align-items:center;gap:9px;color:#9de5ce;font-size:12px;grid-column:1/-1;padding:12px}
+.mop-home56-focus footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;padding-top:11px;border-top:1px solid #24475e}
+.mop-home56-focus footer>span{display:flex;align-items:center;gap:7px;color:#8db5ca;font-size:11px}
+.mop-home56-focus footer button{display:flex;align-items:center;gap:5px;border:0;background:transparent;color:#68cffa;font-size:11px;cursor:pointer}
+@media(max-width:1100px){.mop-home56-focus-grid{grid-template-columns:1fr}.mop-home56-status-main{flex-wrap:wrap}}
+@media(max-width:650px){.mop-home56-focus header,.mop-home56-focus footer{align-items:flex-start;flex-direction:column}.mop-home54-hero-content{padding:16px}.mop-home56-status{align-items:flex-start}.mop-home56-status-main{min-width:0;flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.mop-home56-spin{animation:none}.mop-home56-focus-grid button{transition:none}}

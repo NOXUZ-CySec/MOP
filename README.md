@@ -2,139 +2,106 @@
 
 ![NOXUZ — Cybersecurity & Technology](assets/noxuz-logo.png)
 
-**Aplicativo de livro de turno, ocorrências e continuidade operacional para Windows.** Desenvolvido por **NOXUZ**.
+**Aplicativo para Windows que reúne registros, turnos, acompanhamento e continuidade operacional. Desenvolvido por NOXUZ.**
 
-> **Versão atual: 2.2.2.** Esta é a versão mais recente do repositório privado de desenvolvimento. O canal público de distribuição permanece em [MOP-Releases](https://github.com/NOXUZ-CySec/MOP-Releases/releases). O portal web/mobile ainda não está liberado.
+Esta árvore contém o código da **Preview 109.8 de homologação**, com versão de pacote `2.3.0-preview.109.8`. O código e as prereleases desta linha usam o repositório [NOXUZ-CySec/MOP](https://github.com/NOXUZ-CySec/MOP). A construção local não publica uma release automaticamente.
 
-Este é o repositório **privado de desenvolvimento** do MOP. Ele concentra o código-fonte, testes, migrações, documentação e fluxo de build. Os instaladores destinados a testadores e usuários são publicados separadamente no repositório público de releases.
+## O que o aplicativo oferece
 
-O MOP reúne registros operacionais, pendências, checklists, alertas, anexos, relatórios, indicadores e passagem de turno em uma única aplicação, com sincronização entre estações autorizadas e operação offline controlada.
-
-## Versão 2.2.2
-
-A versão **2.2.2** consolida as correções de patch aplicadas desde a 2.2.1 e reformula o fluxo operacional de passagem de turno.
-
-Principais mudanças:
-
-- Passagem de turno dividida em **entrega** e **recebimento**, sem campos manuais redundantes de autoria.
-- Operador que encerra o turno registra apenas o resumo necessário para continuidade; o próximo operador recebe a passagem em etapa separada.
-- Ciência de pendências críticas exigida somente no recebimento.
-- Sincronização permite complementar uma entrega pendente com o recebimento, mantendo a passagem imutável depois de concluída.
-- Tutorial guiado no primeiro login, com opção de pular, refazer pela aba **Sobre** e conteúdo adaptado ao perfil do usuário.
-- Tutorial redesenhado para não escurecer a aplicação inteira e manter visível o conteúdo que está sendo explicado.
-- Correções de autoria confiável e consistência de testes operacionais.
-
-A versão foi validada com **45/45 testes automatizados aprovados** e `MANAGEMENT_UI_OK`.
-
-## Versão 2.2.1
-
-A versão **2.2.1** corrige o travamento da interface ao marcar registros como **Resolvido** pelo seletor rápido de status. A confirmação passou a usar um modal próprio do MOP, eliminando o bloqueio de foco/cliques observado no Electron.
-
-A correção foi validada com a suíte automatizada e teste de interface de gestão, mantendo a operação disponível após resolver registros.
-
-## Principais recursos atuais
-
-### Central operacional
-
-- Painel do turno com abertos, urgentes, aguardando resposta/manutenção, prazos e destaques.
-- Cadastro de registros com protocolo, condomínio, categoria, assunto, descrição, prioridade, origem, empresa, referência e prazo.
-- Atualização por histórico, ação realizada e próxima ação, com autoria da conta autenticada.
-- Alteração rápida de status por dropdown com confirmação própria do MOP para **Resolvido**.
-- Correção de registros resolvidos sem apagar a resolução original.
-- Calendário de registros e passagens.
-- Anexos PNG/JPEG/PDF vinculados a registros.
-
-### Turnos, autenticação e acessos
-
-- Tela **Novidades do MOP** após o login para versões ainda não lidas.
-- Login por **usuário ou e-mail + senha**; o e-mail continua sendo a identidade de autenticação no Supabase.
-- Recebimento obrigatório do turno antes de liberar ações operacionais.
-- Ciência das pendências críticas e registro auditável de quem assumiu o turno.
-- Indicador permanente do turno assumido.
+- Registros operacionais com protocolo, histórico, anexos, prioridade e acompanhamento de status.
+- Entrega e recebimento de turno, pendências e confirmação de ciência.
+- Painel, indicadores, calendário, checklists e rotinas.
 - Perfis `admin`, `supervisor`, `operator` e `viewer`, com escopo por condomínio.
-- Administração de username, nome de exibição, perfil e condomínios em **Acessos**.
+- Autenticação e sincronização entre estações autorizadas, com fila local para o trabalho offline.
+- Exportações e recursos de continuidade, incluindo backup e recuperação em ambiente separado.
 
-### Gestão e continuidade
+A interface atual fica em `ui-next`, com componentes React e o catálogo visual do projeto. O processo principal do Electron controla armazenamento, sessões, permissões, IPC e integrações com o Windows.
 
-- Checklists e rotinas configuráveis por frequência.
-- Alertas de urgência, vencimento e atraso.
-- Relatórios PDF, Excel e CSV.
-- Indicadores operacionais por período, condomínio e categoria.
-- Sincronização multiestação via Supabase com fila offline e revisão de conflitos.
-- SQLite local e backups automáticos; backup manual restrito a perfis autorizados.
-- Importação/exportação destrutiva da base operacional não faz parte da interface sincronizada atual.
+## Preview 109.8
 
-## Atualização automática
+Esta preview consolida a preparação do código para construção e validação reproduzíveis:
 
-A atualização automática foi introduzida na **2.1.1**. O cliente consulta o canal `NOXUZ-CySec/MOP-Releases`, detecta uma versão superior, baixa o instalador e o `.blockmap` e oferece reinicialização para instalação.
+- Versão e entrada do aplicativo centralizadas em `package.json`.
+- Configuração canônica de empacotamento que preserva a identidade da homologação.
+- Comandos explícitos de verificação de tipos, testes de fundação, interface e catálogo.
+- Dependência Playwright fixada no projeto.
+- Fluxos de backup e recuperação com controle de acesso no processo principal.
+- Coordenação de leituras da interface e testes de regressão associados.
 
-A **2.2.2** é a release atual do canal de testes e consolida as correções de patch posteriores à 2.2.1, incluindo o novo fluxo de passagem de turno e o tutorial guiado por perfil.
+Os resultados de validação do executável distribuído devem acompanhar as notas da respectiva release. A existência do código ou do template de CI não comprova, por si só, a aprovação de um pacote.
 
-Os artefatos oficiais de uma release Windows são:
+## Obter uma versão
 
-- `MOP-Instalador-<versão>.exe`
-- `MOP-Instalador-<versão>.exe.blockmap`
-- `latest.yml`
+As prereleases de homologação ficam em [Releases do MOP](https://github.com/NOXUZ-CySec/MOP/releases). Use Windows x64 e siga as instruções da release selecionada.
 
-Não substitua apenas o executável de uma release sem atualizar também o `.blockmap` e o `latest.yml`.
+O instalador mantém a identidade **MOP Homologacao**. O executável portátil tem distribuição manual. O atualizador da homologação consulta o canal `preview` deste repositório e não permite downgrade.
 
-## Instalação para usuários e testadores
+O conjunto de publicação do instalador inclui o executável, seu arquivo `.blockmap` e os metadados de atualização correspondentes. Não misture arquivos de builds diferentes.
 
-1. Use Windows 10/11 de 64 bits.
-2. Baixe a versão publicada em [MOP-Releases](https://github.com/NOXUZ-CySec/MOP-Releases/releases).
-3. No primeiro acesso, mantenha internet disponível e utilize uma conta autorizada no workspace.
-4. Se estiver em uma versão compatível com o updater, prefira **Verificar atualização** dentro do próprio MOP.
+## Construir a partir do código
 
-Os dados operacionais ficam fora da pasta de instalação. A atualização do aplicativo não deve apagar a base local, mas cada build deve ser validada antes de distribuição ampla.
-
-## Desenvolvimento
-
-Requisitos: Windows 10/11 64 bits, Node.js compatível com o projeto e acesso à internet para instalar dependências.
+Use um checkout dedicado à construção e instale as dependências da raiz e da interface:
 
 ```powershell
-npm ci
-npm start
+npm.cmd ci --no-audit --no-fund
+npm.cmd --prefix ui-next ci --no-audit --no-fund
+npm.cmd run check:release-config
+npm.cmd run check:types
+npm.cmd run test:foundation
+npm.cmd run dist:preview
 ```
 
-Testes e build:
+O procedimento completo, os requisitos e os comandos alternativos estão em [BUILDING.md](BUILDING.md).
+
+A saída desta versão é `dist-ui-next-109-8`:
+
+- `MOP-Preview109.8-Instalador.exe`;
+- `MOP-Preview109.8-Portable.exe`;
+- metadados e arquivos auxiliares da construção.
+
+`dist:preview`, `dist:win` e `dist:portable` usam `--publish never`. A publicação no GitHub é uma etapa separada.
+
+## Validação
+
+`npm.cmd run test:foundation` executa uma lista explícita de testes locais. Os testes de interface e do Electron devem usar bases sintéticas e perfis temporários; abrir um perfil operacional não faz parte desse comando.
+
+O arquivo `tools/ci1098/preview-validation.template.yml` é um modelo inativo de integração contínua. Ele descreve a preparação de Windows e Node.js, a instalação dos dois lockfiles e a verificação de configuração, TypeScript, fundação e build da interface, sem deploy ou acesso à central Supabase. Não existe execução automática a partir desse template. Sua ativação futura em `.github/workflows` requer uma integração GitHub autorizada a alterar workflows.
+
+O catálogo visual é construído separadamente com:
 
 ```powershell
-npm test
-npm run test:management
-npm run dist:win
+npm.cmd run build:catalog
 ```
-
-O instalador atual é gerado em `dist/MOP-Instalador-2.2.2.exe`.
 
 ## Central Supabase
 
-O MOP usa Supabase Auth e Postgres para autenticação, autorização por workspace/condomínio e sincronização. O cliente utiliza apenas configuração publicável; nunca inclua `service_role` ou segredo equivalente no aplicativo desktop.
+O MOP usa Supabase Auth e Postgres para autenticação, autorização e sincronização. A configuração distribuída no cliente deve conter somente a URL e a chave publicável. Não coloque senha do banco, chave secreta ou `service_role` no código ou no executável.
 
-- `SUPABASE.md`: configuração e operação da central.
-- `supabase/mop.sql`: esquema consolidado para novos ambientes.
-- `supabase/migrations/`: histórico de migrações incrementais.
+[SUPABASE.md](SUPABASE.md) descreve a preparação de um ambiente próprio, os arquivos SQL disponíveis e os templates de autorização. Esses arquivos não são aplicados automaticamente durante o build.
 
-As migrações de username e fluxo 2.2 foram preparadas/aplicadas no ambiente de testes atual. Sempre confira o estado da central antes de distribuir uma nova build para outra instalação.
+Os exemplos públicos não identificam usuários da instalação existente. Scripts locais com identidades reais e relatórios da central devem permanecer fora do snapshot público.
 
-## Dados e backups
+## Dados e recuperação
 
-A base local fica em `%APPDATA%\MOP\dados\mop.sqlite`. Não compartilhe esse SQLite diretamente por pasta de rede ou serviço de sincronização de arquivos; use a sincronização do próprio MOP.
+A homologação usa a pasta de perfil `%APPDATA%\MOP-UI-Next-Homologacao`, definida no processo principal. A base operacional fica no subdiretório `dados`. Uma construção do aplicativo não precisa abrir essa pasta.
 
-O aplicativo mantém backups locais automáticos antes de alterações. Backups manuais devem ser tratados como dados operacionais sensíveis e protegidos conforme as regras da organização.
+Não compartilhe o SQLite diretamente por pasta de rede ou serviço de sincronização de arquivos. A sincronização entre estações deve passar pelo fluxo do MOP e pelas permissões da central.
 
-## Testes
+Guarde backups em local protegido. A recuperação deve usar uma pasta separada e ser verificada antes de reconectar uma base à central. Preserve a instalação anterior até concluir a validação da nova release.
 
-A suíte automatizada cobre autenticação, autorização, armazenamento, regras SQL, sincronização offline, conflitos, checklists, anexos, relatórios e fluxos operacionais. O teste `test:management` abre uma instância temporária do Electron para validar a interface de gestão.
+## Estrutura
 
-Para a **2.2.2**, o resultado de validação antes da publicação foi **45/45 testes aprovados** e `MANAGEMENT_UI_OK`.
-
-## Estrutura principal
-
-- `src/`: interface e módulos operacionais/gestão.
-- `desktop/`: Electron, autenticação, permissões, IPC, updater e integração com o sistema.
-- `supabase/`: esquema e migrações da central.
-- `test/`: testes automatizados e smoke tests.
-- `portal/`: estrutura preparada para uso futuro; ainda não liberada.
+| Caminho | Conteúdo |
+| --- | --- |
+| `ui-next/src` | Interface React atual. |
+| `ui-next/catalog` e `ui-next/.storybook` | Catálogo visual de componentes. |
+| `desktop` | Processo principal, preload, armazenamento, sessões, permissões e sincronização. |
+| `src` | Módulos e recursos mantidos pelo projeto. |
+| `supabase` | Esquema, alterações incrementais e exemplos de configuração. |
+| `test` | Testes de lógica, integração e roteiros de interface. |
+| `scripts` | Exportação da configuração e empacotamento da preview. |
+| `electron-builder-preview.cjs` | Configuração canônica da homologação. |
+| `BUILDING.md` | Instalação de dependências e construção reproduzível. |
 
 ## Licença
 

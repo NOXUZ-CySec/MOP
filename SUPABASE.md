@@ -1,84 +1,87 @@
-# Configurar a central compartilhada
+# Central Supabase do MOP
 
-## Identificação dos operadores — próxima build
+O MOP usa Supabase Auth para identificar a conta e Postgres para armazenar os dados compartilhados, a associação ao workspace, os perfis e os escopos de acesso. O SQLite local sustenta os dados e a fila de sincronização de cada estação.
 
-A migração `20260928163826_mop_operator_privacy.sql` acrescenta `display_name` ao cadastro de membros, mantém o UUID de autoria e remove e-mails dos registros e recibos operacionais da central. O nome não concede permissões: a autorização continua vinculada à conta autenticada e ao workspace/condomínios.
+Este guia acompanha a Preview 109.8. A preparação desta preview não aplica SQL automaticamente a uma central existente. Construir o aplicativo e configurar uma central nova são operações separadas.
 
-Na nova interface, **Gestão → Acessos → Editar** permite alterar o nome de exibição de uma conta existente. Para vincular uma nova conta, utilize seu identificador de cadastro, nome, perfil e condomínios. A lista não retorna e-mails. Um administrador pode editar o próprio nome, mas precisa de outro administrador para mudar o próprio perfil/escopo. Alterações invalidam a autorização online anterior; entre novamente. A autorização offline expira conforme o prazo já existente.
+## Configuração do cliente
 
-Aplique a migração antes de distribuir a nova build. Ela limpa dados textuais existentes e normaliza envios antigos no servidor, preservando a repetição segura dos envios. A interface antiga ainda usa e-mail em campos de autoria e precisa ser atualizada. A autenticação mantém o e-mail; arquivos anexados, backups externos e caches offline antigos não são apagados por essa migração. Novas exportações JSON da build atualizada são protegidas.
+`desktop/supabase-config.cjs` contém a configuração publicável da homologação. Para preparar uma instalação independente, configure na sua cópia a URL e a chave publicável do seu próprio projeto antes de gerar o executável.
 
-Na central deste projeto, os nomes autorizados pelo responsável são Marcelo (administrador) e Evelyn (operadora). Novas contas sem nome recebem uma identificação neutra até o administrador preencher o nome; não se deduz o nome pelo endereço de e-mail.
+Uma chave publicável identifica o aplicativo; ela não substitui o login nem concede autorização de usuário. As regras da central precisam combinar permissões de objetos e Row Level Security, respeitando o workspace, o perfil e o escopo por condomínio.
 
-![NOXUZ — Cybersecurity & Technology](assets/noxuz-logo.png)
+Nunca coloque no aplicativo, nos exemplos ou no repositório:
 
-**MOP — desenvolvido por NOXUZ**
+- senha PostgreSQL;
+- chave `sb_secret_` ou legado `service_role`;
+- token de sessão, senha de operador ou credencial administrativa.
 
-O projeto já contém a URL e a chave **publicável** fornecidas em `desktop/supabase-config.cjs`. Não coloque a senha do banco, `service_role` ou `sb_secret_` no aplicativo.
+Referências oficiais: [chaves de API](https://supabase.com/docs/guides/getting-started/api-keys) e [proteção da Data API](https://supabase.com/docs/guides/api/securing-your-api).
 
-## 1. Criar as tabelas
+## Arquivos SQL disponíveis
 
-Abra https://supabase.com/dashboard/project/edvttorkimwqsevndafj/sql/new no navegador conectado à sua conta. Cole todo o conteúdo de `supabase/mop.sql` no SQL Editor e execute com **Run**. O script cria tabelas, permissões, a função de gravação e habilita as notificações. Pode ser executado novamente e não apaga registros.
+| Arquivo ou grupo | Finalidade |
+| --- | --- |
+| `supabase/mop.sql` | Base histórica de workspace, membros, registros, operações e funções de sincronização. Inclui alterações que também aparecem em arquivos separados. |
+| `supabase/permissions.sql` | Perfis e escopo por condomínio. |
+| `supabase/operator-privacy.sql` | Nome de exibição e tratamento de autoria. |
+| `supabase/migrations` | Histórico incremental, incluindo permissões, remoção administrativa, privacidade e identificação por username. |
+| `supabase/preview93_*.sql` e `supabase/preview94_*.sql` | Recursos de equipe, escala e solicitações de troca. |
+| `supabase/preview95_4_absence_medical.sql` | Classificações adicionais de dias da escala. |
+| `supabase/preview100_team_checklist.sql` | Conclusão compartilhada de checklist. |
+| `supabase/preview101_reminder_revisions.sql` | Revisões de lembretes e conclusões. |
+| `supabase/examples/*.example.sql` | Templates públicos de autorização, sem identidades reais. |
 
-## 2. Cadastrar e autorizar os operadores
+A pasta contém SQL de etapas diferentes do projeto. Não execute todos os arquivos em sequência indiscriminadamente: existem trechos sobrepostos e políticas que precisam de tabelas e funções previamente criadas. O arquivo base, isoladamente, não equivale a todas as funcionalidades das previews posteriores.
 
-Em **Authentication → Users → Add user**, crie uma conta para cada operador, com e-mail e senha. Não compartilhe senhas no chat. Confirme os e-mails no painel se estiver criando contas manualmente. Só cadastrar a conta não dá acesso à central.
+Para uma central nova, revise a cadeia de dependências em um ambiente de homologação vazio e registre quais scripts foram aplicados. Para uma central existente, compare o estado instalado e aplique somente as alterações necessárias após validar o plano. Os scripts personalizados de uma instalação não são parte do procedimento público.
 
-Execute no SQL Editor o trecho abaixo, substituindo os e-mails pelos reais:
+## Primeiro administrador
 
-Em uma instalação nova, cadastre e confirme primeiro o e-mail administrador. Em seguida, execute `supabase/autorizar-admin-inicial.sql` no SQL Editor para atribuir o perfil administrador e acesso a todos os condomínios. Troque o e-mail no script quando necessário. O script informa se a conta ainda não existe.
+1. Selecione no painel Supabase o projeto que realmente será usado por essa instalação.
+2. Prepare e confira o esquema necessário à versão do aplicativo.
+3. Crie e confirme no Supabase Auth uma conta individual para o administrador.
+4. Faça uma cópia local de `supabase/examples/autorizar-admin-inicial.example.sql`.
+5. Substitua `__ADMIN_EMAIL__` pela conta autorizada e confira o UUID do workspace.
+6. Revise e execute a cópia somente no SQL Editor do projeto escolhido.
 
-No ambiente MOP configurado neste projeto, `marcelosantostoledo1@gmail.com` já é administrador. Para autorizar outras contas, cadastre-as em Authentication > Users e use o exemplo abaixo para conceder acesso inicial. Depois disso, um administrador pode gerenciar perfis e condomínios pela opção **Gestão → Acessos**.
+O template não cria uma conta nem define senha. Ele verifica a existência da conta confirmada e do workspace antes de conceder o perfil `admin` com acesso a todos os condomínios. Recusa alterar um vínculo já existente com outro perfil ou escopo. O placeholder provoca erro antes de qualquer concessão se não for preenchido.
 
-```sql
-insert into public.mop_members(workspace_id,user_id)
-select '00000000-0000-4000-8000-000000000001', id
-from auth.users
-where email in ('operador1@empresa.com','operador2@empresa.com')
-on conflict do nothing;
+Guarde a cópia preenchida fora do repositório. Depois da autorização inicial, prefira o fluxo administrativo do aplicativo para gerir acessos.
 
-select u.email, m.workspace_id
-from public.mop_members m join auth.users u on u.id=m.user_id;
-```
+## Outros operadores
 
-A consulta final deve mostrar os operadores autorizados. O perfil inicial padrão é **operador** e abrange todos os condomínios até que um administrador limite o acesso. Os perfis disponíveis são administrador, supervisor, operador e consulta. Supervisores e administradores podem cadastrar modelos de checklist. Não habilite acesso público às tabelas. A chave publicável identifica o projeto; login e regras do banco controlam o acesso.
+O template `supabase/examples/autorizar-operador.example.sql` exige uma conta confirmada e a indicação explícita dos condomínios permitidos. Ele concede o perfil `operator` e recusa modificar um vínculo existente divergente.
 
-## 3. Conectar cada computador
+Substitua `__OPERATOR_EMAIL__` e `__CONDOMINIO__` somente em uma cópia local revisada. Use os identificadores de condomínio da instalação. Não reutilize o template de administrador para cadastrar operadores.
 
-1. Preserve uma cópia da pasta `%APPDATA%\MOP\dados` com o programa fechado antes da primeira sincronização. O MOP também cria backup automático antes das alterações.
-2. Instale a versão 2.1.0 ou mais recente; executáveis antigos não contêm estes recursos nem as verificações de perfil.
-3. Na tela inicial, entre com o e-mail e a senha do operador autorizado. Nenhum registro, contador ou histórico é carregado na interface antes do login.
-4. Na primeira conexão, confirme o envio dos registros locais. A base local será vinculada à central; trocar de projeto depois exige um perfil separado.
-5. Aguarde o estado **Sincronizado** e repita na outra máquina.
+Criar uma conta no Supabase Auth não é suficiente para acessar os dados do MOP: a associação ao workspace e as permissões também precisam existir.
 
-Os números `#1`, `#2` etc. são identificadores **locais** e podem diferir entre computadores. Use o **protocolo MOP** para identificar o mesmo registro nas duas máquinas. Backups idênticos com os mesmos protocolos são reconhecidos; cadastros feitos separadamente com protocolos diferentes são registros distintos e não são fundidos automaticamente.
+## Conectar uma estação
 
-## Offline, conflitos e recuperação
+Utilize o perfil de homologação e uma conta autorizada. O primeiro login exige conectividade com a central. Em uma base local já utilizada, preserve uma cópia de segurança e revise o fluxo de primeira sincronização antes de enviar dados.
 
-- A gravação e a fila de envio são feitas na mesma transação SQLite. Sem internet, as informações continuam disponíveis e novas alterações ficam pendentes.
-- O primeiro login exige internet e autorização na central. Após um login online, o último operador autorizado neste computador pode entrar offline com o mesmo e-mail e senha por até **7 dias**. A autorização local usa um verificador scrypt com sal aleatório, protegido pela criptografia do Windows; a senha não é salva em texto. Sem essa proteção disponível, o login exige internet.
-- Abrir novamente o aplicativo sempre exige senha, mesmo que exista um token salvo do Supabase. Depois de 7 dias é necessário renovar o login online. A revogação na central só pode ser conhecida quando houver conexão; uma negação explícita de autorização invalida a credencial offline.
-- Quando a conexão volta, a fila é reenviada. Operações têm identificadores persistentes para evitar duplicação mesmo quando uma resposta se perde.
-- Notificações de tempo real acionam a atualização. Uma conferência a cada 15 segundos recupera mudanças caso uma notificação seja perdida ou o canal esteja reconectando.
-- Se o mesmo registro for editado nas duas máquinas, abra **Sincronização** e compare as versões. Escolha a versão que deve prevalecer. Ambas e a decisão ficam registradas na tabela local `sync_resolutions`; uma nova alteração remota durante a revisão exige nova comparação. A escolha vale para o registro inteiro, não faz fusão automática por campo.
-- Históricos e passagens publicados são imutáveis. Eventos registrados durante uma edição em conflito continuam no histórico, mesmo que a versão final do registro escolhida seja outra.
-- Campos em edição na lista não são apagados ao receber mudanças. Se o registro mudou na outra máquina, recarregue os registros antes de salvá-lo.
-- **Sair do MOP**, bloquear o Windows, suspender o computador ou recarregar a janela bloqueiam o acesso imediatamente e removem os dados da interface. É necessário fazer login novamente. Os registros e a fila pendente são preservados.
-- O processo principal verifica o login em cada consulta, gravação, exportação, abertura da pasta e acesso à sincronização. Esconder ou remover a tela de login pelo navegador não libera essas operações.
-- Esta proteção controla o acesso **dentro do aplicativo**. O banco SQLite e os backups JSON existentes não foram criptografados por esta mudança. Quem já possui acesso direto a esses arquivos pelo Windows ainda poderá lê-los; proteja a conta do Windows, a pasta de dados e os backups. Executáveis antigos também não têm o novo bloqueio.
-- A sessão é guardada usando a criptografia do Windows (`safeStorage`). Se ela não estiver disponível, o login vale apenas durante a execução. A senha não é armazenada pelo aplicativo.
-- Exportação e backups existentes continuam funcionando. Após vincular uma base, a importação que **substitui toda a base** é bloqueada para evitar apagar ou sobrescrever o trabalho dos demais. Restauração de desastre deve ser feita em um perfil separado e conferida antes de reconectar.
-- Os backups JSON preservam os registros, históricos e passagens, mas não incluem a sessão, o cursor nem o histórico de resolução de conflitos. Para recuperação completa, preserve também a pasta de dados do MOP com o aplicativo fechado.
-- A tabela `mop_operations` guarda os recibos dos envios. Não a apague manualmente: ela garante repetição segura. Monitore o espaço no plano gratuito; ele inclui registros e recibos.
+O protocolo do registro é a referência compartilhada. Identificadores numéricos locais podem variar entre computadores; não faça uma fusão manual de arquivos SQLite para tentar igualá-los.
 
-## Verificação nas duas máquinas
+O suporte offline, a fila persistente e a resolução de conflitos são controlados pelo aplicativo. A revogação remota depende de comunicação com a central para ser conhecida pela estação desconectada.
 
-1. Crie um registro em A e confira o mesmo protocolo em B.
-2. Depois do primeiro login online, desconecte A da internet, crie um registro e atualize outro. Feche e reabra A e entre novamente com sua senha: os dados e as pendências devem continuar presentes.
-3. Reconecte A. Confira em B que cada registro apareceu uma única vez.
-4. Com A offline, edite o mesmo registro em A e B. Reconecte A e confira a comparação de conflitos.
-5. Registre uma passagem e confira em B o retrato dos registros recebidos.
+## Validação do ambiente
 
-## Testes do projeto
+Em uma central e dois perfis de teste separados dos dados operacionais, confirme:
 
-`npm test` testa a gravação, a fila persistente, duas bases locais, conflitos, repetição de envio, permissões e funções SQL em um PostgreSQL de teste (PGlite), sem usar seus registros reais. Os testes Electron estão em `test/STARTUP.md`. A aplicação do SQL, o login e a entrega real de notificações no projeto hospedado precisam ser validados após concluir os passos 1 e 2.
+1. Login de uma conta autorizada e bloqueio de uma conta sem vínculo.
+2. Leitura e gravação respeitando perfil e condomínio.
+3. Sincronização do mesmo protocolo entre as duas estações.
+4. Envio de alterações pendentes após reconexão, sem duplicação.
+5. Apresentação e resolução de um conflito produzido com dados sintéticos.
+6. Bloqueio de funções administrativas para perfis sem permissão.
+
+A chave publicável não deve conseguir ler dados operacionais sem o contexto autorizado. Verifique as permissões dos objetos, as políticas RLS e o acesso a funções ao preparar qualquer ambiente novo.
+
+Os testes locais de `npm.cmd run test:foundation` não comprovam, sozinhos, o estado de uma central hospedada. Nenhum comando de build deve aplicar migrações ou cadastrar usuários automaticamente.
+
+## Recuperação e documentação privada
+
+Backups e relatórios reais podem conter informações operacionais. Mantenha-os fora do código público. Recupere uma base em uma pasta separada, confira o resultado e avalie a reconexão antes de utilizá-la.
+
+O snapshot público não deve incluir scripts de autorização preenchidos, e-mails de usuários, resultados de consultas, arquivos de sessão ou relatórios de diagnóstico da central. Os exemplos deste guia usam placeholders; a configuração efetiva de cada instalação deve ser registrada em documentação privada apropriada.

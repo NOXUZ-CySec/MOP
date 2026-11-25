@@ -1,0 +1,871 @@
+[
+  {
+    "version": "2.3.0-preview.109.8",
+    "date": "2026-11-25",
+    "title": "MOP Preview 109.8 — confiabilidade e recuperação",
+    "changes": [
+      "Backup integral de todas as tabelas do SQLite local, incluindo filas e conflitos de sincronização, com verificação antes de concluir.",
+      "Cópias criptografadas com proteção do usuário Windows ou senha portátil para recuperação em outro computador.",
+      "Configurações recebe criação, verificação e teste de recuperação em nova pasta, sem substituir o banco em uso.",
+      "Operações de backup restritas a administradores com acesso completo, com revalidação da sessão durante a execução.",
+      "Leituras de registros e rotinas coordenadas para reduzir solicitações sobrepostas e descartar respostas de sessões anteriores.",
+      "Código-fonte, versão, entrada Electron e comandos de build alinhados para reproduzir esta pré-release.",
+      "Dados centrais e configurações existentes preservados; nenhuma migração aplicada ao Supabase."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.109.7",
+    "date": "2026-11-25",
+    "title": "MOP Preview 109.7 — tabelas, indicadores e catálogo visual",
+    "changes": [
+      "Registros passa a usar TanStack Table, com ordenação, paginação e escolha de colunas, preservando detalhes e ações autorizadas.",
+      "Novos filtros de condomínio e responsável; busca com acentos normalizados e datas interpretadas no fuso de São Paulo.",
+      "Início recebe dois gráficos Recharts: ocorrências nos últimos 7 ou 30 dias e conclusão das rotinas previstas no dia/período atual.",
+      "Comparativos de Relatórios usam Recharts e preservam as consultas e regras existentes.",
+      "Estados de carregamento, vazio, erro e falta de acesso tratados explicitamente. Gráficos são carregados sob demanda.",
+      "Catálogo Storybook local separado do aplicativo, com campos, calendários, menus, tabelas e indicadores.",
+      "DBeaver Community e piloto Drizzle configurados separadamente para diagnóstico e homologação; nenhuma migração ou alteração de permissões aplicada ao banco central.",
+      "Pré-release de homologação; identidade da instalação e preservação dos dados mantidas."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.109.6",
+    "date": "2026-11-25",
+    "title": "MOP Preview 109.6 — shadcn no login e confirmação de saída",
+    "changes": [
+      "Integração inicial do shadcn/ui: campos e botão do login, com rótulos acessíveis, navegação por teclado e controle de visibilidade da senha.",
+      "Diálogo de saída usa AlertDialog, prioriza Cancelar, mantém foco dentro da janela e devolve o foco ao botão de origem.",
+      "Esc fecha a confirmação sem trocar de aba; fora de diálogos, retorna ao Início também para o perfil visualizador.",
+      "Preservados logotipo, paleta azul/ciano e regras atuais de autenticação, dados e permissões.",
+      "Ajustada a ordem da configuração do atualizador para manter allowDowngrade=false após selecionar o canal preview.",
+      "15 verificações Playwright aprovadas em tela desktop e compacta, com ponte Electron simulada; a homologação operacional continua necessária.",
+      "Versão de homologação; a migração dos demais módulos para shadcn ocorrerá gradualmente."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.109.5",
+    "date": "2026-11-22",
+    "title": "MOP Preview 109.5 — Restauração do destaque azul na seleção de dias",
+    "changes": [
+      "Corrigida regressão visual da Preview 109.4: a seleção no calendário principal da Escala volta a usar preenchimento azul evidente e borda clara para diferenciar dia selecionado de hover.",
+      "Seleção visual de dias em Plantão, Folga e Férias utiliza o mesmo realce azul, mantendo ícones e classificações originais.",
+      "Foco de teclado permanece separado da seleção, com contorno acessível e sem brilho excessivo nos campos.",
+      "Arraste contínuo e reversível e seleção múltipla com Ctrl/Shift preservados.",
+      "Teste de estilo calculado no Electron verificou destaque real, borda de 2px e contraste de rótulos para Plantão, Folga e Férias.",
+      "Preview 109 continua em homologação, aguardando verificação do calendário instalado; Preview 110 bloqueada.",
+      "Linhas interativas em Início (ocorrências de atenção, próximas rotinas, acontecimentos e pendências) e na Passagem de Turno utilizam o mesmo fundo de hover da lista de Registros (#06385f8f), com cantos suaves e transição sutil.",
+      "Os indicadores de status e prioridade são preservados; foco por teclado recebe contorno acessível. Validação de interação visual no Windows ainda pendente."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.109.4",
+    "date": "2026-11-21",
+    "title": "MOP Preview 109.4 — Uniformidade visual dos indicadores e Continuidade operacional",
+    "changes": [
+      "Os quatro cards de indicadores da Visão Geral (Total, Concluídos, Em andamento e Pendentes) compartilham exatamente o gradiente translúcido homologado dos painéis do MOP.",
+      "O painel Continuidade operacional usa o mesmo fundo, transparência, blur, borda e sombra da aba Início e dos quatro cards.",
+      "Mantidas as cores semânticas dos ícones, indicadores e estados, sem alterar dados, fluxo operacional ou regras de permissão.",
+      "Efeito de foco da Escala refinado conforme o padrão de Registros: seleção de dias com borda discreta e sombra suave, sem halo azul excessivo; foco acessível por teclado permanece perceptível.",
+      "Dropdowns abertos, campos e seletores recebem foco uniforme com transição curta, mantendo respeito a redução de movimento.",
+      "Corrigida sobreposição: cabeçalho da Escala com nome do colaborador não fica acima das janelas de Solicitação de Troca ou Confirmação. Validação de hierarquia de camadas por teste no Electron.",
+      "Arquivo de estilos de compatibilidade ui-next/src/mop-theme1094.css importa as variáveis compartilhadas aprovadas, evitando gradientes legados em home58.css e home62.css.",
+      "Validação real no Electron confirmou equivalência de background, opacidade, borda, blur e sombra para os quatro indicadores e Continuidade operacional, comparados aos painéis de referência.",
+      "118 testes automatizados aprovados, incluindo quatro novos para a paleta, além de compilação Vite/TypeScript.",
+      "Preview 109.4 permanece em homologação visual e funcional; não avançar para Preview 110 sem aprovação."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.109.3",
+    "date": "2026-11-21",
+    "title": "MOP Preview 109.3 — Rotinas, atalho Esc e calendário de solicitação de troca",
+    "changes": [
+      "Próximas rotinas da aba Início utiliza a mesma consulta de tarefas e execuções do módulo Checklists e Rotinas, incluindo Supabase para sessões online e a base local somente para instalações sem vínculo central.",
+      "Corrigida a ausência de pendências no Início quando a rotina existia apenas no Supabase; erros de indisponibilidade da central não são mascarados como lista vazia.",
+      "O painel Início atualiza as rotinas quando há sincronização de dados, ao voltar o foco à janela e automaticamente a cada 20 segundos enquanto visível.",
+      "As rotinas concluídas pela equipe são excluídas da lista de pendentes, preservando o total concluído.",
+      "Atalho global Esc retorna à aba Início após autenticação e recebimento obrigatório, a partir das demais abas.",
+      "Esc não substitui a confirmação obrigatória de turno nem interfere com diálogos de confirmação modal.",
+      "106 testes automatizados aprovados, inclusive seis novos sobre rotinas centrais, atualizações e atalho Esc; Vite/TypeScript compilados.",
+      "Preview 109.3 ainda necessita homologação operacional; Preview 110 permanece bloqueada.",
+      "O campo de data na Solicitação de Troca deixa de abrir o seletor nativo do Windows e utiliza o calendário padrão do MOP, com a mesma grade, cartões de dia, tons translúcidos e navegação entre meses.",
+      "Datas anteriores ao dia atual e a data original da troca ficam desabilitadas, preservando as validações do pedido de troca no backend.",
+      "A janela de solicitação pode ser fechada com Esc sem navegar acidentalmente para Início, enquanto o atalho Esc continua ativo nas demais abas.",
+      "Cinco testes automatizados adicionais cobrindo calendário, datas bloqueadas, seleção e comportamento de Escape."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.109.2",
+    "date": "2026-11-21",
+    "title": "MOP Preview 109.2 — Dropdown Checklist e transparência de Registros",
+    "changes": [
+      "Corrigido o empilhamento CSS da janela Gerenciar rotinas: o menu Período/Frequência aparece acima do painel Rotinas deste período, com clique funcional inclusive na última opção.",
+      "O formulário de Checklist tem camada própria elevada, menus e células abertas são posicionados acima dos irmãos e nenhuma superfície é cortada.",
+      "A aba Registros agora integra os componentes usados de fato: records-list, records-detail, records-metric, records-search, records-select e descrição à paleta translúcida de Início e Ocorrências.",
+      "Preservação de seleção atual, marcações de status e botões de ação primários com cores semânticas próprias.",
+      "Inspeção de estilos calculados no Electron confirmou o mesmo gradiente, opacidade, bordas e blur nas abas Início, Registros e Ocorrências e sobreposição correta do dropdown sobre o painel inferior.",
+      "100 testes automatizados aprovados, incluindo quatro testes adicionais da Preview 109.2; compilação Vite/TypeScript concluída.",
+      "Continuam pendentes aprovação visual da Preview 109.2, marcador Férias no uso real e nova Visão Geral; Preview 110 não liberada."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.109.1",
+    "date": "2026-11-21",
+    "title": "MOP Preview 109.1 — Seleção contínua e reversível na Escala",
+    "changes": [
+      "Arrastar o mouse entre duas datas seleciona automaticamente todos os dias consecutivos, mesmo ao atravessar linhas e semanas do calendário.",
+      "Inverter a direção durante o mesmo arraste desmarca automaticamente as datas que ficam fora do intervalo, sem necessitar de nova seleção.",
+      "Arrastar para antes da data inicial continua selecionando intervalo cronológico completo; atravessar a origem recalcula corretamente o novo intervalo.",
+      "Combinação Ctrl preserva dias já selecionados fora do arraste e permite seleção adicional.",
+      "São preservados o menu flutuante de classificação, Férias, salvamento de escala, Shift, desfazer e permissões dos perfis.",
+      "96 testes automatizados aprovados, incluindo oito novos testes de intervalo contínuo, reversão, início, passagem por semanas e seleção Ctrl; Vite e TypeScript compilados.",
+      "A Preview 109 ainda necessita homologação visual e funcional no Windows; 110 depende de aprovação."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.109",
+    "date": "2026-11-21",
+    "title": "MOP Preview 109 — Orientação operacional e Férias na escala",
+    "changes": [
+      "Preview 108.2 homologada pelo usuário: paleta translúcida continua como padrão visual oficial do MOP.",
+      "Tela Início inclui orientação do plantão com ocorrências críticas/pendências de Segurança, registros antigos e acesso direto ao acompanhamento.",
+      "Bloco Próximas rotinas exibe tarefas aplicáveis ao período e data, com horários, status de conclusão da equipe e atalho para Checklists e Rotinas.",
+      "Resumo informativo das últimas 12 horas com total de registros e abertos, claramente diferente da escala cadastrada.",
+      "Novo marcador Férias distinto de Folga, Falta e Atestado na Escala: ícone de palmeira, cor própria, seleção múltipla e legenda.",
+      "Classificação Férias autorizada para gravação local e central; persistida e reaberta no calendário, com exportação PDF e Excel e sem contagem de horas trabalhadas.",
+      "88 testes automatizados aprovados, incluindo seis cenários específicos da Preview 109, com Vite/TypeScript compilados.",
+      "Homologação prática do novo painel e de Férias ainda pendente. Preview 110 bloqueada."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.108.2",
+    "date": "2026-11-21",
+    "title": "MOP Preview 108.2 — Transparência real e tonalidade consistente em todas as telas",
+    "changes": [
+      "Corrige a Preview 108.1: novo sistema de superfícies translúcidas com gradiente alpha, em vez de painéis sólidos com tons semelhantes.",
+      "A mesma composição de gradiente translúcido e blur de fundo de Início/Registros é aplicada a Ocorrências, Checklists, Auditoria, Escala, Relatórios, Passagem e Gestão.",
+      "Cards e métricas adotam uma segunda camada translúcida, campos e filtros uma terceira camada de azul escuro para preservar profundidade e leitura.",
+      "Dropdowns usam um fundo mais opaco para preservar legibilidade sobre o conteúdo.",
+      "Cores de alertas críticos, andamento, sucesso, jornadas e seleção mantidas sem alterações semânticas.",
+      "Tema compartilhado com variáveis em mop-theme1081.css para orientar telas das próximas previews.",
+      "Validação de CSS computado no Electron confirmou fundo, transparência e blur idênticos em 7 superfícies de módulos; 82 testes de regressão aprovados; Vite e TypeScript compilados.",
+      "Ainda necessita homologação visual real no Windows; Preview 109 bloqueada até aprovação."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.108.1",
+    "date": "2026-11-21",
+    "title": "MOP Preview 108.1 - Paleta visual unificada em todas as abas",
+    "changes": [
+      "Paleta central reutilizável em ui-next/src/mop-theme1081.css, baseada nas cores de painéis e cards da aba Início e nos campos da aba Registros.",
+      "Padronização de superfícies, cards, contornos, campos e menus de Ocorrências, Relatórios, Auditoria, Checklists e Rotinas, Escala, Passagem de Turno, Gerenciar Usuários, configurações e janelas operacionais.",
+      "Valores padronizados por variáveis CSS para orientar o desenvolvimento das próximas previews e reduzir estilos divergentes.",
+      "Estados de alerta, crítico, pendente, concluído e jornada/folga continuam com cores semânticas próprias.",
+      "Separadores OPERACIONAL e GESTÃO da Preview 108 preservados, sem mudanças de permissões.",
+      "65 testes automatizados aprovados, incluindo cinco verificações da paleta, integrações e regressões; compilação Vite/TypeScript concluída.",
+      "Preview 108.1 em homologação visual no Windows. Preview 109 permanece pendente de aprovação."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.108",
+    "date": "2026-11-21",
+    "title": "MOP Preview 108 - Ocorrências avançadas e navegação Operacional/Gestão",
+    "changes": [
+      "Alerta operacional destacado na página Ocorrências para ocorrências críticas abertas e pendências com idade elevada.",
+      "Filtro por responsável atribuído, inclusive sem responsável; filtros de atenção para Críticas abertas, Pendências antigas e Sem responsável.",
+      "Idade mínima configurável em 24, 48, 72 e 168 horas, medida desde o registro e não confundida com SLA contratual.",
+      "Histórico de reaberturas, encerramentos e alterações de status derivado da auditoria local verificável; providências centrais continuam exibidas na linha do tempo.",
+      "Contadores específicos de pendências antigas e marcadores de urgência na fila operacional.",
+      "Menu lateral dividido em OPERACIONAL e GESTÃO para Supervisor e ADM; OPERACIONAL também aparece para operador, sem alterar permissões.",
+      "Gestão contém exclusivamente Relatórios, Auditoria e Gerenciar Usuários, quando permitidos ao perfil.",
+      "77 testes automatizados aprovados, incluindo novos cenários de escopo e integridade de auditoria, alertas, filtros e menu.",
+      "Dependências da central e histórico entre computadores exigem homologação em ambiente real."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.107.5",
+    "date": "2026-11-21",
+    "title": "MOP Preview 107.5 - Janela de recebimento resiliente a falhas de sincronização",
+    "changes": [
+      "Quando a central não responde no login, a janela de aceite continua exibindo ocorrências e passagens presentes na base local, em vez de mostrar somente um erro com a lista vazia.",
+      "O usuário é informado explicitamente de que a conferência está em modo local, e que entregas feitas em outros computadores podem ainda não estar disponíveis.",
+      "A confirmação local mantém conferência individual, auditoria e sincronização posterior; o MOP não apresenta ausência de entrega como verificada pela central enquanto offline.",
+      "A consulta online atualiza a base antes de apresentar entregas pendentes, preservando as correções da Preview 107.4.",
+      "Oito testes de tolerância a falhas de sincronização adicionados e aprovados, além dos testes anteriores.",
+      "Permanece pendente investigação operacional da conectividade Supabase e homologação João → Mário entre estações."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.107.4",
+    "date": "2026-11-21",
+    "title": "MOP Preview 107.4 - Entrega visível entre usuários e conferência compacta",
+    "changes": [
+      "Conferência inicial consulta e aguarda sincronização atualizada com a central antes de decidir se existe entrega pendente; confirmação também reconfere dados atuais.",
+      "Correção para mostrar entregas sem ocorrências pendentes ao operador seguinte com escopo autorizado.",
+      "Se houver uma nova entrega no mesmo turno após um aceite anterior, o MOP solicita um novo recebimento em vez de reutilizar o aceite antigo.",
+      "O resultado da entrega informa claramente se ficou apenas salvo localmente ou confirmado pela sincronização com a central.",
+      "Resumo de ocorrências na janela inicial mais compacto, com menos espaçamento e caixas desnecessárias; título, condomínio, status e descrição legíveis.",
+      "Mensagens explícitas quando a conferência está usando apenas dados locais sem confirmação da central.",
+      "61 testes automatizados aprovados, incluindo cenários de entrega vazia, novo aceite após início anterior, autenticação e sincronização.",
+      "Pendente homologação real João-Mário entre computadores e conferência visual no Windows. Não avançar para Preview 108 sem aprovação."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.107.3",
+    "date": "2026-11-21",
+    "title": "MOP Preview 107.3 - Conferência legível e auditoria de recebimentos",
+    "changes": [
+      "Janela inicial de conferência não exibe o código/protocolo do registro; título, condomínio e descrição têm hierarquia visual própria e maior legibilidade.",
+      "Campo de texto da janela inicial removido; início sem entrega anterior utiliza motivo automático auditável, sem digitação obrigatória.",
+      "Auditoria gerencial agora consulta recebimentos e inícios de turno na base de passagens, não apenas as confirmações de ciência da tela antiga.",
+      "Tabela de auditoria mostra operador, turno, tipo de entrada, momento do aceite, remetente da passagem e observação.",
+      "Histórico de ciência individual anterior foi preservado em seção separada.",
+      "53 testes automatizados aprovados, incluindo verificação de motivo automático, consulta de auditoria e ausência de textarea/código na tela inicial.",
+      "Homologação prática entre operadores e computadores ainda é obrigatória; Preview 108 não liberada."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.107.2",
+    "date": "2026-11-21",
+    "title": "MOP Preview 107.2 - Correção do início de turno do Operador e da lista de ocorrências",
+    "changes": [
+      "Operadores podem registrar início sem entrega anterior, com conferência integral e justificativa auditável; não há bloqueio permanente por ausência de passagem.",
+      "A janela de conferência passa a incluir ocorrências de turno anterior, atual e pendências abertas de períodos antigos, mesmo sem prioridade crítica.",
+      "O início sem passagem mantém confirmação única, autoria e carimbo do turno, com idempotência.",
+      "Se não houver registros visíveis nesta estação, há aviso claro sobre possível sincronização pendente.",
+      "50 testes de regressão aprovados, incluindo fluxo sem entrega e registros antigos; versão ainda em homologação."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.107.1",
+    "date": "2026-11-21",
+    "title": "MOP Preview 107.1 - Recebimento obrigatório unificado na entrada",
+    "changes": [
+      "A janela de entrada agora executa o recebimento real do turno, não somente a ciência informativa ou redirecionamento para a aba Passagem de Turno.",
+      "Conferência individual obrigatória de todos os registros criados no turno anterior, inclusive concluídos, e das pendências críticas de outros turnos ainda abertas.",
+      "Um único botão registra o recebimento e libera acesso somente após confirmação do backend, com proteção contra duplo clique e tentativas repetidas.",
+      "Recebimento auditado com identificação do usuário, turno, protocolo de entrega e versões das pendências críticas.",
+      "Revisão antiga de ciência deixa de servir como autorização operacional para criar/editar registros, ocorrências e concluir passagem.",
+      "Quando não existe entrega, operadores são bloqueados; Supervisor/ADM pode registrar início excepcional com justificativa e conferência integral.",
+      "Sessões em execução conferem a cada minuto se o aceite ainda é válido para o turno corrente.",
+      "Componente de entrada substitui a antiga janela de ciência e o popup de redirecionamento que gerava duas confirmações.",
+      "48 testes automatizados aprovados, incluindo seis cenários novos de recebimento, bloqueios, idempotência, recuperação e início excepcional.",
+      "Homologação real entre computadores, sincronização e validação visual no Windows ainda pendentes."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.107",
+    "date": "2026-11-21",
+    "title": "MOP Preview 107 - Homologação do fluxo de Passagem de Turno",
+    "changes": [
+      "Fluxo de entrega e recebimento consolidado em módulo de domínio próprio, com validações reaproveitadas no processo principal.",
+      "Teste automatizado de dois usuários distintos entregando e recebendo plantão, verificando autoria, leitura de pendências e histórico auditável.",
+      "Tela de entrega registrada indica claramente quando deve aguardar recebimento por outra conta, evitando tentativa indevida de recebimento próprio.",
+      "Correção da atualização visual após confirmação de entrega ou recebimento, com notificação de sucesso e tratamento explícito de falhas.",
+      "Atualização automática de 30 segundos e por evento de sincronização; informações em edição não são descartadas quando o conteúdo permanece igual.",
+      "Recusa de entrega duplicada, aceite repetido, ausência de conferências obrigatórias e leitura crítica baseada em versão antiga.",
+      "Status Em andamento, responsável e próxima ação são preservados para continuidade no próximo plantão.",
+      "39 testes automatizados aprovados, incluindo Passagem de Turno, permissões, registros, rotinas, PDF/Excel e análises; compilação Vite/TypeScript validada.",
+      "Validação multicomputador real e avaliação visual Windows permanecem na etapa de homologação; não são simuladas como concluídas."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.106",
+    "date": "2026-11-21",
+    "title": "MOP Preview 106 - Análises comparativas e recorrências",
+    "changes": [
+      "Nova seção Análises na aba Relatórios, exclusiva para supervisores e administradores.",
+      "Comparativos entre janelas equivalentes de 24 horas, 7 dias e 30 dias, com variação absoluta e percentual apenas quando existe base anterior.",
+      "Gráficos com comparação por categoria e distribuição de registros por intervalos consecutivos de 24 horas.",
+      "Identificação de assuntos recorrentes pelo título normalizado e condomínio, preservando o vínculo ao registro original.",
+      "Filtros por condomínio, categoria e status validados novamente no processo principal e restritos aos registros visíveis ao usuário.",
+      "Exportação PDF e Excel estendida à seção Análises; Excel inclui tabelas Recorrências e Série diária.",
+      "Indicadores de status identificados como status atuais de registros criados em cada período, sem afirmar reconstrução histórica.",
+      "Testes automatizados de comparação, escopo, recorrência e exportação aprovados; compilações Node, Vite e TypeScript concluídas."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.105",
+    "date": "2026-11-21",
+    "title": "MOP Preview 105 - Exportação PDF e Excel e acesso gerencial",
+    "changes": [
+      "Acesso à aba Relatórios agora exclusivo de supervisores e administradores; operadores não visualizam a aba e recebem recusa do backend ao tentar exportar.",
+      "Botões Exportar PDF e Exportar Excel no cabeçalho da aba Relatórios, ao lado de Atualizar dados.",
+      "Exportação aplica os filtros de período, condomínio, categoria e status aos registros autenticados no processo principal do aplicativo.",
+      "PDF em formato A4 paisagem com cabeçalho MOP, identificação da emissão, indicadores e tabela de dados essenciais.",
+      "Excel com abas Resumo, Detalhamento, Por categoria e Por condomínio, tipografia e cores MOP, filtros e proteção contra entradas interpretadas como fórmulas.",
+      "Exportação de Rotinas e Passagem de Turno usa seus respectivos retratos atuais e sinaliza que não há consolidado histórico nesta versão.",
+      "Arquivos gravados apenas após seleção de destino pelo usuário, sem acesso a registros de condomínios fora do seu escopo.",
+      "19 testes automatizados aprovados, compilação React/TypeScript bem-sucedida e teste da geração nativa de PDF no Electron."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.104",
+    "date": "2026-11-21",
+    "title": "MOP Preview 104 - Relatórios operacionais e indicadores reais",
+    "changes": [
+      "Nova aba Relatórios com visão geral, Registros, Ocorrências, Passagem de Turno e Rotinas.",
+      "Indicadores calculados a partir dos registros autorizados, sem dados fictícios no modo operacional.",
+      "Filtros por período, condomínio, categoria e status com dropdowns e transparência no padrão MOP.",
+      "Gráficos de barras por categoria e condomínio, volume diário, tabelas consultáveis e acesso ao protocolo original.",
+      "Visão gerencial para supervisores e administradores; operador limitado a registros criados durante o plantão atual.",
+      "Rotinas exibem apenas as conclusões do dia; passagem de turno apresenta somente o estado atual, com limitações indicadas na tela.",
+      "Tempo médio de conclusão é apenas estimativo e considera registros com datas válidas; a interface explicita essa limitação.",
+      "Exportação PDF e Excel reservada à Preview 105, para manter o foco em relatórios confiáveis e auditáveis."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.103",
+    "date": "2026-11-21",
+    "title": "MOP Preview 103 - Gestão de ocorrências sem duplicar registros",
+    "changes": [
+      "Registros permanece como livro operacional; Ocorrências incorpora prioridade, responsável e acompanhamento por providências, sem duplicar o registro de origem.",
+      "Supervisor e administrador podem atribuir responsáveis e prioridades; operadores podem adicionar providências e atualizar status de ocorrências autorizadas.",
+      "Reabertura de ocorrência concluída restrita à supervisão; atualizações de status preservam trilha de auditoria do registro.",
+      "Histórico de providências vinculado ao protocolo, incluindo auditoria de alterações de prioridade e responsável.",
+      "Indicador de tempo em aberto, linha do tempo, status e integração com a passagem de turno existente.",
+      "Correção de marcadores de status cortados: Em andamento passa a ter largura e quebra adequadas.",
+      "Dropdowns com fonte 11 px, pesos padronizados, cores translúcidas, ícones e animações do MOP.",
+      "Acesso do Supabase protegido por perfil, central e condomínio; testes de gravação e restrições efetuados em transações revertidas."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.102",
+    "date": "2026-11-21",
+    "title": "MOP Preview 102 - Central de Ocorrências",
+    "changes": [
+      "Aba Ocorrências substitui o protótipo por uma central de acompanhamento baseada nos registros autorizados, sem duplicar informações.",
+      "Indicadores de ocorrências em aberto, em andamento, resolvidas no dia e críticas quando há prioridade explicitamente registrada.",
+      "Filtros de período, condomínio, categoria e status reutilizam dropdowns e animações padrão MOP.",
+      "Painel detalhado com descrição, providências, prioridade, registro de autoria, linha do tempo e vínculo com o registro original.",
+      "Ações Abrir registro e Atualizar status respeitam controles de edição e auditoria já existentes no MOP.",
+      "Interface com translucidez, paleta operacional, ícones existentes, bordas arredondadas e estados responsivos."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.101",
+    "date": "2026-11-21",
+    "title": "MOP Preview 101 - Reagendamento de rotinas e acabamento do popup",
+    "changes": [
+      "A janela flutuante do lembrete usa transparência nativa também na cor de fundo do Electron, para eliminar os pixels pretos nos cantos arredondados.",
+      "Alterar um horário já ultrapassado para outro horário futuro no mesmo dia gera nova revisão do lembrete e permite um segundo disparo sem intervenção manual.",
+      "A conclusão da equipe e a dispensa pessoal da revisão anterior deixam de bloquear a nova revisão.",
+      "Histórico de conclusões anteriores preservado por número de revisão, sem apagar registros ou alterar autorias.",
+      "Validação de edição e disparos em Supabase e SQLite com testes automatizados de regressão."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.100",
+    "date": "2026-11-21",
+    "title": "MOP Preview 100 - Conclusão de rotinas por equipe",
+    "changes": [
+      "A conclusão de uma rotina passa a ser compartilhada por todos os colaboradores da central, por rotina e data.",
+      "O Supabase utiliza registro único e auditável por equipe, preservando a identificação de quem executou a atividade.",
+      "Histórico de conclusões individuais anteriores é preservado e consolidado para evitar duplicações.",
+      "Listagem e indicadores mostram as rotinas concluídas pela equipe, com atualização periódica em estações conectadas.",
+      "Popups de rotina abertos em outras estações são fechados quando a conclusão é identificada na central.",
+      "Janela de lembrete com cantos externos arredondados e transparência nativa do Electron no padrão MOP.",
+      "Adiar e Dispensar hoje continuam sendo ações individuais de notificação; Concluir rotina afeta a equipe inteira.",
+      "Consulta de entregas pendentes logo após o login e a ciência obrigatória; quando há recebimento aguardando, a janela MOP orienta o operador a revisar e assumir o turno.",
+      "Nova consulta após sincronização com a central, para detectar entregas que chegaram depois da autenticação."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.99",
+    "date": "2026-11-21",
+    "title": "MOP Preview 99 - Gestão de rotinas e histórico de atualizações",
+    "changes": [
+      "Calendário de Data da rotina padronizado com o MOP, incluindo animação, seleção e navegação mensal.",
+      "Supervisores e administradores podem editar descrição, período, horário e frequência das rotinas ativas sem criar novo registro.",
+      "Rotinas fora do dia atual permanecem acessíveis para edição na área de gestão.",
+      "Botão Dispensar hoje do lembrete recebe destaque vermelho e estados interativos.",
+      "Notas de atualização atualizadas a partir dos dados publicados no GitHub desde a Preview 94."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.98.1",
+    "date": "2026-11-21",
+    "title": "MOP Preview 98.1 - Janela de lembrete premium e horario editavel",
+    "changes": [
+      "Substitui a moldura nativa Windows do lembrete por janela sem borda com cabeçalho, controles de fechar e ações visuais MOP.",
+      "Mantém janela independente sempre acima dos demais programas.",
+      "Redesenha Adiar 10 min, Dispensar hoje e Concluir rotina.",
+      "Campo Horário do lembrete agora permite digitar HH:MM diretamente ou usar o dropdown animado, com validação do horário e alinhamento central.",
+      "Compilação e testes de lembretes aprovados.",
+      "Teste visual no Windows recomendado."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.98",
+    "date": "2026-11-21",
+    "title": "MOP Preview 98 - Ajustes de rotinas e lembretes",
+    "changes": [
+      "Corrige alinhamento da barra Gerenciar rotinas, substitui seletor de horario nativo por dropdown MOP com hora e minuto e animacoes.",
+      "Modal de desativacao no padrao visual do aplicativo, sem confirmacao nativa do Windows; retorno de foco ao campo Descricao depois de desativar.",
+      "Janela Electron de lembrete reforcada para sobrepor outros programas e disparar ao carregar; botao Testar popup conectado a IPC autenticado para supervisao.",
+      "Seis testes automatizados de horario, recorrencia, popup e controle aprovados.",
+      "A sobreposicao real no Windows ainda requer teste manual."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.97",
+    "date": "2026-11-21",
+    "title": "MOP Preview 97 - Lembretes de checklists e rotinas",
+    "changes": [
+      "Supervisao e administracao podem programar lembretes com hora e frequencia: todos os dias, dias uteis, dia da semana, uma vez so ou data especifica.",
+      "Alerta em janela independente Electron, configurada sempre acima dos programas, com concluir rotina, adiar 10 min ou dispensar hoje.",
+      "Horarios em America/Sao_Paulo, acompanhamento por usuario e dia, sem repeticao apos concluido ou dispensado.",
+      "Schema da homologacao atualizado e validado por transacao reversivel de supervisor.",
+      "Cinco testes automatizados de recorrencia e notificacao aprovados."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.96.5",
+    "date": "2026-11-21",
+    "title": "MOP Preview 96.5 - Alternar Todos em autorizações",
+    "changes": [
+      "A opção Todos no seletor de condomínios agora funciona como alternância: desmarcada libera acesso integral (null); marcada remove todas as autorizações ([]).",
+      "O salvamento continua mediante confirmação em Salvar permissões.",
+      "Interface compilada e tipagem verificada."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.96.4",
+    "date": "2026-11-21",
+    "title": "MOP Preview 96.4 - Dropdown de condominios autorizados",
+    "changes": [
+      "Substitui campo textual de condominios em Gerenciamento de Usuarios por dropdown multi-selecao visual MOP, com animacoes, checkboxes e opcao Todos.",
+      "Inclui 8 condominios cadastrados na interface.",
+      "Todos corresponde a escopo nulo (acesso integral), conforme regra atual do backend; administradores mantem acesso integral obrigatorio.",
+      "Selecoes persistidas somente ao salvar permissoes.",
+      "Compilacao TypeScript e Vite aprovada."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.96.3",
+    "date": "2026-11-21",
+    "title": "MOP Preview 96.3 - Justificativas, status e compartilhamento de registros",
+    "changes": [
+      "Corrige layout do campo de justificativa para textarea em largura total com alinhamento vertical, padrão visual MOP.",
+      "Mudanças exclusivamente de status ficam sem justificativa obrigatória e continuam auditadas; edições de conteúdo seguem exigindo motivo.",
+      "Corrige mapeamento das providências originais no formulário para evitar falsos positivos.",
+      "Lista de registros atualiza após sincronização recebida.",
+      "Permissão específica da conta Joao à unidade Barão de Mauá ajustada no Supabase de homologação (novo login necessário).",
+      "Validado RLS com perfil de Joao e sete testes automatizados."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.96.2",
+    "date": "2026-11-21",
+    "title": "MOP Preview 96.2 - Corrige criação de registros",
+    "changes": [
+      "Correção do fluxo de criação: preload aguarda a resposta assíncrona IPC e apresenta eventuais erros reais; validação das categorias Segurança e Manutenção corrigida, eliminando textos corrompidos que impediam o cadastro.",
+      "Nove testes automatizados concluídos sem falhas.",
+      "Sem alterações nas bases de dados."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.96.1",
+    "date": "2026-11-21",
+    "title": "MOP Preview 96.1 - Corrige falha ao criar registro",
+    "changes": [
+      "Hotfix: corrige createRecord43 na ponte Electron preload para aguardar a resposta IPC antes de interpretá-la.",
+      "Evita a mensagem genérica de falha na comunicação com banco local após criar registros.",
+      "Testes automatizados do fluxo de resposta positiva, erros reais e permissões de edição/exclusão aprovados.",
+      "Nenhum banco ou registro existente foi modificado."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.96",
+    "date": "2026-11-21",
+    "title": "MOP Preview 96 - Edição, duplicação e exclusão auditada de registros",
+    "changes": [
+      "Habilita edição operacional dos registros: operador edita apenas registros próprios com identificação comprovada, supervisor edita registros de seu escopo e administrador pode realizar exclusão lógica com justificativa.",
+      "Duplicação cria novo protocolo, preservando o original.",
+      "Edição exige justificativa e mantém autoria original; alterações são gravadas com auditoria imutável do MOP.",
+      "Mantidos os controles de acesso por unidade e integração de sincronização.",
+      "Testes de permissões, auditoria e ações de registro aprovados."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.95.5",
+    "date": "2026-11-21",
+    "title": "MOP Preview 95.5 - Confirmação de gravação da escala",
+    "changes": [
+      "Corrige o fluxo de confirmação de escala: escrita central retorna os dias persistidos; tela relê a escala do banco e verifica cada classificação antes de limpar alterações pendentes.",
+      "Falhas permanecem visíveis na janela de confirmação; mudanças pendentes são preservadas para nova tentativa.",
+      "Mensagem de sucesso não é mais apagada pelo carregamento concorrente.",
+      "Testadas permissões de gravação das cinco classificações no Supabase por transação reversível.",
+      "Sem mudanças em registros operacionais existentes."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.95.4",
+    "date": "2026-11-21",
+    "title": "MOP Preview 95.4 - Escala mensal exportavel",
+    "changes": [
+      "Exportação mensal em grade de calendário, em PDF e Excel, com aparência inspirada no MOP.",
+      "Indicadores: horas previstas calculadas por 11 horas por plantão, dias de folga trabalhada, faltas e atestados.",
+      "Supervisores podem registrar Falta e Atestado na escala central.",
+      "A classificação Folga em feriado foi removida da seleção e legenda; dados históricos preservados e apresentados como Folga.",
+      "Inclui migração aplicada à homologação e testes automatizados."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.95.3",
+    "date": "2026-11-21",
+    "title": "MOP Preview 95.3 - Calendario padrao MOP",
+    "changes": [
+      "Substitui o seletor nativo do Windows para Inicio do ciclo por calendario React customizado.",
+      "Data e icone alinhados dentro do campo.",
+      "Calendario com tema MOP, navegacao de meses, destaque da selecao e de hoje, fechamento com Escape e clique externo, e sobreposicao correta sobre o calendario de escala.",
+      "Mantidas jornada 12x36 e demais fluxos da Preview 95."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.95.2",
+    "date": "2026-11-21",
+    "title": "MOP Preview 95.2 - Alinhamento da barra de escala",
+    "changes": [
+      "Toolbar reorganizada com alinhamento vertical central, espacamento uniforme, altura de 44px para os controles, largura proporcional e responsividade.",
+      "Preservado o dropdown padrao MOP."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.95.1",
+    "date": "2026-11-21",
+    "title": "MOP Preview 95.1 - Dropdown de colaboradores corrigido",
+    "changes": [
+      "Corrige o dropdown de colaboradores ocultado pelo calendário na tela Escala.",
+      "Restaura o padrão visual compartilhado com o filtro Status, inclusive cores, bordas, hover, animação e ordenação de camadas.",
+      "Mantém funcionalidades e canal de atualização da Preview 95."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.95",
+    "date": "2026-11-21",
+    "title": "MOP Preview 95 - Escala 12x36 e atualizações automáticas",
+    "changes": [
+      "Preview 95 de homologação: jornada fixa 12x36 na interface operacional; lista de colaboradores pelo nome para supervisão; indicação de Plantão (troca) e Folga (troca); detalhes claros de ambas as datas no pedido.",
+      "Atualizador do instalador reativado: consultas ao GitHub, download automático e instalação mediante confirmação.",
+      "Executável portátil continua com atualização manual.",
+      "Instalações anteriores da homologação com atualizador desativado devem instalar esta versão manualmente uma vez."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.94-homolog.2",
+    "date": "2026-11-21",
+    "title": "MOP Preview 94 Homologação 2 - Identificação nas trocas",
+    "changes": [
+      "Correção da identificação do solicitante nos pedidos de troca.",
+      "Mostra nomes cadastrados da central em pedidos recebidos, decisões da supervisão e minhas solicitações; preserva o fluxo bilateral e a aprovação.",
+      "Build de homologação para validação."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.94-homolog.1",
+    "date": "2026-11-21",
+    "title": "MOP Preview 94 - Homologação Supabase",
+    "changes": [
+      "Conectado ao projeto Supabase MOP-Homologacao, com credencial pública específica.",
+      "AppData separado da instalação anterior para impedir conflito com bancos e sessões ligados a outro projeto.",
+      "Atalhos e identidade Windows de homologação exclusivos; atualização automática cruzada desativada.",
+      "Banco homologado com checklists, escalas, troca bilateral, aprovação independente e notificações compartilhadas.",
+      "Contas Operador Teste A, Operador Teste B e Supervisor Teste vinculadas e escala fictícia em dezembro de 2026.",
+      "Tema corporativo original Preview84 preservado."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.94",
+    "date": "2026-11-19",
+    "title": "Trocas de escala com aceite bilateral e decisão independente",
+    "changes": [
+      "Solicitante seleciona o colega real da mesma central e informa a data de seu plantão e a data do plantão do colega.",
+      "Colega recebe pedido na Escala e pode aceitar ou recusar; uma recusa encerra a solicitação automaticamente.",
+      "Supervisor ou administrador independente dos dois colaboradores decide após o aceite do colega; não há autoaprovação.",
+      "Aprovação atualiza quatro atribuições de escala em uma transação atômica com validação rigorosa de trabalho e folga.",
+      "Regras RLS impedem respostas por terceiros, aprovações sem aceite, alterações em pedidos encerrados e acesso a outras centrais.",
+      "Notificações de aceite, recusa e aprovação aparecem na central de avisos, com leitura individual; a tela de Escala também se atualiza em tempo real.",
+      "Solicitações antigas sem colega identificado não podem ser aprovadas pelo novo fluxo; devem ser refeitas."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.93",
+    "date": "2026-11-19",
+    "title": "Rotinas e trocas sincronizadas com Supabase",
+    "changes": [
+      "Checklist e Rotinas: cadastro, desativação e conclusão são compartilhados pelo Supabase, com execução individual por usuário e dia.",
+      "Solicitações de troca e suas decisões passam a ser registradas na central, acessíveis à supervisão e ao solicitante.",
+      "Uma aprovação de troca atualiza o dia de escala em transação atômica no PostgreSQL.",
+      "Eventos Realtime de escala, rotinas e solicitações atualizam as telas conectadas, com restrição por central e políticas RLS.",
+      "Exportações de escala agora consultam a versão central quando o aplicativo está conectado ao Supabase.",
+      "Sem conexão, estações vinculadas bloqueiam novas alterações compartilhadas em vez de criar cópias locais divergentes.",
+      "O visual da Preview 84 foi mantido. Dados locais anteriores não são importados automaticamente."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.92",
+    "date": "2026-11-19",
+    "title": "Estabilidade de atualização e bloqueio de sessão",
+    "changes": [
+      "A verificação de versões passa a ter controle de concorrência, impedindo checagens duplicadas e interferência durante download ou instalação.",
+      "O atualizador mantém o estado pronto até que o usuário confirme a instalação; verificações automáticas não alteram essa condição.",
+      "Falhas de verificação ou de inicialização do instalador agora deixam um estado de erro recuperável, sem bloquear o aplicativo.",
+      "O bloqueio e o encerramento de sessão tratam falhas assíncronas de desconexão sem reabrir permissões ou produzir erros não tratados.",
+      "Os testes de controle de acesso e de concorrência foram ampliados; interface e visual da Preview 84 permanecem inalterados.",
+      "Sem alteração em contas, senhas, banco operacional ou dados do Supabase."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.91",
+    "date": "2026-11-19",
+    "title": "Restauração da Preview 84 como padrão",
+    "changes": [
+      "Interface e navegação da Preview 84 restauradas como a base padrão do MOP.",
+      "Removidas as alterações de Aparência, personalização, notificações opcionais e tematização introduzidas nas Previews 85 a 90.",
+      "Preservados Configurações acima do perfil, atualizador, notas de atualização e permissões disponíveis na Preview 84.",
+      "A versão 91 é uma restauração funcional da 84, publicada com número superior para permitir atualização a partir da 90.",
+      "Dados locais, autenticação Supabase, escalas e demais registros operacionais não foram apagados."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.90",
+    "date": "2026-11-19",
+    "title": "Retorno ao visual único Azul MOP",
+    "changes": [
+      "Removida a seleção de temas e paletas Grafite e Alto Contraste na área Aparência.",
+      "O MOP volta a utilizar apenas o azul corporativo em painéis, campos, menus e janelas, mantendo os refinamentos de fundos uniformes da versão anterior.",
+      "Preferências antigas de outras paletas passam automaticamente ao Azul MOP; transparência, desfoque, animações, densidade e notificações individuais são preservados.",
+      "Ajustes de cor alternativos não são aplicados ao sistema e o banco de dados operacional não é alterado.",
+      "Permanecem os destaques necessários para urgências, pendências, ocorrências e estados de escala."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.89",
+    "date": "2026-11-19",
+    "title": "Superfícies uniformes e hierarquia visual refinada",
+    "changes": [
+      "A conferência de entrega e recebimento agora utiliza cartões internos com um único fundo neutro, inclusive o indicador de urgência, que mantém apenas o destaque de texto.",
+      "Os botões de acesso rápido compartilham fundo e bordas; a ação principal recebe somente realce discreto por contorno e ícone.",
+      "Principais acontecimentos e pendências não exibem mais faixas de fundo alternadas: linhas são separadas por divisores suaves e destaque apenas ao passar o cursor.",
+      "A Passagem de Turno utiliza abas sem fundos divergentes e linhas uniformes, destacando a aba ativa por uma linha inferior da cor do tema.",
+      "Registros, checklists e linhas de auditoria seguem o mesmo padrão neutro, preservando as cores dos estados operacionais.",
+      "O refinamento acompanha Azul MOP, Grafite e Alto Contraste, sem alterar contas, permissões ou dados do Supabase."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.88",
+    "date": "2026-11-19",
+    "title": "Refinamento integral de temas e componentes secundários",
+    "changes": [
+      "Revisão de componentes com cores fixas, incluindo tela de ciência, filtros secundários, editor de escala em lote e painéis de sincronização.",
+      "Menus, botões, ícones neutros, campos e estados selecionados compartilham cores e bordas do tema escolhido.",
+      "Janelas flutuantes e confirmações usam o tema autenticado mesmo quando aparecem fora da estrutura principal da aplicação.",
+      "O destaque de dias selecionados no calendário acompanha o tema sem apagar a cor que identifica cada tipo de escala.",
+      "Mantidas as preferências locais existentes e as cores de erro, alerta, sucesso e classificação operacional."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.87",
+    "date": "2026-11-18",
+    "title": "Tema aplicado à interface completa",
+    "changes": [
+      "As paletas de Aparência foram conectadas a componentes de todas as seções do MOP: painel inicial, passagem de turno, registros, escala, checklists, auditoria, perfil e configurações.",
+      "Cores de campos, menus expansíveis, botões, seleção, ícones neutros, cartões, tabelas e efeitos de foco acompanham a paleta escolhida.",
+      "Janelas de confirmação e menus flutuantes recebem os mesmos tokens mesmo quando abertos fora da árvore principal da interface.",
+      "Os temas Grafite e Alto Contraste apresentam fundos e realces próprios, enquanto alertas e categorias operacionais mantêm cores semânticas para evitar confusão.",
+      "As preferências continuam salvas por usuário localmente. Nenhuma permissão ou dado do Supabase foi modificado."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.86",
+    "date": "2026-11-18",
+    "title": "Aparência global, personalizável e perceptível",
+    "changes": [
+      "Transparência e desfoque separados, com efeito real nas superfícies operacionais sem reduzir contraste de textos e botões.",
+      "Três paletas: Azul MOP, Grafite e Alto contraste, preservando cores semânticas das ocorrências e escalas.",
+      "Densidade compacta ajustada em navegação, cartões, registros, escalas e painéis.",
+      "Animações Premium, Suaves e Desativadas com tempos efetivamente distintos.",
+      "Prévia interativa fiel às cores e aos parâmetros aplicados na ferramenta.",
+      "Perfil Leve e Restaurar padrão MOP; preferências anteriores migradas e salvas por usuário neste computador."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.85",
+    "date": "2026-11-18",
+    "title": "Central de configurações pessoais",
+    "changes": [
+      "Configurações organizadas em Minha conta, Aparência, Notificações e Atualizações, com navegação interna padronizada.",
+      "Preferências de desfoque, animações e densidade aplicadas imediatamente e salvas por usuário neste computador.",
+      "Preferências de avisos opcionais para turnos, trocas e registros; alertas críticos permanecem visíveis e notificações não são apagadas.",
+      "Minha conta mostra perfil e estado da sessão, com acesso orientado à recuperação segura de senha.",
+      "Atualizador e histórico de versões preservados e acessíveis a todos os perfis autenticados.",
+      "Corrigidos caracteres corrompidos nas mensagens da interface, do login, das notificações e do atualizador, padronizando os textos em UTF-8."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.84",
+    "date": "2026-11-18",
+    "title": "Atualizações acessíveis a todos e Configurações no rodapé",
+    "changes": [
+      "Acesso à página Configurações e ao atualizador liberado para todos os perfis autenticados: administrador, supervisor, operador e visualizador.",
+      "Botão Configurações movido da lista principal para a área inferior da barra lateral, logo acima do card do usuário.",
+      "A área de atualizações e notas de versões ganhou uma página própria, sem o antigo conteúdo de demonstração.",
+      "Permissões administrativas, gestão de usuários e edição de escalas permanecem restritas aos perfis autorizados."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.83",
+    "date": "2026-11-18",
+    "title": "Recuperação segura de acesso e acabamento da escala",
+    "changes": [
+      "Adicionado fluxo de recuperação de senha usando e-mail e link original do Supabase, com validação de posse da conta antes da alteração.",
+      "A recuperação não modifica permissões, registros operacionais ou membros da central.",
+      "A aba Escala recebe painéis translúcidos, leve desfoque e efeitos de profundidade padronizados com as demais abas.",
+      "Preservadas a seleção múltipla do calendário e as cores específicas de cada categoria."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.82",
+    "date": "2026-11-18",
+    "title": "Login, identificação e movimentação da janela",
+    "changes": [
+      "Corrigidos os indicadores antigos Preview 46/64 na tela de login e no cabeçalho, que não refletiam a versão publicada.",
+      "Adicionada região arrastável no topo da janela de login do Electron; botões, campos e controles permanecem interativos.",
+      "Padronizada a área de arraste na barra superior do aplicativo.",
+      "Mensagens de falha de login distinguem credenciais inválidas, conta não confirmada e indisponibilidade do serviço.",
+      "Preservados os dados locais, contas existentes e políticas Supabase; nenhuma senha foi modificada."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.81",
+    "date": "2026-11-17",
+    "title": "Auditoria, notas e escalas centralizadas",
+    "changes": [
+      "Notas de atualização alinhadas à esquerda, inclusive marcadores e descrições.",
+      "Cores e superfícies de Auditoria harmonizadas com o tema MOP.",
+      "Tabela de escalas no Supabase com políticas RLS: colaborador consulta sua escala e gestores autorizados editam.",
+      "Quando o cliente está autenticado e vinculado à central, leitura e gravação de escalas passam pelo Supabase; caso contrário, o modo local continua disponível.",
+      "Solicitações de troca, checklists e migração de escalas antigas ainda não estão sincronizados.",
+      "Gestão de credenciais de novos usuários permanece pendente, sem exposição de chaves administrativas no cliente."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.80",
+    "date": "2026-11-17",
+    "title": "Seletores coerentes e notas com marcadores",
+    "changes": [
+      "Filtros exibem o valor real selecionado: Todos ou Todas as origens, em vez do título genérico.",
+      "O valor atualmente selecionado não se repete nas opções da lista aberta.",
+      "Menus de Auditoria e Checklists usam cores, bordas e espaçamento do componente padrão de Registros.",
+      "Removido o botão X da confirmação de atualização; Cancelar e Escape continuam disponíveis.",
+      "Cada alteração nas notas de atualização recebe um marcador visual próprio."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.79",
+    "date": "2026-11-17",
+    "title": "Padrão único de caixas expansivas",
+    "changes": [
+      "O título do seletor agora apresenta Origem ou Período quando o filtro está no padrão Todos.",
+      "A opção selecionada deixa de ser repetida na lista quando já está visível no botão.",
+      "Menus de Auditoria e Checklist seguem o padrão visual dos filtros de Registros.",
+      "Componente reutilizável preparado para os próximos seletores do MOP."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.78",
+    "date": "2026-11-17",
+    "title": "Filtros padronizados e legenda visual da escala",
+    "changes": [
+      "Auditoria e Checklist/Rotinas utilizam o mesmo seletor personalizado de opções da ferramenta, sem lista nativa do Windows.",
+      "Calendário interativo apresenta cores discretas e distintas para as seis classificações.",
+      "Ícones por categoria aplicados ao calendário, legenda e menu flutuante de classificação.",
+      "Sem mudanças nos registros ou regras de sincronização."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.77",
+    "date": "2026-11-17",
+    "title": "Correção da confirmação de atualização",
+    "changes": [
+      "Corrigida a renderização do modal de confirmação de reinício, que antes não aparecia ao clicar em Atualizar e reiniciar.",
+      "Mantidos o aviso de trabalho em andamento e a instalação silenciosa após confirmação.",
+      "Nenhuma alteração nos registros operacionais ou na vinculação Supabase."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.76",
+    "date": "2026-11-17",
+    "title": "Exportação premium e início da integração central",
+    "changes": [
+      "Histórico de atualizações limitado em altura, com rolagem interna.",
+      "Exportação individual de escalas em Excel formatado e PDF com identidade visual do MOP, disponível a todos os perfis autorizados.",
+      "Configuração padrão para novas instalações direcionada ao projeto MOP do Supabase.",
+      "Instalações já vinculadas a outra central permanecem vinculadas, sem migração automática ou alteração de dados.",
+      "Criação de usuários e sincronização das tabelas locais de escala/checklist ainda em desenvolvimento."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.75",
+    "date": "2026-11-17",
+    "title": "Refinamento das notas e confirmação visual",
+    "changes": [
+      "Setas SVG centralizadas e padronizadas nas notas de atualização.",
+      "Animação suave de expansão e recolhimento, respeitando redução de movimento.",
+      "Confirmação de reinício em janela própria com o padrão visual do MOP, substituindo o alerta nativo do Windows.",
+      "Fluxo de instalação silenciosa preservado."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.74",
+    "date": "2026-11-17",
+    "title": "Atualização silenciosa e histórico de versões",
+    "changes": [
+      "Instalação automática silenciosa após confirmação, sem assistente tradicional do NSIS.",
+      "Reabertura do MOP após a atualização, quando permitida pelo Windows.",
+      "Notas de atualização consultáveis na área Configurações, com histórico das versões recentes.",
+      "Progresso de download e aviso antes de encerrar o aplicativo."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.73",
+    "date": "2026-11-17",
+    "title": "Feedback de atualização e abertura",
+    "changes": [
+      "Mensagem de preparação ao iniciar instalação.",
+      "Bloqueio de cliques repetidos durante o processo.",
+      "Exibição antecipada da janela ao iniciar o MOP."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.72",
+    "date": "2026-11-17",
+    "title": "Menu flutuante do calendário",
+    "changes": [
+      "Menu de classificação abaixo da última data selecionada.",
+      "Lista vertical para alterar a escala mantendo a seleção múltipla.",
+      "Alterações só são gravadas após Salvar escala."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.71",
+    "date": "2026-11-17",
+    "title": "Atualizador integrado",
+    "changes": [
+      "Consulta ao GitHub Releases e download no cliente.",
+      "Botão Atualizar em Configurações.",
+      "Instalador NSIS e versão portátil."
+    ]
+  },
+  {
+    "version": "2.3.0-preview.70",
+    "date": "2026-11-17",
+    "title": "Editor visual de escala",
+    "changes": [
+      "Seleção de datas por clique e arraste, Shift e Ctrl.",
+      "Desfazer alterações e salvar escala em lote.",
+      "Geração mensal por ciclos 12x36, 3x2, 5x2 e 6x1.",
+      "Persistência local em SQLite, sem sincronização central."
+    ]
+  }
+]

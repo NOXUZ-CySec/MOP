@@ -1,0 +1,2 @@
+.handover36-checklist{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid #315c76;border-radius:10px;background:#102d42}.handover36-checklist strong{font-size:13px;color:#d4edfa}.handover36-checklist label{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:#bdd9e9}.handover36-checklist input{accent-color:#2cace7}.handover-deliver:disabled{opacity:.4;cursor:not-allowed}
+.handover41-stage-note{border:1px solid #27769a;background:#0a3654;padding:12px 14px;border-radius:9px;color:#bce8ff;font-size:12px;line-height:1.55;margin:0 0 14px}

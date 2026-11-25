@@ -1,0 +1,46 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path');
+const {Access}=require('../desktop/access.cjs');
+const root=path.resolve(__dirname,'..');
+test('Preview92 locks immediately when remote unsubscribe rejects, without unhandled rejection',async()=>{
+ let locks=0,closed=0,stops=0;
+ const sync={stopClient:async()=>{stops++;throw Error('Canal remoto indisponível')},close:()=>{closed++},local:{bound:()=>true},membership:{},userId:'user-123'};
+ const access=new Access(sync,{onLock:()=>locks++,now:()=>1000});
+ access.session={mode:'online',expiresAt:100000,username:'operador',role:'operator'};
+ assert.equal(access.require().role,'operator');
+ const pending=access.lock();
+ assert.equal(access.status().authenticated,false);
+ assert.throws(()=>access.require(),/Entre com seu e-mail/);
+ await assert.doesNotReject(pending);
+ assert.equal(stops,1);assert.equal(closed,1);assert.equal(locks,1);
+ access.close();
+});
+test('Preview92 serializes repeated locks during asynchronous cleanup',async()=>{
+ let stops=0,finish;
+ const sync={stopClient:()=>{stops++;return new Promise(resolve=>{finish=resolve})},local:{bound:()=>true},membership:{},userId:'user-123'};
+ const access=new Access(sync,{onLock:()=>{},now:()=>1000});
+ access.session={mode:'online',expiresAt:100000};
+ const first=access.lock(),second=access.lock();
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(stops,1);
+ finish();await first;
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(stops,2);
+ finish();await second;
+ assert.equal(access.status().authenticated,false);
+ access.close();
+});
+test('Preview92 main process implements guarded updater IPC without changing roles',()=>{
+ const main=fs.readFileSync(path.join(root,'desktop/main-next43.cjs'),'utf8');
+ assert.ok(main.includes("require('./updater92.cjs').createUpdater92"));
+ assert.ok(main.includes("ipcMain.handle('mop:update-check'"));
+ assert.ok(main.includes("ipcMain.handle('mop:update-install',event=>response(event,()=>updater92.install()))"));
+ assert.ok(!main.includes('let updaterReady=false;'));
+ assert.ok(main.includes('if(isMainFrame&&access?.session)void access.lock()'));
+ const ui=fs.readFileSync(path.join(root,'ui-next/dist/index.html'),'utf8');
+ assert.match(ui,/assets\/index-[A-Za-z0-9_-]+\.js/);
+ const bundles=fs.readdirSync(path.join(root,'ui-next/dist/assets')).filter(name=>name.endsWith('.js'));
+ assert.equal(bundles.length,1);
+ assert.ok(fs.readFileSync(path.join(root,'ui-next/dist/assets',bundles[0]),'utf8').includes('PREVIEW.94'));
+});

@@ -68,7 +68,7 @@ class SyncEngine {
       await this.stopClient();
       this.client=this.makeClient(config);
       const {data,error}=await this.client.auth.signInWithPassword({email:String(input.email||'').trim(),password:String(input.password||'')});
-      if(error)throw connectionFailure(error,'Não foi possível entrar. Confira e-mail, senha e conexão.');
+      if(error){const code=String(error.code||'');if(code==='invalid_credentials')throw connectionFailure(error,'Usuário ou senha incorretos. Confira as credenciais cadastradas no Supabase.');if(code==='email_not_confirmed')throw connectionFailure(error,'Conta sem confirmação de e-mail. Contate o administrador.');if(code==='user_banned')throw connectionFailure(error,'Conta temporariamente bloqueada. Contate o administrador.');throw connectionFailure(error,'Não foi possível autenticar no Supabase. Verifique a conexão e tente novamente.');}
       const membership=await this.client.from('mop_members').select('workspace_id,user_id,username,display_name,role,condos,access_version').eq('user_id',data.user.id);
       if(membership.error)throw connectionFailure(membership.error,'Não foi possível consultar a autorização na central. Confira a conexão e a configuração do projeto.');
       if(membership.data.length!==1)throw Object.assign(Error('O operador não está autorizado nesta central.'),{code:'AUTH_DENIED'});
@@ -86,7 +86,7 @@ class SyncEngine {
   workspace(){return this.local.bound()?.split('|')[1];}
   subscribe(){
     if(this.channel||!this.workspace())return;
-    this.channel=this.client.channel('mop-'+this.workspace()).on('postgres_changes',{event:'*',schema:'public',table:'mop_records',filter:'workspace_id=eq.'+this.workspace()},()=>this.kick()).subscribe(status=>{
+    this.channel=this.client.channel('mop-'+this.workspace()).on('postgres_changes',{event:'*',schema:'public',table:'mop_records',filter:'workspace_id=eq.'+this.workspace()},()=>this.kick()).on('postgres_changes',{event:'*',schema:'public',table:'mop_schedule_days',filter:'workspace_id=eq.'+this.workspace()},()=>{if(this.mayRun?.()!==false)this.emit(true)}).on('postgres_changes',{event:'*',schema:'public',table:'mop_checklist_tasks',filter:'workspace_id=eq.'+this.workspace()},()=>{if(this.mayRun?.()!==false)this.emit(true)}).on('postgres_changes',{event:'*',schema:'public',table:'mop_checklist_runs',filter:'workspace_id=eq.'+this.workspace()},()=>{if(this.mayRun?.()!==false)this.emit(true)}).on('postgres_changes',{event:'*',schema:'public',table:'mop_schedule_requests',filter:'workspace_id=eq.'+this.workspace()},()=>{if(this.mayRun?.()!==false)this.emit(true)}).subscribe(status=>{
       this.realtime=status==='SUBSCRIBED';
       if(this.realtime)this.kick();
       this.emit();
@@ -110,7 +110,7 @@ class SyncEngine {
       if(session.error)throw session.error;
       if(!session.data.session){this.authenticated=false;this.state='login';this.message='Entre novamente para sincronizar. Os dados locais estão preservados.';return;}
       this.authenticated=true;this.email=session.data.session.user.email;this.subscribe();
-      const membership=await this.client.from('mop_members').select('workspace_id,user_id,display_name,role,condos,access_version').eq('user_id',session.data.session.user.id).eq('workspace_id',this.workspace());
+      const membership=await this.client.from('mop_members').select('workspace_id,user_id,username,display_name,role,condos,access_version').eq('user_id',session.data.session.user.id).eq('workspace_id',this.workspace());
       if(membership.error)throw membership.error;
       if(!membership.data.length)throw Object.assign(Error('O operador não tem permissão para acessar esta central.'),{code:'AUTH_DENIED'});
       const updated=membership.data[0];

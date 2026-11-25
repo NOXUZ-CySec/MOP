@@ -1,0 +1,38 @@
+/* MOP Preview 98 — animated custom time selector */
+.check68 .check98-time{position:relative;width:100%;min-width:0;isolation:auto}
+.check68 .check98-time.open{z-index:260}
+.check68 .check98-time-trigger{display:flex;align-items:center;gap:10px;width:100%;height:42px;padding:0 12px;box-sizing:border-box;border:1px solid #376987;border-radius:9px;background:#071e31;color:#eaf8ff;font:inherit;font-size:12px;text-align:left;transition:border-color .16s,background .16s;box-shadow:none}
+.check68 .check98-time-trigger:hover,.check68 .check98-time.open .check98-time-trigger{border-color:#39addd;background:#0d334e}
+.check68 .check98-time-trigger>span{flex:1;min-width:0;white-space:nowrap}
+.check68 .check98-time-trigger svg{flex:none;color:#a5d6f0}
+.check68 .check98-time-chevron{transition:transform .17s ease}
+.check68 .check98-time.open .check98-time-chevron{transform:rotate(180deg)}
+.check68 .check98-time-popover{position:absolute;top:calc(100% + 7px);left:0;width:280px;max-width:calc(100vw - 44px);padding:12px;box-sizing:border-box;z-index:300;background:linear-gradient(150deg,#0e3552,#081e31);border:1px solid #357b9f;border-radius:12px;box-shadow:0 20px 46px #000a;backdrop-filter:blur(12px);animation:check98-in .18s ease-out both}
+.check68 .check98-time-head{display:flex;align-items:center;gap:9px;margin:0 0 11px;color:#e9f6ff;font-size:12px}
+.check68 .check98-time-head svg{color:#65c9ef}
+.check68 .check98-time-columns{display:grid;grid-template-columns:minmax(0,1fr) 10px minmax(0,1fr);gap:8px;align-items:center}
+.check68 .check98-time-caption{display:block;text-align:center;font-size:10px;color:#9abfd2;margin-bottom:7px}
+.check68 .check98-time-colon{font-weight:700;text-align:center;font-size:19px;color:#9ac9df}
+.check68 .check98-time-scroll{height:168px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#35799d #0c2a40;display:flex;flex-direction:column;gap:3px;padding:2px 4px}
+.check68 .check98-time-scroll button{display:flex;align-items:center;justify-content:center;min-height:32px;padding:5px 8px;gap:5px;flex:none;font-size:12px;font-variant-numeric:tabular-nums;border:1px solid transparent;border-radius:7px;background:transparent;color:#d1e8f5}
+.check68 .check98-time-scroll button:hover{background:#155070}
+.check68 .check98-time-scroll button.selected{background:#14597a;border-color:#42b7e3;color:#fff}
+.check68 .check98-time-actions{display:flex;gap:8px;margin-top:12px;border-top:1px solid #2a5069;padding-top:11px}
+.check68 .check98-time-actions button{flex:1;min-height:35px;justify-content:center;font-size:11px;white-space:nowrap}
+.check68 .check98-time-actions .clear{background:#0c3049}
+.check68 .check98-time-actions .apply{background:#14759e;border-color:#36addb}
+.check68 .check98-time button:focus-visible{outline:2px solid #5bccf7;outline-offset:2px}
+@keyframes check98-in{from{opacity:0;transform:translateY(-6px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.check68 .check98-time-popover{animation:none}.check68 .check98-time-chevron{transition:none}}
+
+/* Preview 98.1: keyboard-editable time, aligned like every other MOP field */
+.check68 .check98-time-entry{height:42px;min-height:42px;width:100%;display:flex;align-items:center;gap:9px;box-sizing:border-box;padding:0 5px 0 12px;border:1px solid #376987;border-radius:9px;background:#071e31;color:#eaf8ff;transition:border-color .16s,background .16s,box-shadow .16s}
+.check68 .check98-time-entry:hover,.check68 .check98-time.open .check98-time-entry,.check68 .check98-time-entry:focus-within{border-color:#43b5e4;background:#0b2d46;box-shadow:0 0 0 1px #41b5e51b}
+.check68 .check98-time-entry>svg{flex:none;color:#a5d6f0}
+.check68 .check98-time-entry>input{display:block!important;flex:1;min-width:0!important;width:100%!important;max-width:none!important;height:39px!important;min-height:39px!important;box-sizing:border-box!important;background:transparent!important;border:none!important;outline:none!important;box-shadow:none!important;color:#e9f7ff!important;margin:0!important;padding:0!important;font:600 13px/20px Segoe UI,Arial,sans-serif!important;letter-spacing:.3px;text-align:center!important;font-variant-numeric:tabular-nums}
+.check68 .check98-time-entry>input::placeholder{color:#90b6cb;opacity:1;font-weight:400;letter-spacing:0}
+.check68 .check98-time-entry>.check98-time-toggle{flex:none;width:31px;height:31px;min-height:31px;margin:0;padding:0;display:grid;place-items:center;background:transparent;border:0;border-radius:7px;color:#aacddf;box-shadow:none}
+.check68 .check98-time-entry>.check98-time-toggle:hover{background:#155070;color:#f0fcff}
+.check68 .check98-time-entry>.check98-time-toggle svg{color:inherit}
+.check68 .check98-time.invalid .check98-time-entry{border-color:#cd697e;box-shadow:0 0 0 1px #cd697e24}
+.check68 .check98-time-error{display:block;padding-top:5px;color:#ffbbc6;font-size:10px;line-height:1.3}

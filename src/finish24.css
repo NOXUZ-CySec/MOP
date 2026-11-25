@@ -1,0 +1,154 @@
+/* MOP Preview.24 — final premium visual treatment, isolated to the demo. */
+:root{--m24-ink:#06111f;--m24-panel:#0c2035;--m24-edge:#335779;--m24-blue:#188dff;--m24-ice:#80d3ff}
+body{
+ background:radial-gradient(ellipse 48% 30% at 77% -7%,#0a458c65,transparent 78%),
+ radial-gradient(ellipse 57% 50% at 100% 99%,#103f8270,transparent 82%),
+ linear-gradient(135deg,#050e1b,#09192b 56%,#061222);
+}
+body::before{
+ right:-12vw;top:-23vw;width:80vw;height:38vw;transform:rotate(-18deg);
+ border:1px solid #209cff42;border-radius:48% 52% 61% 39%;
+ background:radial-gradient(ellipse at 36% 80%,#1387f52d,transparent 70%);
+ box-shadow:0 2px 0 #1796ff38,0 15px 52px #0c67d72c;
+}
+body::after{
+ right:-28vw;bottom:-42vw;width:109vw;height:66vw;transform:rotate(-17deg);
+ border:1px solid #137cd73d;border-radius:62% 38% 56% 44%;
+ background:radial-gradient(ellipse at 72% 18%,#136ac448,transparent 70%);
+ box-shadow:0 -2px 0 #168aff33,0 -15px 80px #0b66c42d;
+}
+#appContent .sidebar{
+ background:linear-gradient(165deg,#081c30 0%,#071423 58%,#091a2b 100%);
+ border-right-color:#244968;box-shadow:9px 0 42px #00000026;
+}
+#appContent .sidebar .brand-home{border-bottom-color:#27465f}
+#appContent .sidebar .tabs button.active{
+ background:linear-gradient(105deg,#1166d0,#0c3162);
+ border-color:#3684db;
+ box-shadow:inset 3px 0 #62c2ff,0 6px 19px #0365d22a;
+}
+#appContent .sidebar .tabs button:not(.active):hover{background:#123454}
+#appContent .sidebar .sidebar-status{
+ background:linear-gradient(130deg,#102d44,#0b2034);
+ border-color:#345975;box-shadow:inset 0 1px #ffffff08;
+}
+#appContent .topbar{
+ background:linear-gradient(100deg,#0b1b2c,#0d2540d9);
+ border-bottom:1px solid #315474;
+ box-shadow:0 8px 35px #00000015;
+}
+#appContent main{
+ background:radial-gradient(ellipse 65% 260px at 83% -10%,#1165c029,transparent 80%),
+ linear-gradient(130deg,#081727e6,#071522b0 65%,#091b2cb8);
+}
+#appContent main .page-heading h1{
+ letter-spacing:-.045em;text-shadow:0 2px 15px #0000001f;
+}
+#appContent main .panel,
+#appContent main .dash-panel{
+ background:linear-gradient(145deg,#112940f2,#0d2136f2 62%,#0b1c30f5);
+ border:1px solid #2d506d;
+ box-shadow:inset 0 1px #ffffff09,0 15px 40px #00000024;
+}
+#appContent main .panel:hover{border-color:#396385}
+#appContent main #overview .overview20-hero{
+ isolation:isolate;overflow:hidden;
+ background:linear-gradient(113deg,#123456,#0b2037 66%,#0b2441);
+ border:1px solid #3284d0;
+ box-shadow:inset 0 1px #91cfff1c,0 14px 40px #0060cb1b;
+}
+#appContent main #overview .overview20-hero::before{
+ inset:auto -22% -94% 24%;height:200%;
+ transform:rotate(-15deg);border:1px solid #168bff47;
+ background:radial-gradient(ellipse at 72% 14%,#188dff4d,transparent 68%);
+ box-shadow:0 -2px 0 #249eff34,0 -14px 64px #0671c039;
+}
+#appContent main #overview .overview20-hero::after{
+ content:"";position:absolute;z-index:-1;pointer-events:none;
+ right:-14%;top:-115%;width:65%;height:200%;
+ transform:rotate(-18deg);border-radius:50%;
+ border-bottom:1px solid #1a94ff5c;
+ background:radial-gradient(ellipse at 25% 85%,#1378de28,transparent 65%);
+}
+#appContent main #overview .overview20-hero h2{color:#f5faff;text-shadow:0 3px 16px #00101b65}
+#appContent main #overview .overview20-metrics .card{
+ background:linear-gradient(145deg,#122d48,#0b2035);
+ border:1px solid #355777;box-shadow:inset 0 1px #ffffff0b;
+}
+#appContent main #overview .overview20-shortcuts button{
+ background:linear-gradient(150deg,#122d49,#0d2034);
+ border-color:#315978;box-shadow:inset 0 1px #ffffff0a;
+}
+#appContent main #overview .overview20-shortcuts button:first-child{
+ background:linear-gradient(135deg,#188fff,#0854c8 88%);
+ border-color:#5db6ff;box-shadow:inset 0 1px #ffffff3c,0 8px 25px #066eff36;
+}
+#appContent main #overview .overview20-shortcuts button:hover{border-color:#6dc3ff}
+#appContent main .record-card,
+#appContent main .compact-pending,
+#appContent main .optional-fields>details{
+ background:linear-gradient(140deg,#102a43,#0c2035);
+ border-color:#315572;
+ box-shadow:inset 0 1px #ffffff07;
+}
+#appContent main .record-card[open],
+#appContent main .compact-pending[open],
+#appContent main .optional-fields>details[open]{border-color:#3d7eae}
+#appContent main .item{
+ background:linear-gradient(110deg,#0e283f,#0c1f33);
+ border-color:#2c4f6c;box-shadow:inset 0 1px #ffffff05;
+}
+#appContent main button.primary,#loginSubmit{
+ background:linear-gradient(115deg,#1aa0ff,#0b5bda 90%);
+ border-color:#4bb0ff;box-shadow:inset 0 1px #ffffff2d,0 6px 19px #076ce536;
+}
+#appContent main button.primary:hover,#loginSubmit:hover{
+ background:linear-gradient(115deg,#46baff,#0d6be6);
+ box-shadow:inset 0 1px #ffffff40,0 8px 22px #0a7af047;
+}
+#appContent main :is(input,select,textarea){
+ background:#091d31;border-color:#355d7b;box-shadow:inset 0 1px 3px #00000024;
+}
+#appContent main :is(input,select,textarea):focus{background:#0c263d}
+.startup{
+ background:radial-gradient(ellipse 58% 45% at 0% 0%,#1260b86b,transparent 80%),
+ radial-gradient(ellipse 62% 48% at 100% 100%,#1358b37a,transparent 81%),
+ linear-gradient(130deg,#071a30,#06111f 57%,#081d38);
+}
+.startup::before{
+ left:-30vw;top:-23vw;width:91vw;height:48vw;
+ background:radial-gradient(ellipse at 35% 80%,#0e8aff45,transparent 68%);
+ border-color:#249fff6b;box-shadow:0 1px 0 #2cafff5e,0 8px 70px #0073e546;
+}
+.startup::after{
+ right:-35vw;bottom:-26vw;width:100vw;height:51vw;
+ background:radial-gradient(ellipse at 65% 25%,#1580ee44,transparent 70%);
+ border-color:#2295ff6a;box-shadow:0 -1px 0 #2b9eff53,0 -15px 70px #0573d942;
+}
+.startup-logo{filter:drop-shadow(0 12px 29px #0088ff3e)}
+#loginForm{
+ background:linear-gradient(150deg,#102a44ee,#091d33f2);
+ border:1px solid #4276a1;
+ box-shadow:inset 0 1px #ffffff16,0 26px 70px #0000007c,0 0 50px #0779e21a;
+}
+#loginForm input:not([type="checkbox"]){
+ background:#081b30;border-color:#396688;box-shadow:inset 0 2px 4px #00000020;
+}
+.release-dialog{
+ background:linear-gradient(150deg,#102b43,#0a1d31)!important;
+ border-color:#46799d!important;
+ box-shadow:0 32px 100px #000000c0,0 0 55px #036bc22b!important;
+}
+.release-dialog .release-head{
+ background:linear-gradient(115deg,#17436d,#0e2a45);
+ border-bottom:1px solid #376388;
+}
+.release-dialog .release-actions{border-top:1px solid #2e5372}
+@media(max-width:850px){
+ #appContent .sidebar{box-shadow:none}
+ #appContent main #overview .overview20-hero::after{right:-35%;top:-65%}
+}
+@media(prefers-reduced-motion:reduce){
+ body::before,body::after,.startup::before,.startup::after{filter:none}
+ #appContent main .panel,#appContent main .item{transition:none!important}
+}

@@ -1,0 +1,144 @@
+/* MOP Preview.15 — refinamento de navegação, hierarquia e acessibilidade (homologação) */
+:root{--p15-divider:#29445e;--p15-muted:#a8c1d7;--p15-focus:#75c8ff}
+#appContent main{min-width:0}
+#records>.page-heading,#handover>.page-heading{margin-bottom:19px}
+#records>.page-heading h1,#handover>.page-heading h1{margin-bottom:5px}
+#records>.panel,#handover>.panel{min-width:0}
+#records .records-filters{display:grid;grid-template-columns:minmax(240px,2fr) minmax(160px,1fr);gap:14px;align-items:end;margin:17px 0 22px}
+#records .records-filters>div{min-width:0}
+#records .records-filters label{display:block;margin-bottom:7px;font-size:12px;color:#bad0e3;font-weight:650}
+#records .records-filters :is(input,select){width:100%;min-width:0;min-height:44px;box-sizing:border-box}
+#records #list{min-width:0}
+#handover .panel>h2{margin-top:0}
+#handover .shift-summary{min-width:0}
+#appContent main :is(button,input,select,textarea,a,summary):focus-visible{outline:2px solid var(--p15-focus);outline-offset:2px}
+#appContent main .muted{line-height:1.55}
+#appContent main .page-heading{gap:16px;align-items:center}
+#appContent main .page-heading .eyebrow{letter-spacing:.09em}
+#appContent main .panel{min-width:0}
+#appContent main :is(.panel-heading,.row){min-width:0}
+#appContent main :is(input,textarea,select){max-width:100%}
+#appContent .sidebar .tabs button{transition:background-color .15s ease,color .15s ease}
+#appContent .sidebar .tabs button:focus-visible{outline:2px solid var(--p15-focus);outline-offset:-2px}
+#appContent main .panel:has(> .p15-panel-heading){padding-top:23px}
+.p15-panel-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px}
+.p15-panel-heading h2{margin:0}
+.p15-panel-heading .muted{margin:4px 0 0}
+@media(max-width:760px){
+ #records .records-filters{grid-template-columns:1fr;gap:10px}
+ #appContent main .page-heading{align-items:flex-start;flex-direction:column}
+ #appContent main .page-heading>button{max-width:100%}
+}
+@media(max-width:480px){
+ #records>.panel,#handover>.panel{padding:16px}
+ #appContent main .page-heading{margin-bottom:15px}
+ #appContent main .page-heading h1{font-size:clamp(23px,6vw,30px)}
+ .p15-panel-heading{align-items:flex-start}
+}
+@media(prefers-reduced-motion:reduce){#appContent .sidebar .tabs button{transition:none}}
+
+/* Expansor de pendências: conteúdo e seta centralizados verticalmente. */
+#handover .handover-more-records > summary,
+#handover .handover-more-records[open] > summary {
+  position:relative;
+  display:flex;
+  align-items:center;
+  box-sizing:border-box;
+  min-height:58px;
+  padding:14px 46px 14px 16px;
+  margin:0;
+  line-height:1.4;
+  list-style:none;
+}
+#handover .handover-more-records > summary::-webkit-details-marker{display:none}
+#handover .handover-more-records > summary::after {
+  content:"";
+  position:absolute;
+  left:auto;
+  right:18px;
+  top:50%;
+  width:8px;
+  height:8px;
+  margin:0;
+  border-right:1.6px solid var(--mop-chevron,#95b8d5);
+  border-bottom:1.6px solid var(--mop-chevron,#95b8d5);
+  transform:translateY(-70%) rotate(45deg);
+  transform-origin:center;
+}
+#handover .handover-more-records[open] > summary::after {
+  transform:translateY(-30%) rotate(225deg);
+}
+#handover .handover-more-records[open]{padding:0 10px 10px}
+#handover .handover-more-records[open] > summary{margin:0 -10px}
+@media(max-width:480px){
+  #handover .handover-more-records > summary,
+  #handover .handover-more-records[open] > summary{min-height:54px;padding:12px 42px 12px 14px}
+  #handover .handover-more-records > summary::after{right:16px}
+}
+
+/* Preview.17: remover o fundo legado claro ao expandir registros. */
+#records .record-card {
+  background:#0d2034;
+  border-color:#273d57;
+}
+#records .record-card > summary.record-summary,
+#records .record-card[open] > summary.record-summary {
+  background:#10283f;
+  color:#eaf4ff;
+  border-bottom:1px solid transparent;
+  transition:background-color .15s ease,border-color .15s ease;
+}
+#records .record-card:hover > summary.record-summary,
+#records .record-card > summary.record-summary:hover {
+  background:#17344e;
+}
+#records .record-card[open] > summary.record-summary {
+  background:#16324c;
+  border-bottom-color:#304c67;
+}
+#records .record-card .record-heading strong {
+  color:#ecf5ff;
+}
+#records .record-card .record-heading small {
+  color:#a4c1de;
+}
+#records .record-card > summary.record-summary::after {
+  color:#92c9f2;
+  border-color:#92c9f2;
+}
+#records .record-card > .record-body {
+  background:#0d2034;
+  color:#d7e7f7;
+}
+#records .record-card .record-priority {
+  color:#b4d9f4;
+}
+#records .record-card > summary.record-summary:focus-visible {
+  outline:2px solid #79c5ff;
+  outline-offset:-3px;
+}
+@media(prefers-reduced-motion:reduce) {
+  #records .record-card > summary.record-summary {transition:none}
+}
+
+/* Preview.17: eliminar a faixa artificial entre os painéis do Checklist. */
+#checklists,
+#checklists > .module-content {
+  background:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#checklists > .module-content {
+  padding:0;
+}
+#checklists > .module-content > .panel {
+  background:linear-gradient(155deg,#0e2238,#0a192b);
+}
+
+/* Histórico: auditoria consultável e integrada ao tema escuro. */
+#handoverHistory .handover-audit{margin:10px 0 12px;border:1px solid #304a66;border-radius:10px;background:#0d2237;padding:0 13px}
+#handoverHistory .handover-audit>summary{min-height:44px;display:flex;align-items:center;padding:10px 34px 10px 0;color:#a9d8f7}
+#handoverHistory .handover-audit-content{border-top:1px solid #2a4561;padding:8px 0 12px}
+#handoverHistory .handover-audit-content p{font-size:12px;line-height:1.5;margin:6px 0;color:#b6cde3;overflow-wrap:anywhere}
+#handoverHistory .handover-audit-content b{color:#e3f3ff}

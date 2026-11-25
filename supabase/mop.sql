@@ -185,7 +185,7 @@ commit;
 -- Após criar os dois operadores em Authentication > Users, execute separadamente:
 -- insert into public.mop_members(workspace_id,user_id)
 -- select '00000000-0000-4000-8000-000000000001',id from auth.users
--- where email in ('operador1@empresa.com','operador2@empresa.com')
+-- where email in ('operador-1@example.invalid','operador-2@example.invalid')
 -- on conflict do nothing;
 
 

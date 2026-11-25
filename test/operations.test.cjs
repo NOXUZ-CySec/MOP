@@ -41,3 +41,15 @@ test('Excel gerado é ZIP OOXML com texto literal, inclusive fórmulas maliciosa
 test('novas coleções persistem, entram no backup e sincronizam referências de anexos',t=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'mop-ops-')),store=new Store(dir),ledger=new SyncStore(store);t.after(()=>{store.close();fs.rmSync(dir,{recursive:true,force:true});});ledger.bind('test');const s=fixture();s.attachments.push({id:1,item_id:1,name:'e.pdf',mime:'application/pdf',content:Buffer.from('%PDF-test').toString('base64')});s.nextAttachment=2;store.write(s);assert.equal(ledger.status().pending,3);const wire=ledger.wire('attachments',s.attachments[0]);assert.equal(wire.item_id,ledger.map('items',1).remote_id);const backup=store.backup();assert.equal(JSON.parse(fs.readFileSync(backup)).attachments.length,1);
 });
+
+test('início sem entrega mantém ciência obrigatória e recibo vazio pessoal visível',()=>{
+ const session={...admin,role:'operator',condos:['A']},before=empty(),next=empty();
+ next.handovers=[{id:1,at:new Date().toISOString(),receipt_at:new Date().toISOString(),receipt_slot:'2026-09-29-N',receipt_user_id:session.userId,receipt_override:false,delivered_at:null,snapshot:[],critical_protocols:[]}];next.nextHandover=2;
+ const saved=O.stampWrite(before,next,session);assert.equal(O.visible(saved,session).handovers.length,1);
+ assert.equal(O.visible(saved,{...session,userId:'other'}).handovers.length,0);
+ assert.throws(()=>O.stampWrite(before,next,{...session,role:'viewer'}),/consulta/);
+ const critical=fixture();critical.items[0].priority='Urgente';const input=O.visible(critical,session);input.handovers=next.handovers;input.nextHandover=2;
+ assert.throws(()=>O.stampWrite(critical,input,session),/Confirme/);
+ input.handovers[0].critical_protocols=[critical.items[0].protocol];assert.equal(O.stampWrite(critical,input,session).handovers[0].receipt_user_id,session.userId);
+ input.handovers[0].receipt_override=true;assert.throws(()=>O.stampWrite(critical,input,session),/Override/);
+});

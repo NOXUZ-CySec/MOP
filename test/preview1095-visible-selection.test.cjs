@@ -1,0 +1,11 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'../ui-next/src');
+const css=fs.readFileSync(path.join(root,'mop-theme1095.css'),'utf8'),main=fs.readFileSync(path.join(root,'main.tsx'),'utf8');
+test('selection fix imported last after refined focus theme',()=>{assert.ok(main.indexOf("import './mop-theme1095.css'")>main.indexOf("import './mop-theme1094.css'"))});
+test('selected calendar day has strong opaque blue fill and visible border',()=>{assert.ok(css.includes('rgba(24,116,165,.98)'));assert.ok(css.includes('border:2px solid #71d9ff!important'));assert.ok(css.includes('.scale-day.scale70-selected'))});
+test('selected labels remain readable regardless of status color',()=>{assert.ok(css.includes('.scale-day-head,.scale-day-main,.scale-day-mini'));assert.ok(css.includes('color:#f2faff!important'))});
+test('keyboard focus and selected state remain independently visible',()=>{assert.ok(css.includes('.scale-day.scale70-selected:focus-visible'));assert.ok(css.includes('outline:2px solid #a7eaff!important'))});
+test('only main schedule grid is affected, not swap request calendar',()=>{assert.ok(css.includes('.scale70-calendar-anchor'));assert.ok(!css.includes('.scale109-swap-grid'))});
+test('live drag range helper still updates and retracts range during same pointer action',()=>{const source=fs.readFileSync(path.join(root,'Schedule70.tsx'),'utf8');assert.ok(source.includes('rangeSelection(dates,drag.start,date,drag.baseline)'));assert.ok(source.includes("selection.includes(day.date)"));assert.ok(source.includes("scale70-selected"))});
+test('Home and Handover interactive rows share Records hover and keyboard focus styling',()=>{for(const selector of ['.mop-home109-briefing-item','.mop-home54-event','.mop-home54-pending','.handover-item-summary'])assert.ok(css.includes(selector),selector);assert.ok(css.includes('background:#06385f8f!important'));assert.ok(css.includes(':focus-visible'))});

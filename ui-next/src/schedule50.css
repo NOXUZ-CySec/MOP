@@ -1,0 +1,34 @@
+/* Preview.50: quiet schedule and clear primary actions */
+.mop-awareness49 footer{gap:12px;align-items:stretch}
+.mop-awareness49 footer button{min-height:46px;min-width:175px;padding:12px 18px;font-size:13px;line-height:1.3;white-space:normal}
+.mop-awareness49 footer button:not(.mop-awareness49-exit){min-width:235px}
+@media(max-width:520px){.mop-awareness49 footer{flex-direction:column-reverse}.mop-awareness49 footer button,.mop-awareness49 footer button:not(.mop-awareness49-exit){width:100%;min-width:0;min-height:46px}}
+.scale-screen{--scale-border:#25465d;--scale-muted:#9bb5c7;--scale-ink:#e7f1f8}
+.scale-heading{margin-bottom:18px}.scale-heading h1{font-size:27px}.scale-heading>div>svg{color:#80b7d4}.scale-demo{background:#142e42;border-color:#294a60;color:#a9c2d4}
+.scale-toolbar{padding:14px 16px;background:#0d2538;border:1px solid var(--scale-border);border-radius:12px;margin-bottom:16px}
+.scale-avatar{background:#18384c;color:#bed7e7}.scale-toolbar-actions button,.scale-toolbar-actions select,.scale-secondary{background:#142e42;border-color:#31546b;color:#d5e6f0}
+.scale-toolbar-actions button.scale-primary{background:#176b9a;border-color:#2d8bb9}
+.scale-metrics{gap:10px;margin-bottom:16px}.scale-metric{min-height:77px;padding:13px;background:#0d2538;border:1px solid var(--scale-border);border-radius:10px}
+.scale-metric-icon,.scale-metric-icon.green,.scale-metric-icon.amber,.scale-metric-icon.violet{width:36px;height:36px;flex:0 0 36px;background:#19394e;color:#a8c5d8}
+.scale-metric-icon svg{width:19px;height:19px}.scale-metric strong{font-size:24px}.scale-metric small{font-size:11px;color:var(--scale-muted)}
+.scale-panel{background:#0d2538;border:1px solid var(--scale-border);border-radius:12px}.scale-panel-head h2 svg{color:#8cb7d0}
+.scale-month button,.scale-panel-head>button{background:#153347;border-color:#31546b}
+.scale-calendar-grid{gap:6px}.scale-calendar-grid .scale-weekday{font-size:11px;color:#8faabd;font-weight:600}
+.scale-day,.scale-day.work,.scale-day.off,.scale-day.holiday-work,.scale-day.holiday-off,.scale-day.extra,.scale-day.swap{--state-accent:#68899f;min-height:82px;padding:8px;border:1px solid #315066;border-left:3px solid #68899f;background:#122b3d;box-shadow:none;filter:none;color:#dbe8f1}
+.scale-day.work{--state-accent:#56a5d0;background:#142e43}
+.scale-day.off{--state-accent:#698c91;background:#102738}
+.scale-day.holiday-work,.scale-day.holiday-off{--state-accent:#c3a16b;background:#1b303d}
+.scale-day.extra{--state-accent:#b89b78;background:#1b303d}
+.scale-day.swap{--state-accent:#9b9ab5;background:#192d40}
+.scale-day:hover{background:#1a3a50;border-color:#80afc8;filter:none}
+.scale-day.selected{background:#1a3a50;border:1px solid #83d1f5;border-left:3px solid #83d1f5;box-shadow:0 0 0 1px #83d1f5}
+.scale-day-head strong{font-size:16px;font-weight:700;color:#f0f6fb}.scale-day-head svg{color:var(--state-accent);width:15px;height:15px}
+.scale-day-main,.scale-day-mini{border:0;background:transparent;color:#d9e8f0;font-weight:650;letter-spacing:0;font-size:10px;text-align:left;padding:0}
+.scale-day-sub{color:#91adbf;text-align:left;font-size:9px}
+.scale-day.off .scale-day-main,.scale-day.off .scale-day-mini{color:#a2bac7}
+.scale-legend{gap:7px;margin-top:14px}.scale-legend span{border:0;background:transparent;padding:4px 7px;font-size:10px;font-weight:500;color:#a9c0d0}
+.scale-legend i{width:7px;height:7px;border-radius:2px}.scale-legend i.work{background:#56a5d0}.scale-legend i.off{background:#698c91}.scale-legend i.holiday-work,.scale-legend i.holiday-off{background:#c3a16b}.scale-legend i.extra{background:#b89b78}.scale-legend i.swap{background:#9b9ab5}
+.scale-tag,.scale-tag.off,.scale-tag.holiday-work,.scale-tag.holiday-off,.scale-tag.extra,.scale-tag.swap{background:#193a50;color:#d3e4ee;border:1px solid #365a71}
+.scale-request>span{background:#273a46;color:#d8c8a9}
+@media(max-width:1400px){.scale-day,.scale-day.work,.scale-day.off,.scale-day.holiday-work,.scale-day.holiday-off,.scale-day.extra,.scale-day.swap{min-height:75px;padding:7px}.scale-day-main{font-size:9px}}
+@media(max-width:750px){.scale-day,.scale-day.work,.scale-day.off,.scale-day.holiday-work,.scale-day.holiday-off,.scale-day.extra,.scale-day.swap{min-height:65px;padding:5px 3px}.scale-day-head{flex-direction:column;align-items:center}.scale-day-main{display:none}.scale-day-mini{display:block;font-size:8px;text-align:center;padding:2px 0}.scale-day-sub{display:none}.scale-day-head strong{font-size:12px}}

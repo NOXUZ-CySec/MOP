@@ -1,0 +1,12 @@
+/* Preview 67.4: dropdown must paint above its sibling panels and across grid boundaries. */
+/* Card motion uses transform and creates stacking contexts; lift the identification card while any dropdown is open. */
+.new67-form>.new33-panel{position:relative;z-index:0}
+.new67-form>.new33-panel:has(.record-filter-dropdown.is-open){z-index:100}
+.new67-form .new33-fields{position:relative;overflow:visible}
+.new67-form .new673-choice{position:relative;min-width:0}
+.new67-form .new673-choice:has(.record-filter-dropdown.is-open){z-index:110}
+.new67-form .record-filter-dropdown{position:relative;z-index:1}
+.new67-form .record-filter-dropdown.is-open{z-index:120}
+.new67-form .record-filter-menu{z-index:130;isolation:isolate;max-height:240px}
+.new67-form .new33-panel{overflow:visible}
+@media(prefers-reduced-motion:reduce){.new67-form .record-filter-menu{animation:none}}

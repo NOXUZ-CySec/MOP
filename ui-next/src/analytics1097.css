@@ -1,0 +1,64 @@
+/* Preview 109.7 — charts share the approved MOP surfaces; colors encode data only. */
+.mop-overview1097{min-width:0;color:#e4f3fc;display:flex;flex-direction:column;gap:15px}
+.mop-overview1097-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+.mop-overview1097-heading h2{margin:3px 0 0;font-size:19px;letter-spacing:-.3px;line-height:1.3;font-weight:750}
+.mop-overview1097-heading>span{color:#98b7cb;font-size:11px;text-align:right}
+.mop-overview1097-eyebrow{font-size:9px;letter-spacing:1.6px;font-weight:700;color:#63c3e8}
+.mop-overview1097-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px}
+.mop-chart1097-panel{min-width:0;border:1px solid var(--mop-glass-border,#285770);border-radius:14px;background:var(--mop-glass-panel,linear-gradient(145deg,#0e3047d9,#071e30ed));box-shadow:var(--mop-glass-shadow,0 10px 30px #0002);backdrop-filter:var(--mop-glass-blur,blur(12px));overflow:hidden}
+.mop-chart1097-panel>header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 18px 13px}
+.mop-chart1097-title{display:flex;align-items:center;gap:10px;min-width:0}
+.mop-chart1097-title h3{margin:0;color:#e4f4fc;font-size:13px;font-weight:700;line-height:1.4}
+.mop-chart1097-title p{margin:4px 0 0;color:#98b9ce;font-size:10px;line-height:1.4}
+.mop-chart1097-icon{width:34px;height:34px;border:1px solid #35769966;background:#12638620;color:#69c8ed;border-radius:10px;display:grid;place-items:center;flex:none}
+.mop-chart1097-icon.is-green{color:#65d6ae;border-color:#3b947b66;background:#207d651c}
+.mop-chart1097-period{display:flex;align-items:center;border:1px solid #32627d;border-radius:9px;padding:3px;background:var(--mop-glass-field,#0b2940);gap:3px;flex:none}
+.mop-chart1097-period button{border:0;border-radius:6px;min-height:30px;padding:5px 10px;font-size:10px;color:#a7c5d8;background:transparent;cursor:pointer;font-family:inherit;white-space:nowrap}
+.mop-chart1097-period button:hover{background:#1c60863d;color:#e9f8ff}
+.mop-chart1097-period button[aria-pressed=true]{background:#175b7b;color:#eaf9ff;box-shadow:inset 0 0 0 1px #3a93bc66}
+.mop-chart1097-period button:focus-visible,.mop-chart1097-link:focus-visible,.mop-chart1097-details summary:focus-visible{outline:2px solid #72ccec;outline-offset:2px}
+.mop-chart1097-link{padding:7px 9px;border:1px solid #34749166;border-radius:8px;background:transparent;color:#7ad1ed;font-size:10px;font-family:inherit;cursor:pointer;white-space:nowrap}
+.mop-chart1097-link:hover{background:#17608133}
+.mop-chart1097-stat{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:0 18px 2px}
+.mop-chart1097-stat strong{font-size:29px;line-height:1.2;font-weight:750;font-variant-numeric:tabular-nums}
+.mop-chart1097-stat span{font-size:11px;color:#b3cedf}
+.mop-chart1097-stat small{font-size:10px;color:#88acc3;margin-left:auto}
+.mop-chart1097-canvas{height:220px;width:100%;min-width:0;padding:6px 8px 0;box-sizing:border-box}
+.mop-chart1097-tooltip{border:1px solid #39718c;border-radius:9px;background:#09263ff5;color:#e6f5ff;padding:10px 12px;box-shadow:0 10px 25px #0005;font-size:11px;max-width:280px}
+.mop-chart1097-tooltip>strong{display:block;margin-bottom:7px;color:#c8e3f2;font-size:10px}
+.mop-chart1097-tooltip>div{display:flex;align-items:center;gap:7px;margin:3px 0}
+.mop-chart1097-tooltip b{margin-left:auto;padding-left:8px;font-variant-numeric:tabular-nums}
+.mop-chart1097-dot{width:7px;height:7px;border-radius:3px;flex:none}
+.mop-chart1097-routines{display:flex;align-items:center;justify-content:center;gap:16px;min-height:228px;padding:0 20px;box-sizing:border-box}
+.mop-chart1097-donut{height:198px;flex:0 0 198px;min-width:0;position:relative}
+.mop-chart1097-donut-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;pointer-events:none}
+.mop-chart1097-donut-label strong{font-size:32px;line-height:1.15;font-weight:750;font-variant-numeric:tabular-nums}
+.mop-chart1097-donut-label span{font-size:10px;color:#a3c5d4}
+.mop-chart1097-routine-values{display:flex;flex-direction:column;gap:16px;flex:1;min-width:120px;max-width:210px}
+.mop-chart1097-routine-values>div{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px}
+.mop-chart1097-routine-values span{color:#b8d2e0;display:flex;align-items:center;gap:8px}
+.mop-chart1097-routine-values i{width:8px;height:8px;border-radius:3px;flex:none}
+.mop-chart1097-routine-values i.is-green{background:#65d6ae}.mop-chart1097-routine-values i.is-amber{background:#e8b468}
+.mop-chart1097-routine-values strong{font-size:19px;font-variant-numeric:tabular-nums}
+.mop-chart1097-total{border-top:1px solid #28516b;padding-top:13px}
+.mop-chart1097-summary{font-size:12px;color:#d4e9f4;text-align:center;margin:0 18px 10px;line-height:1.6}
+.mop-chart1097-summary span{color:#76dbb8;font-weight:650}
+.mop-chart1097-note{color:#95b7cd;font-size:10px;line-height:1.6;margin:10px 18px 16px}
+.mop-chart1097-details{margin:5px 18px 0;color:#bad3e3;font-size:10px}
+.mop-chart1097-details summary{cursor:pointer;padding:6px 0;color:#77cdec;max-width:max-content}
+.mop-chart1097-details>div{max-height:210px;overflow:auto;border:1px solid #2a536a;border-radius:8px;margin-top:6px}
+.mop-chart1097-details table{width:100%;border-collapse:collapse;font-size:10px}
+.mop-chart1097-details caption{text-align:left;padding:10px;color:#9dbed0}
+.mop-chart1097-details th,.mop-chart1097-details td{padding:8px 10px;text-align:left;border-bottom:1px solid #25465e;font-weight:400}
+.mop-chart1097-details thead th{font-weight:650;color:#d1e8f5;background:#113c51}
+.mop-chart1097-details td{text-align:right;font-variant-numeric:tabular-nums}
+.mop-chart1097-state{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:9px;min-height:235px;padding:24px 20px;color:#9cbed1;font-size:12px;text-align:center;line-height:1.6;box-sizing:border-box}
+.mop-chart1097-state>svg{color:#5dbfe4}.mop-chart1097-state strong{color:#d4e8f4;font-size:13px}.mop-chart1097-state span{font-size:11px;max-width:280px}
+.mop-chart1097-state.is-error{color:#e6ba91}
+.mop-chart1097-unavailable{display:flex;gap:10px;align-items:center;padding:18px;border:1px solid var(--mop-glass-border,#285770);border-radius:12px;background:var(--mop-glass-panel,#0c293d);font-size:12px;color:#b1cedf}
+.mop-chart1097-unavailable svg{color:#6ac7e7;flex:none}
+.mop-comparative1097 .mop-chart1097-details{margin-bottom:12px}
+@media(max-width:1180px){.mop-overview1097-grid{grid-template-columns:1fr}.mop-chart1097-routines{justify-content:center}.mop-chart1097-routine-values{max-width:260px}}
+@media(max-width:530px){.mop-overview1097-heading{align-items:flex-start;flex-direction:column;gap:4px}.mop-overview1097-heading>span{text-align:left}.mop-chart1097-panel>header{padding:14px 12px;gap:8px;flex-wrap:wrap}.mop-chart1097-title h3{font-size:12px}.mop-chart1097-period{margin-left:auto}.mop-chart1097-stat{padding:0 12px}.mop-chart1097-stat small{width:100%;margin-left:0}.mop-chart1097-routines{gap:6px;padding:0 12px}.mop-chart1097-donut{height:166px;flex-basis:166px}.mop-chart1097-routine-values{min-width:100px}.mop-chart1097-routine-values>div{font-size:10px;gap:5px}.mop-chart1097-routine-values strong{font-size:17px}.mop-chart1097-donut-label strong{font-size:26px}.mop-chart1097-note,.mop-chart1097-details{margin-left:12px;margin-right:12px}}
+@media(max-width:360px){.mop-chart1097-routines{flex-direction:column;padding-bottom:16px}.mop-chart1097-routine-values{width:100%;max-width:220px;gap:10px}}
+@media(prefers-reduced-motion:reduce){.mop-overview1097 *{animation:none!important;transition:none!important}}

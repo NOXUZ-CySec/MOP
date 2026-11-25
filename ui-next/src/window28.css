@@ -1,0 +1,25 @@
+
+/* Preview28 custom Electron titlebar — native window frame disabled. */
+.ref-header{position:relative;-webkit-app-region:drag;user-select:none}
+.ref-header button,.ref-notifications,.ref-clock,.ref-preview-indicator,.ref-window-actions{-webkit-app-region:no-drag}
+.ref-window-actions{display:flex;align-items:center;gap:0;margin-left:2px;flex-shrink:0}
+.ref-window-actions button{border:0;background:transparent;color:#88bbdf;width:38px;height:35px;display:grid;place-items:center;border-radius:7px;transition:color .15s,background .15s}
+.ref-window-actions button:hover{color:#fff;background:#14548280}
+.ref-window-actions button.ref-close:hover{background:#ba2f47;color:#fff}
+@media(max-width:750px){.ref-header{gap:8px}.ref-window-actions button{width:30px;height:33px}.ref-preview-indicator{display:none}.ref-clock{min-width:75px}}
+@media(prefers-reduced-motion:reduce){.ref-window-actions button{transition:none}}
+
+.ref-login-window-actions{position:absolute;top:11px;right:18px;display:flex;z-index:5;gap:1px;-webkit-app-region:no-drag}
+.ref-login-window-actions button{display:grid;place-items:center;width:39px;height:36px;border:0;border-radius:7px;background:transparent;color:#9bc7e5}
+.ref-login-window-actions button:hover{background:#14548280;color:#fff}
+.ref-login-window-actions button.ref-close:hover{background:#ba2f47}
+@media(max-width:640px){.ref-login-window-actions{top:8px;right:8px}.ref-login-window-actions button{width:34px;height:32px}}
+
+/* Preview82: predictable frameless-window drag regions; keep controls interactive. */
+.ref-login{position:relative}
+.ref-login-drag82{position:absolute;z-index:4;left:0;top:0;right:0;height:45px;-webkit-app-region:drag;user-select:none}
+.ref-login-window-actions{z-index:120;-webkit-app-region:no-drag}
+.ref-login-window-actions button,.ref-login-card,.ref-login-card *,button,input,textarea,select,.ref-nav-item,.ref-user,.mop-notification-root,.mop-motion47-toggle{-webkit-app-region:no-drag}
+.ref-header{position:relative;-webkit-app-region:drag;user-select:none}
+.ref-header .mop-motion47-toggle,.ref-header button,.ref-header .ref-window-actions,.ref-header .mop-notification-root,.ref-header .ref-clock{-webkit-app-region:no-drag}
+@media(max-width:640px){.ref-login-drag82{height:43px}}

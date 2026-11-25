@@ -1,0 +1,48 @@
+/* Preview 67 — concise registration and useful empty states */
+.new67-form .new33-panel{padding:19px 22px}
+.new67-form .new33-panel h2{margin-bottom:5px}
+.new67-hint{color:#98bbd0;font-size:12px;line-height:1.5;margin:0 0 17px}
+.new67-form .new33-fields{gap:15px}
+.new67-form textarea{resize:vertical;min-height:95px}
+.new67-form input:focus-visible,.new67-form textarea:focus-visible,.new67-form select:focus-visible{outline:2px solid #66c9ef;outline-offset:2px}
+.new67-author{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:12px 0;color:#8eb4c9;font-size:12px}
+.new67-author strong{color:#d6f1ff}
+.new67-counter{display:block;text-align:right;color:#82a9bd;font-size:10px;margin-top:3px}
+.new67-form .new33-save:disabled{opacity:.55;cursor:not-allowed}
+.new67-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;min-height:190px;text-align:center}
+.new67-empty svg{color:#67b4d8}
+.new67-empty strong{font-size:14px;color:#e1f4ff}
+.new67-empty span{font-size:12px;color:#95b5c9}
+.new67-empty button{border:1px solid #357c9c;border-radius:8px;background:#10445e;color:#d7f3ff;padding:8px 12px;cursor:pointer}
+.new67-empty button:focus-visible{outline:2px solid #75d9ff;outline-offset:2px}
+@media(max-width:600px){.new67-form .new33-panel{padding:15px}.new67-hint{font-size:11px}}
+
+/* Preview 96 · confirmation dialog for audited logical deletion */
+.records96-overlay{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;background:rgba(2,14,24,.83);backdrop-filter:blur(6px);padding:20px}
+.records96-dialog{width:min(470px,100%);box-sizing:border-box;padding:24px;background:linear-gradient(150deg,#0d314c,#08243a);border:1px solid #2e83ad;border-radius:15px;color:#eaf6fd;box-shadow:0 24px 70px #000a}
+.records96-dialog h2{font-size:19px;margin:0 0 12px}
+.records96-dialog p{font-size:12px;line-height:1.55;color:#b2cddd}
+.records96-dialog label{display:flex;flex-direction:column;gap:9px;margin-top:18px;font-size:12px;color:#e9f6ff}
+.records96-dialog textarea{resize:vertical;width:100%;min-height:88px;box-sizing:border-box;border:1px solid #386f8e;background:#09243a;border-radius:9px;padding:11px;font:inherit;color:#fff;outline:none}
+.records96-dialog textarea:focus{border-color:#54c7f8}
+.records96-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:17px}
+.records96-actions button{border:1px solid #377b9e;border-radius:9px;background:#104465;color:#e9f6ff;padding:10px 15px;cursor:pointer}
+.records96-actions button.danger{background:#943b4e;border-color:#bd6072}
+.records96-actions button:disabled{opacity:.45;cursor:not-allowed}
+.records96-error{color:#ffb9c4!important}
+
+/* Preview 96.3 — justified edits: vertically stacked label and full-width textarea */
+.new67-form .new96-justification{width:100%;min-width:0;box-sizing:border-box}
+.new67-form .new96-justification .new96-reason-field{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
+ gap:9px!important;width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;
+ margin:0!important;padding:0!important;float:none!important;grid-column:1/-1!important;color:#dceffc;font-size:12px;
+}
+.new67-form .new96-justification .new96-reason-field span{display:block;width:100%;line-height:20px}
+.new67-form .new96-justification textarea{
+ display:block!important;position:static!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+ min-width:0!important;min-height:106px!important;height:auto!important;margin:0!important;padding:12px 14px!important;
+ resize:vertical!important;border:1px solid #2f6b8d!important;border-radius:9px!important;background:#092940!important;
+ color:#e8f7ff!important;font:inherit!important;font-size:13px!important;line-height:1.55!important;text-align:left!important;
+}
+.new67-form .new96-justification textarea:focus{border-color:#4cc0ee!important;outline:2px solid rgba(57,173,222,.18)}

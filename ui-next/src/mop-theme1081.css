@@ -1,0 +1,106 @@
+/*
+ MOP — shared transparent surface system
+ Design contract: Início and Registros are the visual baseline.
+ Neutral surfaces only; status colors, calendar states and priority alerts are preserved.
+ To build new modules, use --mop-glass-panel, --mop-glass-card, --mop-glass-field.
+*/
+:root{
+ --mop-blue-page:#061827;
+ --mop-blue-panel:#09263b;
+ --mop-blue-card:#0b2e47;
+ --mop-blue-field:#071b2b;
+ --mop-blue-stroke:#285a74;
+ --mop-blue-stroke-soft:#214760;
+ --mop-blue-accent:#35c7ff;
+ --mop-glass-panel:linear-gradient(140deg,rgba(9,38,59,.62),rgba(6,24,39,.72));
+ --mop-glass-card:linear-gradient(145deg,rgba(11,46,71,.57),rgba(7,26,43,.69));
+ --mop-glass-field:rgba(7,27,43,.68);
+ --mop-glass-menu:linear-gradient(155deg,rgba(9,38,59,.96),rgba(6,24,39,.97));
+ --mop-glass-border:rgba(40,90,116,.84);
+ --mop-glass-shadow:inset 0 1px rgba(180,225,255,.055),0 10px 28px rgba(0,6,17,.14);
+ --mop-glass-blur:blur(12px) saturate(110%);
+}
+/* Shared aesthetic applies at the module level with backdrop transparency. */
+.ref-app .mop-page47 :is(
+ .mop-home54-panel,.mop-home54-actions,.new33-panel,
+ .occ102-list,.occ102-detail,.rep104-panel,.audit52-table,
+ .check68-form,.check68-list,.check68-empty,.management35-panel,
+ .handover-panel,.scale70 .scale-panel,.scale70 .scale70-toolbar,
+ .scale70 .scale70-save,.scale70 .scale76-export,
+ .scale70-picker,.scale70-request,.scale68-management,
+ .rep106-compare,.occ103-management
+){
+ background:var(--mop-glass-panel)!important;
+ border-color:var(--mop-glass-border)!important;
+ box-shadow:var(--mop-glass-shadow);
+ backdrop-filter:var(--mop-glass-blur);
+ -webkit-backdrop-filter:var(--mop-glass-blur);
+}
+/* Raised data cards use exactly the same transparent gradient across pages. */
+.ref-app .mop-page47 :is(
+ .mop-home54-stat,.occ102-metric,.rep104-card,.rep106-metric,
+ .audit52-stats>div,.check68-summary>div,.scale-metric,
+ .scale70-metric,.handover66-metrics>div,.handover-item-details
+){
+ background:var(--mop-glass-card)!important;
+ border-color:var(--mop-glass-border)!important;
+ box-shadow:inset 0 1px rgba(170,222,255,.05);
+ backdrop-filter:var(--mop-glass-blur);
+ -webkit-backdrop-filter:var(--mop-glass-blur);
+}
+/* Fields of ordinary forms and filters: dark translucent navy, never unrelated blues. */
+.ref-app .mop-page47 :is(
+ .new33-fields input,.new33-fields select,.new33-fields textarea,
+ .occ102-search,.occ102-search input,
+ .rep104 .record-filter-trigger,.audit52-filters label,.audit52-filters input,
+ .audit52 .record-filter-trigger,
+ .check68-form input,.check68-form select,.check68-form textarea,
+ .check68 .record-filter-trigger,
+ .scale70-toolbar input,.scale70-toolbar select,.scale70 .record-filter-trigger,
+ .scale68-edit input,.scale68-edit select,
+ .management35-edit input,.management35-edit select,
+ .handover-textarea textarea,.handover-readonly-summary textarea,
+ .records96-dialog textarea
+){
+ background:var(--mop-glass-field)!important;
+ border-color:var(--mop-glass-border)!important;
+ color:#eaf5ff;
+}
+/* Dropdown surfaces must be more opaque than panels for legibility over the app. */
+.ref-app .mop-page47 :is(
+ .record-filter-menu,.scale70 .record-filter-menu,.rep104 .record-filter-menu,
+ .audit52 .record-filter-menu,.check68 .record-filter-menu
+){
+ background:var(--mop-glass-menu)!important;
+ border-color:var(--mop-glass-border)!important;
+ backdrop-filter:blur(18px);
+ -webkit-backdrop-filter:blur(18px);
+}
+.ref-app .mop-page47 :is(.record-filter-option:hover,.record-filter-option.selected){
+ background:rgba(21,75,111,.72)!important;
+}
+/* Neutral secondary actions only. Primary and semantic buttons retain their colors. */
+.ref-app .mop-page47 :is(
+ .rep104-refresh,.rep104-clear,.audit52 header>button,
+ .scale70 .scale70-toolbar button:not(.scale70-primary),
+ .handover66-next button
+){
+ background:rgba(9,38,59,.7)!important;
+ border-color:var(--mop-glass-border)!important;
+}
+/* Keep selection, progress, alert, warning, critical, completed and shift-state colors. */
+.ref-app .mop-page47 :is(.occ102-item.selected,.management35-member.active,.scale70-grid .scale-day.scale70-selected){
+ border-color:var(--mop-blue-accent)!important;
+}
+.ref-app .mop-page47 :is(button,input,select,textarea):focus-visible{outline-color:var(--mop-blue-accent)}
+/* Dialogs are overlays outside .mop-page47, so they need their own theme scope. */
+.mop108-dialog,.mop-confirm46,.records96-dialog{
+ background:var(--mop-glass-menu)!important;
+ border-color:var(--mop-glass-border)!important;
+ backdrop-filter:blur(18px);
+}
+.mop108-list,.mop108-record-detail,.mop108-summary>div,.mop108-handover-note{
+ background:var(--mop-glass-card)!important;
+ border-color:var(--mop-glass-border)!important;
+}
+@media(prefers-reduced-motion:reduce){.ref-app .mop-page47 *{transition-duration:0ms!important}}

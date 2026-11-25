@@ -1,0 +1,14 @@
+/* Preview 63: quiet sync status, productivity hints and new pending alerts */
+.mop-home63-feedback{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;margin:-7px 0 -4px;min-height:20px}
+.mop-home63-sync{display:inline-flex;align-items:center;gap:7px;color:#91b8cc;font-size:10px}
+.mop-home63-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#4bd3ae}
+.mop-home63-sync.stale{color:#f1c67c}.mop-home63-sync.stale .mop-home63-dot{background:#f1c67c}
+.mop-home63-sync.failed{color:#ff999d}.mop-home63-sync.failed .mop-home63-dot{background:#ff777d}
+.mop-home63-shortcuts{font-size:10px;color:#7da6bd}
+.mop-home63-notice{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#10384c;border:1px solid #286e8b;border-radius:11px;padding:10px 12px;color:#c9eaf7;font-size:12px}
+.mop-home63-notice>svg{color:#f2bd65;flex:none}
+.mop-home63-notice>span{flex:1}
+.mop-home63-notice button{background:#15506b;border:1px solid #31799a;border-radius:7px;color:#d7f4ff;padding:6px 9px;cursor:pointer;font-size:11px}
+.mop-home63-notice button:last-child{font-size:17px;line-height:14px;padding:6px 9px}
+.mop-home63-notice button:focus-visible{outline:2px solid #81d9fa}
+@media(max-width:680px){.mop-home63-shortcuts{display:none}}

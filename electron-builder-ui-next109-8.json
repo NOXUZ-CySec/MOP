@@ -1,0 +1,55 @@
+{
+  "appId": "br.com.mop.preview94.homologacao",
+  "productName": "MOP Homologacao",
+  "directories": {
+    "output": "dist-ui-next-109-8"
+  },
+  "files": [
+    "ui-next/dist/**/*",
+    "desktop/**/*",
+    "src/**/*.js",
+    "assets/**/*",
+    "package.json"
+  ],
+  "asar": true,
+  "win": {
+    "icon": "assets/icon.ico",
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "artifactName": "MOP-Preview109.8-Instalador.exe"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "shortcutName": "MOP Homologacao",
+    "deleteAppDataOnUninstall": false,
+    "installerLanguages": [
+      "pt_BR"
+    ],
+    "language": "1046"
+  },
+  "portable": {
+    "artifactName": "MOP-Preview109.8-Portable.exe"
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "NOXUZ-CySec",
+      "repo": "MOP",
+      "releaseType": "prerelease"
+    }
+  ],
+  "extraMetadata": {
+    "main": "desktop/main-next43.cjs",
+    "version": "2.3.0-preview.109.8"
+  },
+  "compression": "normal"
+}

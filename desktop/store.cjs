@@ -52,7 +52,7 @@ class Store {
     let fd;
     try {
       fd = fs.openSync(tmp,'wx',0o600);
-      fs.writeFileSync(fd,JSON.stringify(require('../src/privacy.js').clean(this.read()),null,2),'utf8');
+      fs.writeFileSync(fd,JSON.stringify(require('../src/privacy.js').clean({...this.read(),...(this.intelligence?{_intelligence:this.intelligence.backupPayload()}: {})}),null,2),'utf8');
       fs.fsyncSync(fd); fs.closeSync(fd); fd = undefined;
       fs.renameSync(tmp,destination);
     } finally {
@@ -60,7 +60,8 @@ class Store {
       if (fs.existsSync(tmp)) fs.unlinkSync(tmp);
     }
   }
-  write(input) {
+  write(input,session) {
+    const before=this.intelligence?this.read():null;
     validate(input);
     const raw = JSON.stringify(input);
     if (Buffer.byteLength(raw) > 64*1024*1024) throw Error('Base excede o limite de 64 MB desta versão.');
@@ -72,6 +73,7 @@ class Store {
     try {
       this.db.prepare('UPDATE state SET payload=?, updated_at=? WHERE id=1').run(raw,new Date().toISOString());
       if (this.db.prepare('SELECT payload FROM state WHERE id=1').get().payload !== raw) throw Error('Falha ao verificar a gravação.');
+      if(this.intelligence)this.intelligence.changes(before,JSON.parse(raw),session);
       if(this.onWrite)this.onWrite(JSON.parse(raw));
       this.db.exec('COMMIT');
     } catch(error) { this.db.exec('ROLLBACK'); throw error; }

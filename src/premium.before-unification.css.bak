@@ -1,0 +1,88 @@
+/* NOXUZ MOP Premium — experimental visual layer, no business-logic changes */
+:root{color-scheme:dark;--ink:#edf4ff;--muted:#91a7be;--line:#233650;--blue:#439cff;background:#071321;color:#e5eefb;font-family:"Segoe UI Variable","Segoe UI",Arial,sans-serif}
+body{background:radial-gradient(circle at 88% 0%,#112943 0,transparent 36%),#071321;color:#e5eefb}
+.sidebar{width:250px;background:linear-gradient(180deg,#0b1b30,#071421 85%);border-right:1px solid #20334b;padding:18px 13px}
+.brand-home{padding:7px 16px 14px;border-color:#20334b}.brand-logo{width:171px;object-fit:contain}
+.sidebar-caption{margin:19px 14px 8px;color:#7198bd;font-size:10px;letter-spacing:1.5px}
+.tabs{gap:4px}.tabs button{border-radius:9px;padding:11px 13px;color:#acc1d9;transition:background .14s,color .14s,transform .14s}
+.tabs button:hover{background:#152d4b;color:#eff8ff;box-shadow:none}
+.tabs button.active{background:linear-gradient(95deg,#164c91,#12345a);color:white;box-shadow:inset 3px 0 #55aeff,0 5px 15px #0002}
+.nav-icon{color:#8fbdf5;font-size:18px}.sidebar-footer{border-color:#22364e;padding:14px 12px 4px}.sidebar-footer p,.sidebar-footer small{color:#7891ae}
+.topbar{margin-left:250px;background:#0a192bbf;border-bottom:1px solid #23354d;min-height:78px;padding:18px 30px;backdrop-filter:blur(12px)}
+.breadcrumb,.breadcrumb strong{color:#a6bad0}.breadcrumb span{color:#6384a8}
+.current-shift{color:#d9eaff}#clock{color:#9bb4d0}
+main{margin-left:250px;padding:23px 30px 55px;max-width:none}
+h1,h2,h3,.item strong{color:#f2f7ff}h1{font-size:29px;font-weight:750;letter-spacing:-.75px}h2{font-size:18px}.eyebrow{color:#60aaff}.muted,small{color:#94a9bf}
+#overview .page-heading h1,#calendar h1{color:#f2f7ff}
+.page-heading{margin:12px 0 23px}.page-heading .muted{font-size:13px}
+.shift-banner{background:linear-gradient(108deg,#0e315d,#0c2340 70%,#12243b);border:1px solid #23517e;box-shadow:0 14px 36px #01091566;border-radius:16px;padding:24px 27px;margin-bottom:21px}
+.shift-banner h2{color:#fff;font-size:23px}.shift-banner p{color:#afc9e2}.shift-times{border-color:#386087}.shift-times span{color:#8bb5df}.shift-times b{color:white}
+.cards{gap:15px}.card{background:linear-gradient(145deg,#10253d,#0c1c30);border:1px solid #26415e;border-radius:14px;box-shadow:0 9px 22px #01081138;padding:18px 19px;min-height:116px;overflow:hidden}
+.card:before{width:38px;height:4px;background:#369dff}.card:nth-child(2):before{background:#f06f7d}.card:nth-child(3):before{background:#e6b557}.card:nth-child(4):before{background:#43d4a3}
+.card strong{color:#f8fbff;font-weight:740;font-size:32px}.card small{color:#a5bdd6}
+.panel,.dash-panel{background:linear-gradient(155deg,#0e2238,#0a192b);border:1px solid #253a52;border-radius:15px;box-shadow:0 12px 30px #01081232;padding:23px;margin:19px 0}
+.panel-heading{border-color:#293e55}.panel-heading p{color:#91a7bd}
+.item{background:#0d2034;border:1px solid #273d57;border-left:3px solid #438ff5;border-radius:11px;padding:15px 17px;margin:9px 0}
+.item:hover{background:#122b45;border-color:#375b7b}.item.urgent{border-left-color:#ff6174}.item.attention{border-left-color:#e9b44f}
+.item strong,.item b{color:#edf5ff}.item p{color:#b4c7da;line-height:1.55}.item small{color:#91abc7}
+.tag{background:#153956;color:#a9d8ff}.done,.tag.done{background:#123c32;color:#6af0c2;border-color:#246a55}.item.urgent .tag{background:#4b1f30;color:#ffa6b1}
+button,.buttonlike{background:#132a43;border:1px solid #32506c;color:#e3f1ff;border-radius:9px;box-shadow:none}
+button:hover,.buttonlike:hover{background:#1a3b60;box-shadow:0 4px 13px #0003}
+button.primary{background:linear-gradient(100deg,#1476dc,#1261bf);border-color:#328ff1;color:#fff;box-shadow:0 5px 18px #006ae13b}
+button.primary:hover{background:#2088ed}.buttonlike:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #72bdff;outline-offset:3px}
+button.quiet,summary{background:transparent;color:#70baff}button.quiet:hover{background:#183955}
+label{color:#b8cce1}input,select,textarea{background:#0a1b2e;color:#eef7ff;border:1px solid #33506d;border-radius:9px}
+input::placeholder,textarea::placeholder{color:#728daa}input:focus,select:focus,textarea:focus{border-color:#4eaeff;box-shadow:0 0 0 3px #328ee02b}
+option{background:#0d2035;color:#ecf5ff}details{border-color:#263b54}summary{color:#7fc3ff}
+.notice{background:#112c42;border-color:#24516a;color:#b4dbec}#storageStatus{color:#87a3ba}#storageStatus.error,.notice.error{background:#3b1c2b;border-color:#904155;color:#ffbbc4}
+.empty{background:#0b1d30;border:1px dashed #36516c;color:#94acc3}
+.deadline-column{background:#0a1c30;border-top-color:#5884ac}.deadline-column.late{border-top-color:#f16c7a}.deadline-column.shift{border-top-color:#e2b657}.deadline-column.future{border-top-color:#429cf6}
+.deadline-link{background:#102840;color:#d8eafe}.deadline-link:hover{background:#173954}
+.calendar-day{background:#0e253d;border-color:#294564}.calendar-day.selected{background:#153c63;border-color:#419eff}.calendar-day.today b{background:#1f7fe3}
+.calendar-weekday,.calendar-legend{color:#9bb4cb}
+.quick-status{background:#174363;color:#bfe3ff;border-color:#2c6286}.quick-status.status-pendente{background:#233349;color:#d8e6f4;border-color:#415570}.quick-status.status-em-andamento{background:#123b60;color:#addcff;border-color:#326995}.quick-status.status-aguardando-resposta,.quick-status.status-aguardando-manutenção{background:#49391b;color:#ffe0a1;border-color:#6f5422}.quick-status.status-resolvido{background:#123f33;color:#92f4c8;border-color:#27654c}
+.dash-banner{background:linear-gradient(125deg,#103b6b,#0d2440);color:#e4f3ff;border:1px solid #315a85}.dash-badge{background:#153350;color:#91ceff;border-color:#345a80}
+.dash-kpi,.dash-signal{background:#10243b;border:1px solid #2d4664;color:#ecf4fe}
+.dash-panel,.dash-attention{background:#0c2035;border-color:#294563}.dash-note,.dash-empty{color:#9db4cb}
+.dash-track{background:#19324c}.dash-line text{fill:#9cb3cb}.dash-line path{stroke:#36516b}.dash-line polyline{stroke:#56aaff}.dash-line circle{fill:#56aaff}
+table{color:#d9e7f8}th,td{border-color:#294159}
+#message{color:#cee5f9}
+@media(max-width:1150px){.sidebar{width:215px}.topbar,main{margin-left:215px}}
+@media(max-width:850px){.sidebar{width:auto;position:static;padding:12px 16px}.topbar,main{margin-left:0}.sidebar-caption,.sidebar-footer{display:none}.brand-logo{height:45px}.tabs{flex-direction:row;flex-wrap:wrap}.tabs button{padding:9px}.topbar{background:#0b1c2d}}
+@media(max-width:550px){main{padding:13px}.topbar{padding:12px 15px}.panel{padding:16px}.cards{gap:9px}.card{padding:14px}.shift-banner{padding:18px}.tabs button{font-size:11px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+
+/* Keep fixed notifications in the viewport, above dashboard stacking contexts.
+   backdrop-filter on the header would make it their containing block. */
+.topbar{position:relative;z-index:20;backdrop-filter:none;background:#0a192b}
+#notificationBell{color:#c3e3ff}
+#notificationPanel{width:min(440px,calc(100% - 40px));background:#0d2034;color:#dceafb;border-color:#33516f;border-top-color:#60baff;box-shadow:0 20px 65px #01081199;overscroll-behavior:contain;scrollbar-gutter:stable}
+#notificationPanel .personal-notice{border-bottom-color:#2c425c}
+#notificationPanel .personal-notice small{color:#a7bdd4}
+#notificationPanel .personal-notice.danger .tag{background:#4b1f30;color:#ffb5bf}
+#sessionIdentity small{color:#a3bad2}
+#sessionIdentity .assumed{color:#78e3be}
+
+/* Mandatory shift receipt: match the premium palette without changing the gate. */
+.release-dialog{background:#0b1c30;color:#e5eefb;border:1px solid #35506e;box-shadow:0 24px 80px #01081199}
+.release-dialog::backdrop{background:#020a15b3}
+.release-dialog .release-head,.release-dialog .release-actions{border-color:#2b425c;background:#0e2238}
+.shift-gate,.shift-gate.locked{background:#10243a;border-color:#546044;color:#dceafb}
+.shift-gate-summary>div{background:#0b1b2e;border-color:#334b65}
+.shift-gate-summary span{color:#abc0d6}
+.shift-gate-summary strong{color:#f2f7ff}
+.shift-gate-summary .danger{background:#3b1e2d;border-color:#8b4255}
+.shift-gate-summary .danger strong{color:#ffafbb}
+.shift-gate-last{color:#b6c9dd}
+.shift-gate .critical-list label{background:#0c1e32;border-color:#38516d;color:#dceafb}
+.shift-gate .critical-list label strong{color:#eef5ff}
+.shift-gate .critical-list label small{color:#a5bbd2}
+.shift-gate .check-line input{accent-color:#60baff;padding:0;cursor:pointer}
+.shift-gate .check-line:has(input:checked){background:#12364b;border-color:#60baff}
+.shift-gate .check-line:has(input:focus-visible){outline:2px solid #82caff;outline-offset:2px}
+.shift-gate-ok{background:#123c32;color:#9af1ca}
+.shift-gate-note{border-color:#31485f}
+.shift-gate-note summary{color:#a4d6ff}
+#shiftGateError{color:#ffb5bf;font-weight:600}
+.shift-gate-status,.current-shift #shiftReceipt.pending{color:#ffda91}
+.current-shift #shiftReceipt.shift-assumed-ok{color:#89ebbf!important}

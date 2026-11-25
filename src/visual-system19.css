@@ -1,0 +1,28 @@
+/* MOP Preview.19 — sistema visual nativo, sem dependencias externas */
+:root{--m19-surface:#10263c;--m19-surface-hover:#18334d;--m19-border:#2a4762;--m19-text:#e9f3fc;--m19-muted:#acc4da;--m19-focus:#7ccaff;--m19-ease:cubic-bezier(.2,.7,.2,1)}
+#appContent main :is(#records,#handover,#checklists,#new) .panel{border-color:var(--m19-border);box-shadow:0 6px 22px rgba(2,10,20,.12)}
+#appContent main :is(#records,#handover,#checklists,#new) :is(h1,h2,h3){letter-spacing:-.015em}
+#appContent main :is(#records,#handover,#checklists,#new) :is(.muted,small){line-height:1.55}
+#appContent main :is(#records,#handover,#checklists,#new) :is(input,select,textarea){border-color:var(--m19-border);transition:border-color .18s ease,box-shadow .18s ease}
+#appContent main :is(#records,#handover,#checklists,#new) :is(input,select,textarea):focus-visible{border-color:var(--m19-focus);box-shadow:0 0 0 3px rgba(124,202,255,.13);outline:none}
+#appContent main :is(#records,#handover,#checklists,#new) button{transition:background-color .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease}
+#appContent main :is(#records,#handover,#checklists,#new) :is(details){overflow:clip}
+#appContent main :is(#records,#handover,#checklists,#new) details>summary{cursor:pointer;transition:background-color .18s ease,color .18s ease}
+#appContent main :is(#records,#handover,#checklists,#new) details>summary:hover{background-color:var(--m19-surface-hover)}
+#appContent main :is(#records,#handover,#checklists,#new) details[open]>summary{border-bottom-color:var(--m19-border)}
+#appContent main :is(#records,#handover,#checklists,#new) details[open]>:not(summary){animation:m19-reveal .2s var(--m19-ease) both}
+#records .record-card{border-radius:12px;overflow:clip;transition:border-color .18s ease,box-shadow .18s ease}
+#records .record-card:hover{border-color:#426583}
+#records .record-card[open]{border-color:#426583;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+#records .record-card>summary.record-summary{min-height:54px;display:flex;align-items:center}
+#records .record-card>.record-body{border-top:0}
+#handover .handover-more-records,#handoverHistory .handover-audit{border-color:var(--m19-border);border-radius:12px}
+#handoverHistory .handover-audit>summary{min-height:48px}
+#handover :is(#handoverItems,#handoverFlow,#handoverHistory)>*+*{margin-top:12px}
+#checklists>.module-content{background:transparent!important}
+#new .optional-fields details{border-color:var(--m19-border)}
+#new .optional-fields details>summary{min-height:50px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#appContent main :is(#records,#handover,#checklists,#new) :is(button,summary):focus-visible{outline:2px solid var(--m19-focus);outline-offset:2px}
+@keyframes m19-reveal{from{opacity:.6;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){#appContent main :is(#records,#handover,#checklists,#new) .panel{padding:16px}#handover :is(#handoverItems,#handoverFlow,#handoverHistory){min-width:0}}
+@media(prefers-reduced-motion:reduce){#appContent main :is(#records,#handover,#checklists,#new) *,#appContent main :is(#records,#handover,#checklists,#new) *::before,#appContent main :is(#records,#handover,#checklists,#new) *::after{animation:none!important;transition:none!important}}

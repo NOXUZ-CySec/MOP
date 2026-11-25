@@ -1,0 +1,12 @@
+/* Preview 67.1 — uniform selects and compact authorship */
+.new67-form .new671-select-wrap{position:relative;display:block;width:100%;min-width:0}
+.new67-form .new671-select-wrap select{appearance:none;-webkit-appearance:none;background-image:none;width:100%;padding-right:43px;cursor:pointer;transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease}
+.new67-form .new671-select-wrap select:hover{background-color:#0b273b;border-color:#4480a0}
+.new67-form .new671-select-arrow{position:absolute;right:13px;top:50%;transform:translateY(-50%);pointer-events:none;display:block;color:#bed9e7;transition:transform .2s ease,color .2s ease}
+.new67-form .new671-select-wrap:focus-within .new671-select-arrow{transform:translateY(-50%) rotate(180deg);color:#70d1f4}
+.new67-form .new671-select-wrap:focus-within select{border-color:#55bdec;box-shadow:0 0 0 2px #268fe433}
+.new67-form .new671-author{align-self:stretch;justify-self:stretch;min-height:66px;box-sizing:border-box;display:flex;align-items:flex-start;justify-content:center;flex-direction:column;gap:5px;padding:10px 13px;background:#092238;border:1px solid #284b66;border-radius:9px;min-width:0;max-width:100%}
+.new67-form .new671-author span{font-size:11px;color:#a6c6db;font-weight:600;line-height:1.2}
+.new67-form .new671-author strong{font-size:13px;line-height:1.35;font-weight:600;color:#e1f3ff;overflow-wrap:anywhere}
+@media(max-width:750px){.new67-form .new671-author{min-height:57px}}
+@media(prefers-reduced-motion:reduce){.new67-form .new671-select-wrap select,.new67-form .new671-select-arrow{transition:none}}

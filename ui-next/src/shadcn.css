@@ -1,0 +1,42 @@
+/* shadcn/ui foundation. Preserve the MOP palette and existing Tailwind reset. */
+@import "tw-animate-css";
+
+@theme inline {
+  --color-background: var(--mop-ui-background);
+  --color-foreground: var(--mop-ui-foreground);
+  --color-card: var(--mop-ui-card);
+  --color-card-foreground: var(--mop-ui-foreground);
+  --color-popover: var(--mop-ui-card);
+  --color-popover-foreground: var(--mop-ui-foreground);
+  --color-primary: var(--mop-ui-primary);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--mop-ui-secondary);
+  --color-secondary-foreground: var(--mop-ui-foreground);
+  --color-muted: var(--mop-ui-muted);
+  --color-muted-foreground: var(--mop-ui-muted-foreground);
+  --color-accent: var(--mop-ui-accent);
+  --color-accent-foreground: var(--mop-ui-foreground);
+  --color-destructive: var(--mop-ui-destructive);
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--mop-ui-border);
+  --color-input: var(--mop-ui-border);
+  --color-ring: var(--mop-ui-ring);
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+:root {
+  --mop-ui-background: #071b2d;
+  --mop-ui-foreground: #eaf5ff;
+  --mop-ui-card: #0b243a;
+  --mop-ui-primary: #1682d5;
+  --mop-ui-secondary: #12354f;
+  --mop-ui-muted: #102b42;
+  --mop-ui-muted-foreground: #a5bdcf;
+  --mop-ui-accent: #174769;
+  --mop-ui-destructive: #b93247;
+  --mop-ui-border: #335b76;
+  --mop-ui-ring: #72d5ff;
+}

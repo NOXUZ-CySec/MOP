@@ -1,0 +1,25 @@
+/* Preview 33.1: GPU-friendly entrance, subtle optical motion trail */
+.ref-login-inner{position:relative}
+.ref-login-card.login331-entrance{position:relative;isolation:isolate;animation:login331-reveal 680ms cubic-bezier(.2,.85,.2,1) both;will-change:transform,opacity,filter;backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);background:linear-gradient(145deg,#0d314fef,#071b31f2);border:1px solid #3a83b88c;box-shadow:0 24px 74px #0008,inset 0 1px #9ad9ff16}
+.ref-login-card.login331-entrance::before{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;background:linear-gradient(135deg,#6cd5ff27,transparent 38%,transparent 78%,#0f8ec923);opacity:.65;z-index:-1}
+.ref-login-card.login331-entrance .ref-login-icon{display:grid;place-items:center;margin-left:auto;margin-right:auto;width:52px;height:52px;background:linear-gradient(145deg,#1169a0,#083c67);box-shadow:0 0 0 1px #59b9ee45,inset 0 1px #a4e9ff2b}
+.ref-login-card.login331-entrance .ref-eyebrow{display:block;text-align:center;letter-spacing:.12em}
+.ref-login-card.login331-entrance h1,.ref-login-card.login331-entrance>p{text-align:center}
+.ref-login-card.login331-entrance label{line-height:1.5}
+.ref-login-card.login331-entrance input{transition:border-color 180ms ease,box-shadow 180ms ease,background 180ms ease}
+.ref-login-card.login331-entrance input:focus{background:#08253e;border-color:#49b8ed;box-shadow:0 0 0 3px #168dc32a}
+.ref-login-card.login331-entrance .ref-secret{display:flex;align-items:center}
+.ref-login-card.login331-entrance .ref-secret input{margin-top:8px;padding-right:50px}
+.ref-login-card.login331-entrance .ref-secret button{top:8px;right:5px;width:38px;height:43px;display:grid;place-items:center;border-radius:7px;cursor:pointer;transition:background 150ms,color 150ms}
+.ref-login-card.login331-entrance .ref-secret button:hover{background:#1a5073;color:#e6f8ff}
+.ref-login-card.login331-entrance .ref-login-button{justify-content:center;gap:10px;cursor:pointer;transition:filter 180ms ease,transform 180ms ease,box-shadow 180ms ease}
+.ref-login-card.login331-entrance .ref-login-button:hover:not(:disabled){filter:brightness(1.12);transform:translateY(-1px);box-shadow:0 7px 18px #0074bd30}
+.ref-login-card.login331-entrance .ref-login-button svg{flex-shrink:0}
+.ref-login-card.login331-entrance .ref-login-notice{justify-content:center;line-height:1.45;text-align:center}
+.ref-login-card.login331-entrance .ref-login-notice svg{flex:0 0 auto}
+.ref-login-window-actions{z-index:100;pointer-events:auto}
+.ref-login-window-actions .ref-close{color:#ff8492}
+.ref-login-window-actions .ref-close:hover{background:#a72e44;color:white}
+@keyframes login331-reveal{0%{opacity:0;transform:translate3d(0,19px,0) scale(.975);filter:blur(9px)}45%{opacity:.82;filter:blur(2.5px)}100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}}
+@media(prefers-reduced-motion:reduce){.ref-login-card.login331-entrance{animation:none;will-change:auto;backdrop-filter:none;-webkit-backdrop-filter:none}.ref-login-card.login331-entrance input,.ref-login-card.login331-entrance .ref-login-button{transition:none}}
+@media(max-width:480px){.ref-login-card.login331-entrance{padding:24px 20px}.ref-login-card.login331-entrance .ref-login-notice{font-size:10px}}

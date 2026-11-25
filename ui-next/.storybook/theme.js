@@ -1,0 +1,23 @@
+import { create } from "storybook/theming";
+export default create({
+  base: "dark",
+  brandTitle: "MOP · Catálogo visual",
+  brandImage: "./brand/mop-logo.webp",
+  brandUrl: "?path=/story/fundamentos-identidade--superficies",
+  brandTarget: "_self",
+  colorPrimary: "#1682d5",
+  colorSecondary: "#35c7ff",
+  appBg: "#071b2d",
+  appContentBg: "#091f33",
+  appPreviewBg: "#071b2d",
+  appBorderColor: "#285a74",
+  appBorderRadius: 10,
+  textColor: "#eaf5ff",
+  barBg: "#0b243a",
+  barTextColor: "#adc9dd",
+  barSelectedColor: "#72d5ff",
+  inputBg: "#071b2b",
+  inputBorder: "#335b76",
+  inputTextColor: "#eaf5ff",
+  fontBase: '"Segoe UI", Inter, Arial, sans-serif',
+});

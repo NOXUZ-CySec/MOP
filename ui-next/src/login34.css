@@ -1,0 +1,16 @@
+/* Preview34 — clearly visible entrance with optical motion trail, no persistent blur */
+.ref-login-inner .login34-brand{animation:login34-brand 850ms cubic-bezier(.18,.9,.18,1) both}
+.ref-login-card.login34-entrance{animation:login34-appear 1080ms cubic-bezier(.16,1,.25,1) both;transform-origin:50% 40%;will-change:opacity,transform,filter}
+.ref-login-card.login34-entrance::after{content:"";position:absolute;inset:-2px;z-index:-2;border-radius:18px;pointer-events:none;background:linear-gradient(130deg,#2cb9ff40,transparent 40%,#2cb9ff10);filter:blur(18px);animation:login34-trail 1100ms ease-out both}
+.ref-login-card.login34-entrance .ref-login-icon{animation:login34-icon 1000ms 170ms cubic-bezier(.18,1,.2,1) both}
+.ref-login-card.login34-entrance label{animation:login34-fields 780ms 300ms ease-out both}
+.ref-login-card.login34-entrance .ref-login-button{animation:login34-fields 780ms 440ms ease-out both}
+.ref-window-actions,.ref-login-window-actions{position:relative;z-index:120;-webkit-app-region:no-drag!important;pointer-events:auto!important}
+.ref-window-actions button,.ref-login-window-actions button{position:relative;z-index:121;-webkit-app-region:no-drag!important;pointer-events:auto!important;touch-action:manipulation}
+.ref-login-window-actions{position:absolute}
+@keyframes login34-appear{0%{opacity:0;transform:translate3d(0,46px,0) scale(.92);filter:blur(18px)}24%{opacity:.35;transform:translate3d(0,31px,0) scale(.945);filter:blur(12px)}65%{opacity:1;transform:translate3d(0,-4px,0) scale(1.008);filter:blur(1px)}100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}}
+@keyframes login34-brand{0%{opacity:0;transform:translateY(-14px);filter:blur(8px)}100%{opacity:1;transform:none;filter:blur(0)}}
+@keyframes login34-icon{0%{opacity:0;transform:scale(.72);filter:blur(8px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
+@keyframes login34-fields{0%{opacity:0;transform:translateY(9px)}100%{opacity:1;transform:none}}
+@keyframes login34-trail{0%{opacity:.9;transform:translateY(22px);filter:blur(26px)}100%{opacity:.18;transform:none;filter:blur(12px)}}
+@media(prefers-reduced-motion:reduce){.ref-login-inner .login34-brand,.ref-login-card.login34-entrance,.ref-login-card.login34-entrance::after,.ref-login-card.login34-entrance .ref-login-icon,.ref-login-card.login34-entrance label,.ref-login-card.login34-entrance .ref-login-button{animation:none!important;will-change:auto}}

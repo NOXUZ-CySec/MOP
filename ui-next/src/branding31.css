@@ -1,0 +1,10 @@
+/* MOP visual identity — Preview.31. Derived from the user-supplied hexagonal logo. */
+.ref-brand{flex-direction:column;align-items:flex-start;gap:0;min-height:0;margin:0 8px 27px}
+.mop-brand-logo{width:220px;max-width:100%;height:auto;display:block;object-fit:contain;object-position:left center;filter:drop-shadow(0 0 9px #24bbff15);user-select:none;pointer-events:none}
+.ref-brand .ref-brand-caption{display:block;color:#9abbd5;font-size:11px;font-weight:550;line-height:1.25;margin:0 0 0 68px;letter-spacing:.01em;white-space:nowrap}
+.ref-login-brand{display:flex;flex-direction:column;align-items:center;gap:0}
+.ref-login-brand .mop-brand-logo{width:270px;max-width:88%}
+.ref-login-brand .ref-brand-caption{font-size:12px;color:#a9c9e1;letter-spacing:.07em}
+@media(max-width:1450px){.ref-brand{margin:0 7px 25px}.ref-brand .mop-brand-logo{width:210px}.ref-brand .ref-brand-caption{margin-left:63px}}
+@media(max-width:1100px){.ref-brand .mop-brand-logo{width:190px}.ref-brand .ref-brand-caption{font-size:10px;margin-left:53px}.ref-brand{margin:0 5px 18px}}
+@media(max-width:750px){.ref-brand{height:36px;min-height:36px;flex:0 0 36px;margin:0 0 3px;align-items:flex-start;justify-content:center}.ref-brand .mop-brand-logo{width:114px;max-height:36px;object-fit:contain}.ref-brand .ref-brand-caption{display:none}.ref-login-brand .mop-brand-logo{width:240px;max-height:none}.ref-login-brand .ref-brand-caption{display:block}}

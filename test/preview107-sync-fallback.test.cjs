@@ -1,0 +1,14 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const {refresh}=require('../desktop/startup-refresh107.cjs');
+const session={userId:'mario',mode:'online'};
+const access=()=>session;
+const fake=(state,extra={})=>({local:{bound:()=>true},authenticated:true,status:()=>({state,conflicts:0}),kick:async()=>{},...extra});
+test('Online and synchronized: central verified before reception',async()=>{const result=await refresh(fake('online'),session,access);assert.equal(result.verified,true)});
+test('Transient network error: local snapshot remains available',async()=>{const result=await refresh(fake('online',{kick:async()=>{throw Error('ETIMEDOUT')}}),session,access);assert.equal(result.verified,false);assert.equal(result.status,'offline')});
+test('Offline or stale central: do not claim delivery absence',async()=>{const result=await refresh(fake('offline'),session,access);assert.equal(result.verified,false);assert.match(result.reason,/Central indisponível/)});
+test('Conflicts: do not present central as verified',async()=>{const result=await refresh(fake('conflict',{status:()=>({state:'conflict',conflicts:2})}),session,access);assert.equal(result.verified,false)});
+test('Offline operator still receives a local usable snapshot',async()=>{const result=await refresh(undefined,{userId:'mario',mode:'offline'},access);assert.equal(result.verified,false)});
+test('User changes while refreshing: reject instead of crossing sessions',async()=>{await assert.rejects(()=>refresh(fake('online'),session,()=>({userId:'joao'})),/Sessão alterada/)});
+test('New UI displays a local data warning instead of hiding incident list',()=>{const ui=fs.readFileSync(path.join(__dirname,'../ui-next/src/StartupReceipt108.tsx'),'utf8');assert.ok(ui.includes('mop108-sync-notice'));assert.ok(ui.includes('data.items.map('));assert.ok(ui.includes('syncReason'))});
+test('IPC startup returns degraded snapshot with verification metadata',()=>{const code=fs.readFileSync(path.join(__dirname,'../desktop/main-next43.cjs'),'utf8');assert.ok(code.includes("require('./startup-refresh107.cjs').refresh"));assert.ok(code.includes('syncReason:fresh.reason'));assert.ok(code.includes("gate.snapshot(store,session)"))});

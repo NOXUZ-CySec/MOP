@@ -1,0 +1,49 @@
+.check68{color:#e5f5ff;display:flex;flex-direction:column;gap:16px}.check68 header{display:flex;align-items:center;justify-content:space-between;gap:15px}.check68 header>div{display:flex;align-items:center;gap:12px}.check68 header svg{color:#68c7f3}.check68 h1{font-size:25px;margin:0}.check68 header p{font-size:12px;color:#99bfd5;margin:4px 0 0}.check68 button{display:inline-flex;align-items:center;gap:7px;border:1px solid #347b9e;background:#0f4a6b;border-radius:9px;color:#e8f9ff;padding:10px 12px;cursor:pointer}.check68 button:disabled{opacity:.55;cursor:default}.check68-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.check68-summary>div{background:#0b2a42;border:1px solid #285573;border-radius:12px;padding:17px;display:flex;flex-direction:column;gap:5px}.check68-summary strong{font-size:26px}.check68-summary span{color:#9cbdd0;font-size:12px}.check68-form,.check68-list,.check68-empty{border:1px solid #285573;border-radius:13px;padding:18px;background:#0a263d}.check68 h2{font-size:15px;margin:0 0 12px}.check68-form{display:flex;align-items:end;flex-wrap:wrap;gap:12px}.check68-form h2{width:100%;margin-bottom:0}.check68-form label{display:flex;flex-direction:column;gap:7px;flex:1;min-width:160px;color:#a8c7d9;font-size:12px}.check68-form input,.check68-form select{height:40px;box-sizing:border-box;border:1px solid #376987;border-radius:8px;background:#071e31;color:#eaf8ff;padding:8px}.check68-item{display:flex;align-items:center;gap:12px;border-top:1px solid #234c66;padding:12px 0;flex-wrap:wrap}.check68-item>div{flex:1;min-width:180px;display:flex;flex-direction:column;gap:4px}.check68-item strong{font-size:13px}.check68-item small{font-size:11px;color:#9bbdd0}.check68-item .complete{color:#48c69e}.check68-item .check68-secondary{background:#16354b;border-color:#37566b}.check68-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:35px}.check68-empty p{font-size:12px;color:#9abed2;margin:0}.check68-error{color:#ffc6a8}.check68-warning{font-size:11px;color:#9abdd2}@media(max-width:600px){.check68-summary{grid-template-columns:1fr}.check68 header{flex-wrap:wrap}}
+
+.check68-form label>.record-filter-dropdown{width:100%}.check68-form .record-filter-trigger{min-height:40px;background:#071e31;border-color:#376987;border-radius:8px}.check68-form .record-filter-menu{z-index:55}.check68-form{overflow:visible}
+
+/* Preview 97 · reminder time */
+.check68-form .check97-time-field{flex:0 1 190px;min-width:170px;gap:7px}
+.check68-form .check97-time-field input{width:100%;height:40px;padding:0 11px;color:#e5f7ff;background:#071e31;border:1px solid #376987;border-radius:8px;font:inherit;color-scheme:dark}
+.check68-form .check97-time-field input:focus-visible{outline:2px solid #64cff6;outline-offset:2px}
+.check68-form .check97-time-field small{font-size:10px;color:#8bb4cb;line-height:1.4}
+
+/* Preview 98 · consistent management form and private confirmation modal */
+.check68 .check98-form{display:block;position:relative;overflow:visible;padding:18px 18px 16px}
+.check68 .check98-form h2{margin:0 0 17px;width:auto}
+.check68 .check98-fields{display:grid;grid-template-columns:minmax(170px,1.2fr) minmax(150px,1.05fr) minmax(160px,.92fr) minmax(190px,1.1fr) minmax(114px,.6fr);gap:12px;align-items:end;position:relative}
+.check68 .check98-fields>.check98-field{display:flex;flex-direction:column;justify-content:end;align-items:stretch;width:100%;min-width:0;min-height:64px;gap:7px;box-sizing:border-box;margin:0;color:#a8c7d9;font-size:12px;font-weight:400}
+.check68 .check98-fields>.check98-field>span:first-child{min-height:16px;line-height:16px;display:flex;align-items:center}
+.check68 .check98-fields .check98-field>input{display:block;width:100%;min-width:0;height:42px;min-height:42px;margin:0;padding:0 12px;box-sizing:border-box;font:inherit;font-size:12px;line-height:20px;background:#071e31;border:1px solid #376987;border-radius:9px;color:#eaf8ff;outline:none}
+.check68 .check98-fields .check98-field>input:focus{border-color:#45b8e5;box-shadow:0 0 0 2px #45b8e52c}
+.check68 .check98-fields .record-filter-dropdown{width:100%;min-width:0;position:relative}
+.check68 .check98-fields .record-filter-trigger{height:42px;min-height:42px;margin:0;box-sizing:border-box;display:flex;align-items:center}
+.check68 .check98-fields .check98-field:has(.record-filter-dropdown.is-open){z-index:220}
+.check68 .check98-fields .check98-field:has(.check98-time.open){z-index:240}
+.check68 .check98-fields .record-filter-menu{z-index:270}
+.check68 .check98-fields>.check98-add{height:42px;min-height:42px;margin:0;align-self:end;display:flex;align-items:center;justify-content:center;box-sizing:border-box;font-size:12px;white-space:nowrap;background:#135478}
+.check68 .check98-form-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap}
+.check68 .check98-form-footer>span{color:#91bbd2;font-size:11px;line-height:1.45}
+.check68 .check98-form-footer .check98-test{background:#103650;border-color:#397c9e;font-size:11px;padding:7px 11px;min-height:33px}
+.check68 .check68-success{background:#0a382f;border:1px solid #278b72;border-radius:9px;color:#9cf0d0;padding:10px 13px;font-size:12px}
+.check68 .check98-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;background:rgba(0,13,24,.82);backdrop-filter:blur(5px)}
+.check68 .check98-dialog{width:min(440px,100%);background:linear-gradient(145deg,#0d324e,#08263e);border:1px solid #3287b0;border-radius:15px;box-shadow:0 24px 70px #000a;padding:24px;box-sizing:border-box;animation:check98-in .18s ease-out both}
+.check68 .check98-dialog-icon{width:41px;height:41px;display:grid;place-items:center;border:1px solid #9c6270;border-radius:11px;background:#573141;color:#ffd1d8;margin-bottom:15px}
+.check68 .check98-dialog h2{font-size:17px;font-weight:700;margin:0 0 12px}
+.check68 .check98-dialog p{font-size:12px;line-height:1.6;color:#bdd8e7;margin:0}
+.check68 .check98-dialog p strong{color:#fff}
+.check68 .check98-dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:22px}
+.check68 .check98-dialog-actions button{justify-content:center;font-size:12px;min-height:40px}
+.check68 .check98-dialog-actions .check98-confirm{background:#a34257;border-color:#c3697b}
+.check68 .check98-dialog-actions .check98-confirm:hover{background:#b74b60}
+.check68 .check98-dialog button:focus-visible{outline:2px solid #66cfff;outline-offset:2px}
+@media(max-width:1120px){.check68 .check98-fields{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:720px){.check68 .check98-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:490px){.check68 .check98-fields{grid-template-columns:minmax(0,1fr)}.check68 .check98-form-footer{align-items:stretch;flex-direction:column}.check68 .check98-dialog-actions{flex-direction:column}.check68 .check98-dialog-actions button{width:100%}}
+
+/* Preview 99: edição de rotinas e calendário unificado */
+.check68 .check99-footer-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.check68 .check99-cancel-edit{min-height:33px;padding:7px 12px;font-size:11px;background:#123448;border-color:#37637b}
+.check68 .check99-other-title{margin-top:21px;font-size:13px;color:#aacfe1}
+.check68 .check98-fields>.check98-field:has(.routine99-date.open){z-index:330}
+.check68 .check98-fields .routine99-date-popup{z-index:350}

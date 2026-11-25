@@ -1,0 +1,75 @@
+/* MOP Preview.23 — component states, disclosure controls and microinteractions.
+   Experimental demo only; respects reduced motion. */
+:root{--m23-focus:#55b6ff;--m23-ease:cubic-bezier(.22,1,.36,1);--m23-duration:165ms}
+#appContent :is(button,[role="button"],a,input,select,textarea,summary){-webkit-tap-highlight-color:transparent}
+#appContent :is(button,[role="button"],a,summary){
+  transition:background-color var(--m23-duration) var(--m23-ease),
+  border-color var(--m23-duration) var(--m23-ease),
+  box-shadow var(--m23-duration) var(--m23-ease),
+  color var(--m23-duration) var(--m23-ease),
+  opacity var(--m23-duration) var(--m23-ease);
+}
+#appContent :is(button,[role="button"],a,input,select,textarea,summary):focus-visible,
+.startup :is(button,a,input,select,textarea):focus-visible,
+.release-dialog :is(button,input,select,textarea,summary):focus-visible{
+  outline:2px solid var(--m23-focus)!important;outline-offset:3px!important;
+  box-shadow:0 0 0 5px #168dfb25!important;
+}
+#appContent button:not(:disabled):active{transform:translateY(1px)}
+#appContent :is(button,[role="button"]):disabled,
+#appContent [aria-disabled="true"]{opacity:.48;cursor:not-allowed;filter:saturate(.6)}
+#appContent :is(input,select,textarea):not(:disabled){
+  transition:border-color var(--m23-duration) ease,box-shadow var(--m23-duration) ease,background-color var(--m23-duration) ease;
+}
+#appContent :is(input,select,textarea):not(:disabled):hover{border-color:#49789e}
+#appContent :is(input,select,textarea):focus{border-color:#46a8f5!important;box-shadow:0 0 0 3px #138cfb24!important}
+#appContent :is(input,select,textarea):disabled{opacity:.55;cursor:not-allowed}
+#appContent input[aria-invalid="true"],#appContent :is(input,select,textarea):invalid:not(:placeholder-shown):not(:focus){border-color:#d36c72}
+#appContent .sidebar .tabs button[aria-selected="true"],
+#appContent .sidebar .tabs button.active{box-shadow:inset 3px 0 0 #32a9ff,0 4px 18px #057eff1a}
+#appContent .sidebar .tabs button:not(.active):not([aria-selected="true"]):hover{background:#163651;border-color:#376487}
+#appContent main :is(.panel,.record-card,.compact-pending,.checklist-group,.routine-group){transition:border-color var(--m23-duration) ease,box-shadow var(--m23-duration) ease}
+#appContent main :is(.record-card,.compact-pending,.checklist-group,.routine-group):hover{border-color:#3a6a8d}
+#appContent main details>summary{cursor:pointer;min-width:0;position:relative}
+#appContent main details>summary:focus-visible{border-radius:8px}
+#appContent main details>summary::marker{color:#67b9ed}
+#appContent main details[open]>summary{border-bottom-color:#2d5879}
+#appContent main #handover .compact-pending>summary::after,
+#appContent main #newForm .optional-fields>details>summary::after{
+  transition:transform var(--m23-duration) var(--m23-ease),border-color var(--m23-duration) ease!important;
+  border-color:#81c8f3!important;
+}
+#appContent main #handover .compact-pending>summary:hover::after,
+#appContent main #newForm .optional-fields>details>summary:hover::after{border-color:#d2f0ff!important}
+#appContent main :is(.badge,.chip,[class*="status-pill"]){font-variant-numeric:tabular-nums}
+#appContent main .panel-heading :is(button,select,input){flex-shrink:0}
+#appContent main .panel-heading :is(h2,h3){overflow-wrap:anywhere}
+#appContent main .record-card .record-summary>*{min-width:0}
+#appContent main .record-card .record-summary :is(strong,b){overflow-wrap:anywhere}
+#appContent main .grid>*{min-width:0}
+#appContent main :is(.checklist-group,.routine-group) summary{padding-right:34px}
+#appContent main :is(.checklist-group,.routine-group) summary::after{align-self:center}
+#appContent main :is(.checklist-group,.routine-group)[open]>summary{color:#e5f6ff}
+#appContent main #newForm .optional-fields>details[open]{border-color:#396e96}
+#appContent main #newForm .optional-fields>details[open]>summary{background:#12304a}
+#appContent main #handover .compact-pending[open]{border-color:#386c94}
+#appContent main #handover .compact-pending[open]>summary{background:#102c45}
+#appContent main #overview .overview20-shortcuts button:hover{border-color:#4199d8;box-shadow:0 9px 25px #0003}
+#appContent main #overview .overview20-shortcuts button:focus-visible{outline-offset:4px}
+#appContent main .muted{line-height:1.5}
+.startup :is(input,button){transition:border-color var(--m23-duration) ease,box-shadow var(--m23-duration) ease,background-color var(--m23-duration) ease}
+.startup input:focus{border-color:#55b6ff!important;box-shadow:0 0 0 3px #168dfb25!important}
+.release-dialog button:not(:disabled):hover{filter:brightness(1.09)}
+@media(hover:none){#appContent main :is(.record-card,.compact-pending,.checklist-group,.routine-group):hover{border-color:var(--m22-border,#2b4863)}}
+@media(max-width:680px){
+ #appContent main .panel-heading :is(button,select){max-width:100%}
+ #appContent main #newForm .optional-fields>details>summary{flex-wrap:wrap;gap:5px 12px}
+ #appContent main #newForm .optional-fields>details>summary span{white-space:normal;text-align:right}
+ #appContent main #handover .compact-pending .pending-chips{row-gap:6px}
+}
+@media(prefers-reduced-motion:reduce){
+ #appContent :is(button,[role="button"],a,input,select,textarea,summary),
+ #appContent main :is(.panel,.record-card,.compact-pending,.checklist-group,.routine-group),
+ .startup :is(input,button){transition:none!important;animation:none!important}
+ #appContent button:not(:disabled):active{transform:none}
+}

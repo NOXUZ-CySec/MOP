@@ -1,0 +1,68 @@
+/*
+ * Preview 109.4 — Início: visual uniformity for indicators and continuity.
+ * The page cards and the continuity panel share the exact approved surface.
+ * Semantic icon colors and progress/state treatments remain unchanged.
+ */
+.ref-app .mop-page47 .mop-home54 .mop-home58-metrics .records-metric,
+.ref-app .mop-page47 .mop-home54 .mop-home62-continuity{
+  background:var(--mop-glass-panel)!important;
+  border:1px solid var(--mop-glass-border)!important;
+  box-shadow:var(--mop-glass-shadow)!important;
+  backdrop-filter:var(--mop-glass-blur);
+  -webkit-backdrop-filter:var(--mop-glass-blur);
+}
+/* Color variants are confined to icon/badge accents, never whole-card fills. */
+.ref-app .mop-page47 .mop-home54 .mop-home58-metrics .records-metric:is(.blue,.green,.amber,.red){
+  background:var(--mop-glass-panel)!important;
+  border-color:var(--mop-glass-border)!important;
+}
+.ref-app .mop-page47 .mop-home54 .mop-home62-continuity :is(.mop-home62-item,.mop-home62-list){
+  border-color:var(--mop-blue-stroke-soft);
+}
+
+/* Preview 109.4 — refined selection and focus behavior
+   Inspired by the restrained blue focus of Registros.
+   A selected calendar tile is a state; keyboard focus gets its own accessible ring. */
+.ref-app .mop-page47 .scale70 .scale70-grid .scale-day.scale70-selected{
+  border:1px solid rgba(67,158,196,.84)!important;
+  outline:none!important;
+  background:linear-gradient(145deg,rgba(16,70,101,.85),rgba(9,41,65,.83))!important;
+  box-shadow:inset 3px 0 0 var(--scale78-accent,#65b9e4),inset 0 0 0 1px rgba(73,174,217,.16),0 0 0 2px rgba(29,123,177,.12)!important;
+  filter:none;
+}
+.ref-app .mop-page47 .scale70 .scale70-grid .scale-day:focus-visible{
+  outline:2px solid rgba(90,187,229,.74)!important;
+  outline-offset:2px!important;
+  box-shadow:inset 3px 0 0 var(--scale78-accent,#65b9e4),0 0 0 3px rgba(23,126,181,.14)!important;
+}
+.ref-app .mop-page47 :is(
+ .record-filter-trigger,.mop-cycle-date-trigger,.scale109-swap-month button,
+ .scale70-toolbar input,.scale70-toolbar select,
+ .check98-field>input,.check97-time-field input,
+ .new33-fields input,.new33-fields select,.new33-fields textarea
+):focus-visible{
+  outline:2px solid rgba(91,185,225,.75)!important;
+  outline-offset:2px!important;
+  border-color:rgba(66,155,199,.87)!important;
+  box-shadow:0 0 0 3px rgba(35,137,192,.13)!important;
+  transition:box-shadow .16s ease,border-color .16s ease,outline-color .16s ease;
+}
+/* Open dropdowns show a subtle active field instead of a saturated blue halo. */
+.ref-app .mop-page47 .record-filter-dropdown.is-open .record-filter-trigger{
+  border-color:rgba(74,166,205,.82)!important;
+  box-shadow:0 0 0 2px rgba(35,137,192,.12)!important;
+}
+@media(prefers-reduced-motion:reduce){
+ .ref-app .mop-page47 :is(.scale-day,.record-filter-trigger,.mop-cycle-date-trigger){transition:none!important}
+}
+
+/* Modal priority: the Escala collaborator header (z-index 110–350) must never cover dialogs. */
+.ref-app .mop-page47 .scale70 .scale-overlay{
+ position:fixed!important;
+ z-index:1200!important;
+ isolation:isolate;
+}
+.ref-app .mop-page47 .scale70 .scale-overlay .scale-dialog{
+ position:relative;
+ z-index:1;
+}

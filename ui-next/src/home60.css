@@ -1,0 +1,10 @@
+/* Preview 60: lightweight event filters */
+.mop-home60-filterbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:5px 0 12px}
+.mop-home60-filterbar .mop-home54-panel-caption{margin:0}
+.mop-home60-filterbar>div{display:flex;align-items:center;gap:4px;background:#0a263a9c;padding:4px;border-radius:10px;border:1px solid #28506b7a}
+.mop-home60-filterbar button{font-size:10px;color:#9ebfd2;background:transparent;border:1px solid transparent;border-radius:7px;padding:6px 8px;cursor:pointer;white-space:nowrap;transition:background .18s,color .18s}
+.mop-home60-filterbar button.active{color:#e9f8ff;background:#155073b0;border-color:#3179a2}
+.mop-home60-filterbar button:hover{color:#e9f8ff;background:#164460}
+.mop-home60-filterbar button:focus-visible{outline:2px solid #68d5ff}
+@media(max-width:600px){.mop-home60-filterbar>div{width:100%;justify-content:space-between}.mop-home60-filterbar button{flex:1}}
+@media(prefers-reduced-motion:reduce){.mop-home60-filterbar button{transition:none}}

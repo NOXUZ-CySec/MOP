@@ -1,0 +1,28 @@
+/* Preview 65 — compact, consistent operator overview */
+.mop-home54{gap:15px}
+.mop-home54-heading{margin-bottom:0}
+.mop-home54-heading h1{font-size:24px;letter-spacing:-.025em}
+.mop-home54-heading p{font-size:12px}
+.mop-home64-hero{min-height:224px}
+.mop-home64-hero-main{padding:23px 26px}
+.mop-home64-hero h2{margin:10px 0 9px}
+.mop-home64-hero-main>p{margin-bottom:15px}
+.mop-home64-hero-main>small{margin-top:10px}
+.mop-home64-hero-side{padding:16px 20px;gap:10px}
+.mop-home64-context{padding:11px 13px}
+.mop-home64-hero .mop-home55-top-actions button{transition:border-color .16s ease,background .16s ease,transform .16s ease}
+.mop-home64-hero .mop-home55-top-actions button:focus-visible,.mop-home60-filterbar button:focus-visible,.mop-home59-timeline-item:focus-visible,.mop-home59-pending-item:focus-visible{outline:2px solid #7cdeff;outline-offset:2px}
+.mop-home58-metrics{gap:11px}
+.mop-home59-grid{gap:12px}
+.mop-home59-panel{min-height:285px;padding:16px 18px}
+.mop-home59-panel header h3{font-size:15px}
+.mop-home59-panel .mop-home54-panel-caption{margin:4px 0 8px}
+.mop-home59-empty{flex:1;min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+.mop-home59-empty strong{font-size:13px}
+.mop-home59-empty span{max-width:280px;font-size:11px;line-height:1.55}
+.mop-home65-empty-action{margin-top:5px!important;padding:8px 12px!important;border:1px solid #32799c!important;border-radius:9px!important;background:#0d3b57!important;color:#d7f5ff!important;font-size:11px!important;min-height:34px!important;display:inline-flex!important;align-items:center;justify-content:center;gap:6px;flex:none!important}
+.mop-home65-empty-action:hover{background:#14516e!important}
+.mop-home63-feedback{margin:-4px 0 -2px}
+@media(max-width:1150px){.mop-home64-hero{min-height:0}.mop-home64-hero-main{padding:22px 23px}.mop-home64-hero-side{padding:16px 23px}}
+@media(max-width:600px){.mop-home54{gap:12px}.mop-home64-hero-main{padding:19px 17px}.mop-home64-hero-side{padding:15px 17px}.mop-home59-panel{padding:14px}.mop-home59-panel header h3{font-size:14px}.mop-home65-empty-action{width:auto!important}}
+@media(prefers-reduced-motion:reduce){.mop-home64-hero .mop-home55-top-actions button{transition:none}}

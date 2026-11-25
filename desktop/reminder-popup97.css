@@ -1,0 +1,21 @@
+:root{color-scheme:dark;font-family:Segoe UI,Arial,sans-serif}*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#061a2b;color:#eaf7ff}
+.window{width:100%;height:100%;display:flex;flex-direction:column;border:1px solid #2e6888;background:linear-gradient(140deg,#0b2b45 0%,#071d31 72%,#061929 100%);box-shadow:inset 0 1px 0 #65c8ff15}
+.titlebar{height:48px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 13px 0 18px;border-bottom:1px solid #2c4d63;background:#09253b;-webkit-app-region:drag;user-select:none}
+.brand{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;color:#ccecff;letter-spacing:.25px}.brand-icon{display:grid;place-items:center;width:23px;height:23px;border-radius:6px;background:#125479;border:1px solid #3987a8;color:#7cd9ff;font-weight:800;font-size:13px}.brand-divider{color:#5b8399;padding:0 5px;font-weight:400}
+.window-close{width:31px;height:31px;border:1px solid transparent;border-radius:8px;background:transparent;color:#a9cddd;font-size:15px;cursor:pointer;-webkit-app-region:no-drag;transition:background .16s,color .16s}.window-close:hover{background:#833d4a;border-color:#b95b6d;color:#fff}
+main{padding:20px 24px 10px;flex:1;min-height:0}.category{display:flex;align-items:center;gap:8px;color:#6fcefa;font-size:10px;font-weight:800;letter-spacing:1.6px}.pulse{width:7px;height:7px;border-radius:50%;background:#4ddbb9;box-shadow:0 0 0 4px #4ddbb91c}
+.headline{display:flex;gap:13px;align-items:center;margin:17px 0 22px;min-height:66px}.clock-icon{flex:none;display:grid;place-items:center;width:47px;height:47px;border:1px solid #347da0;border-radius:12px;background:#10415d;color:#79d3f9}.headline-copy{min-width:0}h1{font-size:19px;line-height:1.35;font-weight:700;overflow-wrap:anywhere;margin:0 0 7px;color:#f0faff}.headline p{font-size:12px;line-height:1.45;color:#a7cadf;margin:0}
+.buttons{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:8px}.action{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:42px;padding:8px 10px;border:1px solid #316b8b;border-radius:9px;font:600 11px Segoe UI,Arial,sans-serif;color:#dff3ff;background:#103852;cursor:pointer;white-space:nowrap;transition:background .16s,border-color .16s,transform .16s,box-shadow .16s}.action:hover{background:#185373;border-color:#52b5dd;transform:translateY(-1px)}.action.primary{background:#137eaa;border-color:#4bbce9;color:#fff;box-shadow:0 0 0 1px #0d5d8233 inset}.action.primary:hover{background:#1994c3;box-shadow:0 0 12px #18adea2a}.action:disabled,.window-close:disabled{opacity:.5;cursor:wait;transform:none}.button-icon{font-size:15px;font-weight:700}
+button:focus-visible{outline:2px solid #70d6ff;outline-offset:2px}#error{color:#ffb7c3;font-size:11px;margin:11px 0 0;min-height:14px}
+footer{height:32px;flex:none;display:flex;align-items:center;gap:7px;padding:0 24px;color:#769cb1;font-size:10px;border-top:1px solid #29485d;background:#081f32}.footer-dot{height:6px;width:6px;border-radius:50%;background:#3eb6d8}
+@media(prefers-reduced-motion:reduce){.action,.window-close{transition:none}}
+
+/* Preview 99: Descartar lembrete usa destaque semântico vermelho */
+#dismiss.action.secondary{background:#542a3a;border-color:#a65469;color:#ffd6dd}#dismiss.action.secondary:hover{background:#783345;border-color:#df7189;color:#fff;box-shadow:0 0 10px #bd496033}#dismiss.action.secondary:focus-visible{outline:2px solid #f393a4}
+
+/* Preview 100: cantos externos reais para janela Electron transparente */
+html,body{background:transparent!important;border-radius:16px;overflow:hidden}
+.window{border-radius:16px;overflow:hidden;background:linear-gradient(140deg,#0b2b45 0%,#071d31 72%,#061929 100%);border:1px solid #31799d}
+.titlebar{border-radius:15px 15px 0 0}
+footer{border-radius:0 0 15px 15px}

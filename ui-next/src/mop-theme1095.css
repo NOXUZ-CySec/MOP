@@ -1,0 +1,84 @@
+/* Preview 109.5 — visible selected day, distinct from hover and keyboard focus.
+   Apply only to the main editable Schedule calendar, not the swap-date picker.
+   Keep the approved soft focus for fields and keyboard navigation. */
+.ref-app .mop-page47 .scale70 .scale70-calendar-anchor .scale70-grid .scale-day.scale70-selected{
+ background:linear-gradient(145deg,rgba(24,116,165,.98),rgba(18,91,143,.95))!important;
+ border:2px solid #71d9ff!important;
+ color:#f3fbff!important;
+ box-shadow:inset 0 0 0 1px rgba(209,246,255,.26),0 0 0 2px rgba(48,169,220,.25),0 3px 12px rgba(0,27,52,.22)!important;
+ filter:none!important;
+ opacity:1!important;
+}
+.ref-app .mop-page47 .scale70 .scale70-calendar-anchor .scale70-grid .scale-day.scale70-selected :is(.scale-day-head,.scale-day-main,.scale-day-mini){
+ color:#f2faff!important;
+}
+.ref-app .mop-page47 .scale70 .scale70-calendar-anchor .scale70-grid .scale-day.scale70-selected:focus-visible{
+ outline:2px solid #a7eaff!important;
+ outline-offset:3px!important;
+}
+/* Drag selection is the same visual state for all days inside the live interval.
+   A hover alone must never resemble a selected day. */
+.ref-app .mop-page47 .scale70 .scale70-calendar-anchor .scale70-grid .scale-day:not(.scale70-selected):hover{
+ border-color:var(--scale78-accent,#65b9e4);
+}
+@media(prefers-reduced-motion:reduce){
+ .ref-app .mop-page47 .scale70 .scale70-grid .scale-day{transition:none!important}
+}
+/* Preview 109.5 — identical interaction finish as the Records list.
+   The state is shown on the interactive row, not its status icons or labels. */
+.ref-app .mop-page47 :is(
+ .mop-home54 .mop-home109-briefing-item,
+ .mop-home54 .mop-home54-event,
+ .mop-home54 .mop-home54-pending,
+ .handover-screen .handover-item-summary
+){
+ border-radius:9px;
+ transition:background-color .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+.ref-app .mop-page47 :is(
+ .mop-home54 .mop-home109-briefing-item,
+ .mop-home54 .mop-home54-event,
+ .mop-home54 .mop-home54-pending,
+ .handover-screen .handover-item-summary
+):hover{
+ background:#06385f8f!important;
+ border-radius:9px;
+ box-shadow:inset 0 0 0 1px rgba(73,155,194,.13);
+ filter:none!important;
+ transform:none!important;
+}
+.ref-app .mop-page47 :is(
+ .mop-home54 .mop-home109-briefing-item,
+ .mop-home54 .mop-home54-event,
+ .mop-home54 .mop-home54-pending,
+ .handover-screen .handover-item-summary
+):focus-visible{
+ background:#06385f8f!important;
+ outline:2px solid rgba(94,188,229,.84)!important;
+ outline-offset:-2px!important;
+ border-radius:9px;
+}
+@media(prefers-reduced-motion:reduce){
+ .ref-app .mop-page47 :is(.mop-home54 .mop-home109-briefing-item,.mop-home54 .mop-home54-event,.mop-home54 .mop-home54-pending,.handover-screen .handover-item-summary){transition:none!important}
+}
+
+/* Home activity lists: match the restrained interactive focus used by Records. */
+.ref-app .mop-page47 .mop-home54 :is(.mop-home59-timeline-item,.mop-home59-pending-item){
+ border-radius:9px;
+ transition:background-color .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+.ref-app .mop-page47 .mop-home54 :is(.mop-home59-timeline-item,.mop-home59-pending-item):hover{
+ background:#06385f8f!important;
+ box-shadow:inset 0 0 0 1px rgba(73,155,194,.13);
+ transform:none!important;
+ filter:none!important;
+}
+.ref-app .mop-page47 .mop-home54 :is(.mop-home59-timeline-item,.mop-home59-pending-item):focus-visible{
+ background:#06385f8f!important;
+ outline:2px solid rgba(94,188,229,.84)!important;
+ outline-offset:-2px!important;
+ box-shadow:inset 0 0 0 1px rgba(73,155,194,.13);
+}
+@media(prefers-reduced-motion:reduce){
+ .ref-app .mop-page47 .mop-home54 :is(.mop-home59-timeline-item,.mop-home59-pending-item){transition:none!important}
+}

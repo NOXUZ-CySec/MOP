@@ -1,0 +1,175 @@
+.scale70-toolbar{display:flex;align-items:end;gap:12px;flex-wrap:wrap;padding:16px;margin:14px 0;border:1px solid #275572;border-radius:12px;background:#0b263c}.scale70-toolbar>div{display:flex;flex-direction:column;gap:5px;min-width:130px;flex:1}.scale70-toolbar>div small{font-size:11px;color:#9abdd2}.scale70-toolbar label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#9ebed2;min-width:125px}.scale70-toolbar input,.scale70-toolbar select{height:38px;min-width:0;padding:7px;border:1px solid #366782;border-radius:8px;background:#081e30;color:#e6f6ff;color-scheme:dark}.scale70-toolbar button,.scale70-picker button,.scale70-save button,.scale70-request button{border:1px solid #347998;border-radius:8px;background:#13435f;color:#e9f8ff;padding:9px 12px;cursor:pointer}.scale70-layout{display:grid;grid-template-columns:minmax(0,2.5fr) minmax(250px,1fr);gap:15px}.scale70-hint{color:#9abfd3;font-size:11px;margin:0 0 14px}.scale70-grid{touch-action:none;user-select:none}.scale70-grid .scale-day{transition:background .16s,border-color .16s,box-shadow .16s,transform .16s;user-select:none;touch-action:none}.scale70-grid .scale-day:hover{transform:translateY(-2px)}.scale70-grid .scale-day.scale70-selected{border:2px solid #69d7ff!important;box-shadow:inset 0 0 0 1px #7fdcff,0 0 15px #3bc6ff55;background:#124e72!important}.scale70-grid .scale-day.scale70-dirty:not(.scale70-selected){outline:2px dashed #9ddaf2;outline-offset:-4px}.scale70-picker{margin:14px 0;border:1px solid #3386ad;border-radius:12px;background:linear-gradient(135deg,#123d58,#0b2b42);padding:14px;animation:scale70-pop .18s ease-out}.scale70-picker>div:first-child{display:flex;align-items:center;justify-content:space-between}.scale70-picker p{font-size:12px;color:#9dbfd1;margin:9px 0}.scale70-picker>div:first-child button{padding:5px}.scale70-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.scale70-options button{min-height:37px;font-size:11px;transition:transform .15s,background .15s}.scale70-options button:hover{transform:translateY(-2px);background:#22678b}.scale70-save{border:1px solid #337a9e;background:#0c3048;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:11px}.scale70-save>span{font-size:12px;color:#b6d4e4}.scale70-save>div{display:flex;gap:8px}.scale70-save button{display:flex;gap:7px;align-items:center;justify-content:center;flex:1}.scale70-save button:disabled{opacity:.45;cursor:default}.scale70-primary{background:#177da6!important;border-color:#41b7df!important;color:#fff!important}.scale70-request{border-top:1px solid #284a62;padding:10px 0;display:flex;flex-direction:column;gap:7px}.scale70-request strong{font-size:12px}.scale70-request small{font-size:11px;color:#a6c4d7}.scale70-request>div{display:flex;gap:8px}.scale70-request button{padding:6px 10px;font-size:11px}.scale70-confirm{max-width:430px}.scale70-confirm p{font-size:13px;line-height:1.5;color:#abc9da}.scale70 .scale-day .scale-day-main{font-size:10px}.scale70 .scale-day .scale-day-mini{font-size:9px}@keyframes scale70-pop{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}@media(max-width:900px){.scale70-layout{grid-template-columns:1fr}}@media(max-width:520px){.scale70-options{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(prefers-reduced-motion:reduce){.scale70-picker{animation:none}.scale70-grid .scale-day{transition:none}}
+
+.scale70-calendar-anchor{position:relative;overflow:visible}.scale72-floating{position:absolute;z-index:40;width:min(252px,calc(100% - 16px));margin:0;box-shadow:0 16px 38px #020b18c9,0 0 0 1px #48a3c84d;animation:scale70-pop .16s ease-out}.scale72-floating .scale70-options{display:flex;flex-direction:column;gap:3px;margin-top:9px}.scale72-floating .scale70-options button{width:100%;min-height:35px;text-align:left;font-size:12px;padding:8px 12px;background:transparent;border-color:transparent}.scale72-floating .scale70-options button:hover,.scale72-floating .scale70-options button:focus-visible{background:#225b7b;border-color:#3b8bad;transform:none}.scale72-floating>div:first-child strong{font-size:12px}.scale72-floating>div:first-child button{background:transparent;border:0}
+
+.scale76-export{border:1px solid #285b78;border-radius:12px;padding:15px;background:linear-gradient(130deg,#0b2c43,#091d2e);display:grid;gap:8px}.scale76-export strong{font-size:13px;color:#e5f6ff}.scale76-export p{font-size:11px;color:#9dbed3;margin:0}.scale76-export>div{display:flex;gap:8px;flex-wrap:wrap}.scale76-export button{flex:1;min-width:100px;background:#114c70;border:1px solid #247eac;border-radius:8px;color:#dff5ff;padding:10px;cursor:pointer;font-size:11px;font-weight:650}.scale76-export button:hover{background:#17668e}
+
+/* Preview78: subtle, distinct operational category system */
+.scale70{--scale78-work:#65b9e4;--scale78-off:#7bc7a8;--scale78-holiday-work:#e3b56d;--scale78-holiday-off:#8dc7ba;--scale78-extra:#b5a4de;--scale78-swap:#d9a3bb}
+.scale70-grid .scale-day{background:#09263b;border-color:#25465d;box-shadow:inset 3px 0 0 var(--scale78-accent,#65b9e4);transition:background .17s,border-color .17s,box-shadow .17s,transform .17s}
+.scale70-grid .scale-day.work{--scale78-accent:var(--scale78-work);background:#0b3046}.scale70-grid .scale-day.off{--scale78-accent:var(--scale78-off);background:#10342f}.scale70-grid .scale-day.holiday-work{--scale78-accent:var(--scale78-holiday-work);background:#3a3025}.scale70-grid .scale-day.holiday-off{--scale78-accent:var(--scale78-holiday-off);background:#173a3b}.scale70-grid .scale-day.extra{--scale78-accent:var(--scale78-extra);background:#302d45}.scale70-grid .scale-day.swap{--scale78-accent:var(--scale78-swap);background:#392d3e}
+.scale70-grid .scale-day .scale-day-head{width:100%;display:flex;justify-content:space-between;align-items:center;gap:3px}.scale70-grid .scale-day .scale-day-head svg{flex:none;color:var(--scale78-accent)}.scale70-grid .scale-day .scale-day-main{font-weight:600;color:#d6e8f2}.scale70-grid .scale-day:hover{border-color:var(--scale78-accent);filter:brightness(1.12)}.scale70-grid .scale-day.scale70-selected{box-shadow:inset 3px 0 0 var(--scale78-accent),0 0 0 2px #69d7ff8c!important}
+.scale70 .scale-legend .scale78-legend-item{display:inline-flex;align-items:center;gap:6px;border:1px solid #2c4d60;background:#0c2739;border-radius:7px;padding:6px 9px;font-size:10px;color:#c6dce9}.scale70 .scale-legend .scale78-legend-item svg{color:var(--scale78-accent)}.scale78-legend-item.work{--scale78-accent:var(--scale78-work)}.scale78-legend-item.off{--scale78-accent:var(--scale78-off)}.scale78-legend-item.holiday-work{--scale78-accent:var(--scale78-holiday-work)}.scale78-legend-item.holiday-off{--scale78-accent:var(--scale78-holiday-off)}.scale78-legend-item.extra{--scale78-accent:var(--scale78-extra)}.scale78-legend-item.swap{--scale78-accent:var(--scale78-swap)}
+.scale72-floating .scale70-options button{display:flex;align-items:center;gap:9px}.scale72-floating .scale70-options button svg{flex:none;color:var(--scale78-accent)}.scale72-floating .scale70-options button.work{--scale78-accent:var(--scale78-work)}.scale72-floating .scale70-options button.off{--scale78-accent:var(--scale78-off)}.scale72-floating .scale70-options button.holiday-work{--scale78-accent:var(--scale78-holiday-work)}.scale72-floating .scale70-options button.holiday-off{--scale78-accent:var(--scale78-holiday-off)}.scale72-floating .scale70-options button.extra{--scale78-accent:var(--scale78-extra)}.scale72-floating .scale70-options button.swap{--scale78-accent:var(--scale78-swap)}
+.scale70 .scale-tag.work{background:#123d53;color:var(--scale78-work)}.scale70 .scale-tag.off{background:#164238;color:var(--scale78-off)}.scale70 .scale-tag.holiday-work{background:#493923;color:var(--scale78-holiday-work)}.scale70 .scale-tag.holiday-off{background:#1a4643;color:var(--scale78-holiday-off)}.scale70 .scale-tag.extra{background:#38334e;color:var(--scale78-extra)}.scale70 .scale-tag.swap{background:#483343;color:var(--scale78-swap)}
+@media(max-width:750px){.scale70-grid .scale-day .scale-day-head svg{width:12px;height:12px}}
+
+/* Preview83: same layered, translucent finish as the MOP workspace. */
+.scale70{isolation:isolate}
+.scale70 .scale-panel,.scale70 .scale70-toolbar,.scale70 .scale70-save,.scale70 .scale76-export{background:linear-gradient(145deg,rgba(13,56,83,.72),rgba(6,27,46,.78) 78%);border:1px solid rgba(69,142,181,.40);box-shadow:inset 0 1px 0 rgba(206,241,255,.065),0 10px 26px rgba(0,9,22,.13);backdrop-filter:blur(12px) saturate(112%);-webkit-backdrop-filter:blur(12px) saturate(112%)}
+.scale70 .scale70-toolbar{background:linear-gradient(105deg,rgba(12,51,75,.70),rgba(7,27,45,.74))}
+.scale70 .scale-day{box-shadow:inset 3px 0 0 var(--scale78-accent,#65b9e4),0 1px 4px #0002}
+.scale70 .scale-day.work{background:rgba(12,52,77,.81)}.scale70 .scale-day.off{background:rgba(15,59,47,.83)}.scale70 .scale-day.holiday-work{background:rgba(63,50,31,.84)}.scale70 .scale-day.holiday-off{background:rgba(25,65,61,.84)}.scale70 .scale-day.extra{background:rgba(51,44,69,.84)}.scale70 .scale-day.swap{background:rgba(61,43,62,.84)}
+.scale70 .scale72-floating{background:linear-gradient(145deg,rgba(17,61,86,.96),rgba(6,31,52,.98));backdrop-filter:blur(15px)}
+.mop-motion-on .scale70 .scale-panel,.mop-motion-on .scale70 .scale70-toolbar,.mop-motion-on .scale70 .scale70-save,.mop-motion-on .scale70 .scale76-export{animation:mop-card47 .24s var(--mop-ease47,cubic-bezier(.22,1,.36,1)) both}
+@media(prefers-reduced-motion:reduce){.mop-motion-on .scale70 .scale-panel,.mop-motion-on .scale70 .scale70-toolbar,.mop-motion-on .scale70 .scale70-save,.mop-motion-on .scale70 .scale76-export{animation:none}}
+.scale70 .scale95-fixed-model{display:flex;align-items:center;min-height:38px;padding:7px 12px;border:1px solid #366782;border-radius:8px;background:linear-gradient(135deg,#103a54,#09263d);color:#e6f6ff;font-size:13px;letter-spacing:.02em}.scale70 .scale70-toolbar label:has(.record-filter-dropdown){min-width:220px}.scale70-grid .scale-day.swap .scale-day-main{font-size:9px}.scale70-request small{line-height:1.55}
+
+/* Preview 95.1: keep the collaborator dropdown above the calendar and reuse the Status dropdown styling */
+.scale70 .scale70-toolbar{position:relative;z-index:110;overflow:visible;isolation:auto}
+.scale70 .scale70-toolbar:has(.record-filter-dropdown.is-open){z-index:200}
+.scale70 .scale70-layout{position:relative;z-index:1}
+.scale70 .scale70-toolbar .record-filter-dropdown{position:relative;z-index:2}
+.scale70 .scale70-toolbar .record-filter-dropdown.is-open{z-index:250}
+.scale70 .scale70-toolbar .record-filter-trigger{display:flex;align-items:center;gap:10px;width:100%;min-height:42px;padding:0 12px;background:#082a47;border:1px solid #205b81;border-radius:10px;color:#e9f6ff;font-size:12px;text-align:left;box-shadow:none}
+.scale70 .scale70-toolbar .record-filter-trigger:hover,.scale70 .scale70-toolbar .record-filter-dropdown.is-open .record-filter-trigger{background:#0a304f;border-color:#2cb9f3}
+.scale70 .scale70-toolbar .record-filter-menu{z-index:300;top:calc(100% + 6px);background:linear-gradient(160deg,#0d3553,#081f34);border:1px solid #327da5;border-radius:11px;box-shadow:0 16px 38px #0009,0 0 0 1px #78c9f011;animation:record-filter-in .16s ease-out both}
+.scale70 .scale70-toolbar .record-filter-option{width:100%;background:transparent;border:0;border-radius:7px;min-height:35px;padding:9px 10px;color:#dcefff;text-align:left;font-size:12px;box-shadow:none}
+.scale70 .scale70-toolbar .record-filter-option:hover,.scale70 .scale70-toolbar .record-filter-option.selected{background:#145276;color:#fff}
+.mop-motion-on .scale70 .scale70-toolbar:has(.record-filter-dropdown.is-open){animation:none;transform:none}
+@media(prefers-reduced-motion:reduce){.scale70 .scale70-toolbar .record-filter-menu{animation:none}}
+
+/* Preview 95.2: balanced, responsive schedule toolbar */
+.scale70 .scale70-toolbar.scale96-manager-toolbar{
+  display:grid;
+  grid-template-columns:minmax(170px,1fr) 124px minmax(190px,220px) 150px 170px;
+  align-items:end;
+  column-gap:14px;
+  row-gap:16px;
+  padding:18px 20px;
+  box-sizing:border-box;
+  overflow:visible;
+}
+.scale70 .scale70-toolbar.scale96-reader-toolbar{
+  display:grid;
+  grid-template-columns:minmax(170px,1fr) 124px;
+  align-items:center;
+  gap:14px;
+  padding:18px 20px;
+}
+.scale70 .scale70-toolbar .scale96-identity{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  min-width:0;
+  min-height:68px;
+  gap:6px;
+}
+.scale70 .scale70-toolbar .scale96-identity strong{
+  font-size:15px;
+  line-height:20px;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.scale70 .scale70-toolbar .scale96-identity small{line-height:16px;margin:0}
+.scale70 .scale70-toolbar label{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:stretch;
+  min-width:0;
+  width:100%;
+  min-height:68px;
+  gap:7px;
+  line-height:17px;
+  font-size:11px;
+  box-sizing:border-box;
+}
+.scale70 .scale70-toolbar label:has(.record-filter-dropdown){min-width:0}
+.scale70 .scale70-toolbar .scale95-fixed-model,
+.scale70 .scale70-toolbar input[type="date"],
+.scale70 .scale70-toolbar .record-filter-trigger{
+  box-sizing:border-box;
+  height:44px;
+  min-height:44px;
+  width:100%;
+  margin:0;
+  padding:0 12px;
+  border-radius:9px;
+  display:flex;
+  align-items:center;
+  line-height:20px;
+}
+.scale70 .scale70-toolbar .scale95-fixed-model{
+  justify-content:center;
+  text-align:center;
+  font-size:13px;
+}
+.scale70 .scale70-toolbar input[type="date"]{
+  font:inherit;
+  font-size:12px;
+  text-align:center;
+  min-width:0;
+}
+.scale70 .scale70-toolbar .record-filter-dropdown{width:100%;min-width:0}
+.scale70 .scale70-toolbar .record-filter-trigger>span{
+  text-align:left;
+  min-width:0;
+}
+.scale70 .scale70-toolbar.scale96-manager-toolbar > button{
+  height:44px;
+  min-height:44px;
+  width:100%;
+  box-sizing:border-box;
+  margin:0;
+  padding:0 11px;
+  align-self:end;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  line-height:18px;
+  white-space:nowrap;
+  font-weight:600;
+}
+@media(max-width:1100px){
+ .scale70 .scale70-toolbar.scale96-manager-toolbar{
+  grid-template-columns:minmax(180px,1fr) minmax(120px,0.5fr) minmax(190px,1fr);
+ }
+ .scale70 .scale70-toolbar.scale96-manager-toolbar > button{
+  grid-column:auto;
+ }
+}
+@media(max-width:650px){
+ .scale70 .scale70-toolbar.scale96-manager-toolbar,
+ .scale70 .scale70-toolbar.scale96-reader-toolbar{
+  grid-template-columns:minmax(0,1fr);
+  row-gap:12px;
+  padding:16px;
+ }
+ .scale70 .scale70-toolbar .scale96-identity{min-height:48px}
+ .scale70 .scale70-toolbar label{min-height:64px}
+}
+
+/* Export categories also appear in the schedule editor */
+.scale70{--scale78-absence:#f2a2a8;--scale78-medical:#97c6df}
+.scale70-grid .scale-day.absence{--scale78-accent:var(--scale78-absence);background:#402a34}
+.scale70-grid .scale-day.medical{--scale78-accent:var(--scale78-medical);background:#193849}
+.scale78-legend-item.absence,.scale72-floating .scale70-options button.absence{--scale78-accent:var(--scale78-absence)}
+.scale78-legend-item.medical,.scale72-floating .scale70-options button.medical{--scale78-accent:var(--scale78-medical)}
+.scale70 .scale-tag.absence{background:#53333c;color:var(--scale78-absence)}
+.scale70 .scale-tag.medical{background:#254354;color:var(--scale78-medical)}
+
+/* Preview 95.5: explain failed saves inside the confirmation dialog */
+.scale70 .scale96-save-error{display:flex;align-items:flex-start;gap:9px;padding:12px;border:1px solid #ac6174;border-radius:9px;background:rgba(92,35,51,.3);color:#ffd7df;font-size:12px;line-height:1.45}
+.scale70 .scale96-save-error svg{flex:none;margin-top:1px}
+
+/* Preview 109 — Férias, categoria distinta de folga e atestado */
+.scale70{--scale109-vacation:#7ad8ce}
+.scale70-grid .scale-day.vacation{--scale78-accent:var(--scale109-vacation);background:rgba(18,65,69,.82);box-shadow:inset 3px 0 0 var(--scale109-vacation),0 1px 4px #0002}
+.scale78-legend-item.vacation,.scale72-floating .scale70-options button.vacation{--scale78-accent:var(--scale109-vacation)}
+.scale70 .scale-tag.vacation{background:#19464a;color:var(--scale109-vacation)}
+.scale70-grid .scale-day.vacation .scale-day-main{color:#b6f2e9}

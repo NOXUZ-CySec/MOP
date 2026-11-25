@@ -1,0 +1,14 @@
+/* Settings is available to every authenticated role, fixed just above the user card. */
+.ref-sidebar .mop-sidebar-settings84{flex:0 0 auto;min-width:0;margin:9px 0 10px;padding-top:9px;border-top:1px solid rgba(83,150,189,.25);position:relative;z-index:3}
+.ref-sidebar .mop-sidebar-settings84-button{width:100%;min-height:47px;display:flex;align-items:center;gap:17px;padding:0 16px;border-radius:11px;color:#cde6f5;text-align:left;border:1px solid rgba(57,117,150,.25);background:rgba(11,43,66,.48);cursor:pointer}
+.ref-sidebar .mop-sidebar-settings84-button:hover,.ref-sidebar .mop-sidebar-settings84-button:focus-visible{background:rgba(17,76,110,.66);border-color:rgba(78,163,207,.60)}
+.ref-sidebar .mop-sidebar-settings84-button.active{background:linear-gradient(100deg,rgba(10,103,163,.67),rgba(9,63,105,.55));border-color:rgba(70,175,232,.48);font-weight:700}
+.ref-sidebar .mop-sidebar-settings84-button svg{flex:none;color:#8fc0e8}
+.ref-sidebar .mop-sidebar-settings84-button.active svg{color:#49ceff}
+.mop-settings84{display:flex;flex-direction:column;min-width:0;gap:20px;padding:0 1px 25px}
+.mop-settings84-heading{display:flex;align-items:center;gap:14px;padding:4px 0 2px;color:#e8f7ff}
+.mop-settings84-heading>svg{flex:none;color:#68cff6}
+.mop-settings84-heading h1{font-size:25px;font-weight:700;margin:0 0 4px}
+.mop-settings84-heading p{font-size:12px;color:#a0bfd1;line-height:1.5;margin:0}
+@media(max-width:750px){.ref-sidebar .mop-sidebar-settings84{margin:0 8px 0 5px;padding:0;border:0;align-self:center}.ref-sidebar .mop-sidebar-settings84-button{min-height:39px;padding:0 10px;gap:7px;font-size:11px;white-space:nowrap}.ref-sidebar .mop-sidebar-settings84-button svg{width:17px;height:17px}.mop-settings84-heading h1{font-size:21px}}
+@media(max-width:520px){.ref-sidebar .mop-sidebar-settings84-button span{display:none}.ref-sidebar .mop-sidebar-settings84-button{width:41px;justify-content:center;padding:0}}

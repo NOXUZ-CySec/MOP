@@ -5,6 +5,7 @@ function unwrap(result) {
   return result.value;
 }
 contextBridge.exposeInMainWorld('mopDesktop',Object.freeze({
+  notifications:async(action,input)=>unwrap(await ipcRenderer.invoke('mop:notifications',action,input)),
   onAlert:callback=>{const listener=()=>callback();ipcRenderer.on('mop:alert',listener);return ()=>ipcRenderer.removeListener('mop:alert',listener);},
   download:async input=>unwrap(await ipcRenderer.invoke('mop:download',input)),
   management:async(action,input)=>unwrap(await ipcRenderer.invoke('mop:management',action,input)),

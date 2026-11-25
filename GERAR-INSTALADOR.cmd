@@ -5,23 +5,24 @@ where node >nul 2>nul
 if errorlevel 1 goto semnode
 node -e "if(Number(process.versions.node.split('.')[0])<24)process.exit(1)"
 if errorlevel 1 goto semnode
-if exist package-lock.json (call npm ci) else (call npm install)
+call npm ci --no-audit --no-fund
 if errorlevel 1 goto erro
-call npm test
+call npm --prefix ui-next ci --no-audit --no-fund
+if errorlevel 1 goto erro
+call npm run test:foundation
 if errorlevel 1 goto erro
 call npm run dist:win
 if errorlevel 1 goto erro
-echo.
-echo Instalador gerado na pasta dist.
-explorer "%~dp0dist"
+for /f "delims=" %%i in ('node -p "require('./electron-builder-preview.cjs').directories.output"') do set "MOP_BUILD_OUTPUT=%%i"
+echo Instalador gerado em %MOP_BUILD_OUTPUT%.
+explorer "%~dp0%MOP_BUILD_OUTPUT%"
 pause
 exit /b 0
 :semnode
-echo Instale Node.js 24 LTS em https://nodejs.org/ e abra este arquivo novamente.
+echo Instale uma versao suportada do Node.js 24 ou superior. Consulte BUILDING.md.
 pause
 exit /b 1
 :erro
-echo.
-echo Nao foi possivel concluir. Copie a mensagem de erro acima para diagnostico.
+echo Nao foi possivel concluir. Consulte a mensagem acima e BUILDING.md.
 pause
 exit /b 1

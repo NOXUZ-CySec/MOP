@@ -1,0 +1,1 @@
+'use strict';const{contextBridge,ipcRenderer}=require('electron');contextBridge.exposeInMainWorld('mopWindow',{minimize:()=>ipcRenderer.invoke('mop-next:window','minimize'),maximize:()=>ipcRenderer.invoke('mop-next:window','maximize'),close:()=>ipcRenderer.invoke('mop-next:window','close'),status:()=>ipcRenderer.invoke('mop-next:window','status')});

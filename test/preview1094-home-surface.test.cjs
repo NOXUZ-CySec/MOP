@@ -1,0 +1,11 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const src=path.resolve(__dirname,'../ui-next/src');
+const css=fs.readFileSync(path.join(src,'mop-theme1094.css'),'utf8'),main=fs.readFileSync(path.join(src,'main.tsx'),'utf8');
+test('109.4 palette is imported after 109.2',()=>assert.ok(main.indexOf("import './mop-theme1094.css'")>main.indexOf("import './mop-theme1092.css'")));
+test('Metric indicators and continuity use the very same approved glass token',()=>{assert.ok(css.includes('.mop-home58-metrics .records-metric,'));assert.ok(css.includes('.mop-home62-continuity{'));assert.ok(css.includes('background:var(--mop-glass-panel)!important'));});
+test('Icon status colors are not modified by neutral surface override',()=>{assert.ok(!css.includes('.records-metric-icon'));assert.ok(!css.includes('.records-spark'));assert.ok(css.includes('Semantic icon colors'))});
+test('Canonical glass shadow, border and blur are applied',()=>{for(const t of ['var(--mop-glass-border)','var(--mop-glass-shadow)','var(--mop-glass-blur)'])assert.ok(css.includes(t))});
+test('Calendar selected tiles use subtle Records-style focus with separate keyboard outline',()=>{assert.ok(css.includes('.scale70-grid .scale-day.scale70-selected'));assert.ok(css.includes('rgba(29,123,177,.12)'));assert.ok(css.includes('.scale-day:focus-visible'));assert.ok(css.includes('outline:2px solid rgba(90,187,229,.74)'));});
+test('Dropdown active focus and keyboard inputs follow refined visual rules',()=>{assert.ok(css.includes('.record-filter-dropdown.is-open .record-filter-trigger'));assert.ok(css.includes('.new33-fields input'));assert.ok(css.includes('prefers-reduced-motion'));});
+test('Scale confirmation and request overlays outrank collaborator toolbar',()=>{assert.ok(css.includes('.scale70 .scale-overlay'));assert.ok(css.includes('z-index:1200!important'));assert.ok(css.includes('.scale70 .scale-overlay .scale-dialog'));});

@@ -1,0 +1,24 @@
+/* Preview.32 — operational shell integration; do not alter approved layout geometry */
+.ref-login-card input:not([type=checkbox]){font-family:inherit;font-size:13px;text-align:left}
+.ref-login-card input:focus-visible,.integration-user-popover button:focus-visible,.integration-notice button:focus-visible{outline:2px solid #48bdff;outline-offset:2px}
+.ref-login-button:disabled{opacity:.55;cursor:wait}
+.integration-error{color:#ffd0d0!important;background:#57252c7a;border:1px solid #9d4850;border-radius:8px;padding:10px;font-size:12px;line-height:1.45;margin:10px 0!important}
+.integration-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;color:#c4e6fa}
+.integration-loading .mop-brand-logo{width:220px}
+.integration-user-popover{position:absolute;bottom:96px;left:15px;right:15px;z-index:40;display:flex;flex-direction:column;gap:8px;padding:16px;border:1px solid #1c6592;border-radius:12px;background:#092b46;box-shadow:0 15px 45px #0008;color:#d4e9fa;font-size:12px}
+.integration-user-popover strong{font-size:14px;color:#fff;overflow-wrap:anywhere}
+.integration-user-popover span{overflow-wrap:anywhere}
+.integration-user-popover button{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;border:1px solid #3b7da6;border-radius:8px;background:#123f61;color:#fff;padding:11px;cursor:pointer}
+.ref-user>span:nth-child(2){overflow:hidden}.ref-user strong,.ref-user small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ref-modal{max-height:min(80vh,680px);overflow:auto}
+.integration-notice-list{display:flex;flex-direction:column;gap:9px;max-height:50vh;overflow:auto;margin:16px 0}
+.integration-notice{border:1px solid #285b7c;background:#092a45;border-radius:9px;padding:12px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.integration-notice.read{opacity:.75}.integration-notice.unread{border-left:3px solid #35b6ff}
+.integration-notice strong{display:block;font-size:12px;overflow-wrap:anywhere}
+.integration-notice p{font-size:11px;color:#b4d0e1;line-height:1.5;overflow-wrap:anywhere;margin:5px 0}
+.integration-notice button,.integration-readall{border:1px solid #277cb4;border-radius:8px;background:#0e4267;color:#e6f6ff;padding:9px;font-size:11px;cursor:pointer;flex-shrink:0}
+.integration-readall{width:100%;margin-bottom:10px}
+@media(max-width:750px){.integration-user-popover{position:fixed;bottom:auto;top:105px;left:14px;right:14px;max-width:370px}.integration-notice{flex-direction:column}.integration-notice button{align-self:flex-end}}
+
+.demo-credentials{display:flex;flex-direction:column;gap:5px;margin:12px 0 8px;padding:12px 14px;border:1px solid #28648b;border-radius:10px;background:#0b2b44;color:#c5e5f7;font-size:11px;line-height:1.5}
+.demo-credentials strong{color:#f4fbff;font-size:12px}

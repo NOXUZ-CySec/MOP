@@ -1,0 +1,29 @@
+/* Shared MOP dropdown: same-width anchored menu, no native Windows popup */
+.record-filter-dropdown{position:relative;min-width:0;width:100%;z-index:1}
+.record-filter-dropdown.is-open{z-index:50}
+.record-filter-trigger{display:flex;align-items:center;gap:10px;width:100%;min-height:42px;padding:0 12px;border:1px solid #205b81;border-radius:10px;background:#082a47;color:#e9f6ff;font:inherit;font-size:12px;cursor:pointer;text-align:left}
+.record-filter-trigger>svg:first-child:not(.record-filter-chevron){flex:none;color:#9ccce7}
+.record-filter-trigger>span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.record-filter-chevron{flex:none;transition:transform .2s ease}
+.record-filter-dropdown.is-open .record-filter-chevron{transform:rotate(180deg)}
+.record-filter-trigger:hover,.record-filter-dropdown.is-open .record-filter-trigger{border-color:#2cb9f3;background:#0a304f}
+.record-filter-trigger:focus-visible,.record-filter-option:focus-visible{outline:2px solid #62cbff;outline-offset:2px}
+.record-filter-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;width:100%;min-width:100%;max-height:260px;overflow-y:auto;box-sizing:border-box;padding:5px;background:linear-gradient(160deg,#0d3553,#081f34);border:1px solid #327da5;border-radius:11px;box-shadow:0 16px 38px #0009,0 0 0 1px #78c9f011;animation:record-filter-in .16s ease-out both}
+.record-filter-option{width:100%;min-height:35px;padding:9px 10px;border:0;border-radius:7px;background:transparent;color:#dcefff;text-align:left;font:inherit;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:6px;white-space:normal;overflow-wrap:anywhere}
+.record-filter-option:hover,.record-filter-option.selected{background:#145276;color:#fff}
+.record-filter-option span{color:#82d9ff}
+@keyframes record-filter-in{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.records-filters>.record-filter-dropdown{min-width:0;align-self:stretch}
+.new67-form .new673-choice{display:flex;flex-direction:column;gap:8px;min-width:0;color:#bcd8ea;font-size:12px;font-weight:600}
+.new67-form .new673-choice .record-filter-trigger{min-height:44px;background:#071b2b;border:1px solid #31516b;border-radius:8px;padding:0 13px;font-size:13px}
+.new67-form .new673-choice .record-filter-trigger:hover{background:#0b273b;border-color:#4480a0}
+.new67-form .new673-choice .record-filter-menu{top:calc(100% + 5px)}
+.new67-form .new673-choice .record-filter-chevron{margin-left:auto}
+.new67-form .new33-panel{overflow:visible}
+@media(prefers-reduced-motion:reduce){.record-filter-menu{animation:none}.record-filter-chevron{transition:none}}
+
+/* Preview79: menu list must match the established MOP dropdown, never Windows native */
+.audit78-origin .record-filter-menu,.check68-form .record-filter-menu{padding:5px;border-radius:10px;background:#09263d;border-color:#276b90;box-shadow:0 14px 30px #0008}.audit78-origin .record-filter-option,.check68-form .record-filter-option{min-height:37px;border-radius:7px}.audit78-origin .record-filter-option.selected,.check68-form .record-filter-option.selected{background:#134f70}
+
+/* Preview80: use identical floating list appearance for every screen */
+.audit78-origin .record-filter-menu,.check68-form .record-filter-menu{background:linear-gradient(160deg,#0d3553,#081f34);border:1px solid #327da5;box-shadow:0 16px 38px #0009,0 0 0 1px #78c9f011;border-radius:11px}.audit78-origin .record-filter-option,.check68-form .record-filter-option{background:transparent;border:0;border-radius:7px;min-height:35px}.audit78-origin .record-filter-option:hover,.check68-form .record-filter-option:hover{background:#145276}.audit78-origin .record-filter-option.selected,.check68-form .record-filter-option.selected{background:#145276}

@@ -1,3 +1,3 @@
 'use strict';
-// Public project configuration. Never place service_role or secret keys here.
-module.exports={url:'https://edvttorkimwqsevndafj.supabase.co',key:'sb_publishable_UExX-aRlWS3CVhMhP08xJQ_kSDilFMK'};
+// MOP Preview 94 Homologacao: public publishable key only, no service credentials.
+module.exports={url:"https://aviolcwjaxpfwhmrapoe.supabase.co",key:"sb_publishable_2j57WZ_AMVdN2Z1WNxdKfw_S84I1386"};

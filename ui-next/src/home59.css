@@ -1,0 +1,34 @@
+/* Preview 59: quieter timeline and task status lists */
+.mop-home59-grid{gap:17px;align-items:stretch}
+.mop-home59-panel{padding:20px 21px;min-height:345px;display:flex;flex-direction:column}
+.mop-home59-panel header{min-height:27px}
+.mop-home59-panel header>div{gap:10px}
+.mop-home59-panel header h3{font-size:16px;font-weight:700;letter-spacing:-.015em}
+.mop-home59-panel header button{padding:7px 0}
+.mop-home59-panel .mop-home54-panel-caption{margin:6px 0 13px}
+.mop-home59-timeline,.mop-home59-pending-list{flex:1;min-width:0;display:flex;flex-direction:column}
+.mop-home59-timeline-item,.mop-home59-pending-item{display:flex;align-items:center;gap:12px;width:100%;min-width:0;text-align:left;color:#e8f4fd;background:transparent;border:0;border-bottom:1px solid #28547155;cursor:pointer;transition:background .18s ease,transform .18s ease}
+.mop-home59-timeline-item:last-child,.mop-home59-pending-item:last-child{border-bottom:0}
+.mop-home59-timeline-item{min-height:65px;padding:10px 8px 10px 4px;position:relative}
+.mop-home59-timeline-item:not(:last-child):before{content:'';position:absolute;top:42px;bottom:-22px;left:20px;width:1px;background:#29648180;pointer-events:none}
+.mop-home59-timeline-marker{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:50%;background:#0c4361;color:#6bd2ff;border:1px solid #2e7394;z-index:1}
+.mop-home59-timeline-marker.done{background:#0d493f;color:#57e0bd;border-color:#227c67}
+.mop-home59-item-main{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+.mop-home59-item-main strong{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mop-home59-item-main small{font-size:11px;color:#94b6cb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mop-home59-time{display:flex;flex-direction:column;align-items:flex-end;gap:5px;color:#d4e9f8;font-size:11px;flex:none}
+.mop-home59-time small{font-size:10px;color:#82a8c0}
+.mop-home59-pending-item{min-height:65px;padding:10px 7px}
+.mop-home59-status{width:8px;height:8px;border-radius:50%;flex:none;background:#ffb84c;box-shadow:0 0 0 4px #ffb84c17}
+.mop-home59-status.ongoing{background:#44c6f4;box-shadow:0 0 0 4px #44c6f417}
+.mop-home59-status-label{font-size:10px;padding:5px 8px;border-radius:999px;background:#76511e55;color:#ffd58e;white-space:nowrap}
+.mop-home59-status-label.ongoing{background:#14547170;color:#9fe0fa}
+.mop-home59-pending-item>svg{color:#8bb5cf;flex:none}
+.mop-home59-timeline-item:hover,.mop-home59-pending-item:hover{background:#1a52652b}
+.mop-home59-timeline-item:focus-visible,.mop-home59-pending-item:focus-visible{outline:2px solid #6ad2ff;outline-offset:-2px;border-radius:7px}
+.mop-home59-empty{display:flex;flex:1;align-items:center;justify-content:center;flex-direction:column;gap:9px;padding:30px 15px;color:#94bbd0;text-align:center;font-size:12px}
+.mop-home59-empty svg{color:#61c9ed}
+.mop-home59-empty strong{font-size:13px;color:#d6ecf9}
+.mop-home59-empty span{font-size:11px;max-width:260px;line-height:1.5}
+@media(max-width:520px){.mop-home59-panel{padding:15px;min-height:280px}.mop-home59-status-label{display:none}.mop-home59-time small{display:none}}
+@media(prefers-reduced-motion:reduce){.mop-home59-timeline-item,.mop-home59-pending-item{transition:none}}

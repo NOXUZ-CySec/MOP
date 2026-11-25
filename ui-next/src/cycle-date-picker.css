@@ -1,0 +1,28 @@
+/* MOP custom cycle-date calendar — no native Windows date popup */
+.scale70 .scale70-toolbar .scale96-date-field{display:flex;flex-direction:column;justify-content:flex-end;gap:7px;min-width:0;min-height:68px;width:100%;font-size:11px;line-height:17px;color:#9ebed2}
+.scale70 .mop-cycle-date{position:relative;width:100%;z-index:2}
+.scale70 .mop-cycle-date.is-open{z-index:400}
+.scale70 .scale70-toolbar:has(.mop-cycle-date.is-open){z-index:350;animation:none;transform:none;overflow:visible}
+.scale70 .mop-cycle-date-trigger{width:100%;height:44px;min-height:44px;display:flex;align-items:center;gap:10px;box-sizing:border-box;padding:0 11px;border:1px solid #366782;border-radius:9px;background:#081e30;color:#e6f6ff;box-shadow:none;cursor:pointer}
+.scale70 .mop-cycle-date-trigger:hover,.scale70 .mop-cycle-date.is-open .mop-cycle-date-trigger{background:#0a304f;border-color:#2cb9f3}
+.scale70 .mop-cycle-date-trigger:focus-visible,.scale70 .mop-cycle-date-popover button:focus-visible{outline:2px solid #62cbff;outline-offset:2px}
+.scale70 .mop-cycle-date-value{min-width:0;flex:1;text-align:center;font-size:12px;line-height:20px;font-weight:550;font-variant-numeric:tabular-nums;color:#e9f6ff}
+.scale70 .mop-cycle-date-trigger svg{flex:none;width:17px;height:17px;color:#9ccce7}
+.scale70 .mop-cycle-date-popover{position:absolute;top:calc(100% + 8px);right:0;left:auto;width:286px;max-width:calc(100vw - 40px);box-sizing:border-box;padding:13px;background:linear-gradient(155deg,#103b58,#081f34 90%);border:1px solid #327da5;border-radius:13px;box-shadow:0 18px 42px #000b,0 0 0 1px #78c9f011;backdrop-filter:blur(15px);animation:record-filter-in .16s ease-out both;color:#e9f6ff;z-index:450}
+.scale70 .mop-cycle-date-header{display:grid;grid-template-columns:32px minmax(0,1fr) 32px;align-items:center;gap:6px;margin-bottom:12px}
+.scale70 .mop-cycle-date-header strong{text-align:center;font-size:13px;font-weight:700;text-transform:capitalize;color:#e9f6ff}
+.scale70 .mop-cycle-date-popover button{min-width:0;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:8px;font:inherit;box-shadow:none}
+.scale70 .mop-cycle-date-header button{height:32px;width:32px;padding:0;border:1px solid #245977;background:#0c3049;color:#dff4ff}
+.scale70 .mop-cycle-date-header button:hover{background:#145276;border-color:#4bb5df}
+.scale70 .mop-cycle-date-weekdays,.scale70 .mop-cycle-date-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.scale70 .mop-cycle-date-weekdays{margin-bottom:7px}
+.scale70 .mop-cycle-date-weekdays span{font-size:10px;line-height:22px;text-align:center;color:#a5c9dd}
+.scale70 .mop-cycle-date-days button{height:33px;padding:0;border:1px solid transparent;background:transparent;font-size:11px;color:#e6f3fb;font-variant-numeric:tabular-nums}
+.scale70 .mop-cycle-date-days button:hover{background:#145276;border-color:#3aa8d7}
+.scale70 .mop-cycle-date-days button.today{border-color:#4387a6}
+.scale70 .mop-cycle-date-days button.selected{background:#1d6d96;border-color:#69d7ff;color:#fff;box-shadow:inset 0 0 0 1px #69d7ff33}
+.scale70 .mop-cycle-date-footer{display:flex;gap:8px;margin-top:12px;padding-top:11px;border-top:1px solid #2a5269}
+.scale70 .mop-cycle-date-footer button{flex:1;min-height:34px;padding:5px;border:1px solid #2c6f93;background:#0e3955;color:#dff4ff;font-size:11px}
+.scale70 .mop-cycle-date-footer button:hover{background:#145276;border-color:#4bb5df}
+@media(max-width:650px){.scale70 .scale70-toolbar .scale96-date-field{min-height:64px}.scale70 .mop-cycle-date-popover{left:0;right:auto}}
+@media(prefers-reduced-motion:reduce){.scale70 .mop-cycle-date-popover{animation:none}}

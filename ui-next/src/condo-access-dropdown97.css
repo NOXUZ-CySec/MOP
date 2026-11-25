@@ -1,0 +1,23 @@
+/* MOP multi-select for scope permissions */
+.management35 .mop-condo97{position:relative;width:100%;min-width:0}
+.management35 .mop-condo97.is-open{z-index:300}
+.management35 .management35-edit{overflow:visible}
+.management35 .mop-condo97-trigger{display:flex;align-items:center;width:100%;min-height:44px;gap:10px;padding:0 12px;border:1px solid #286283;border-radius:10px;background:#08283e;color:#e9f6ff;text-align:left;font:inherit;font-size:13px;transition:background .18s ease,border-color .18s ease,box-shadow .18s ease}
+.management35 .mop-condo97-trigger:hover,.management35 .mop-condo97.is-open .mop-condo97-trigger{border-color:#2eb2ef;background:#0d3654;box-shadow:0 0 0 1px #2eb2ef24}
+.management35 .mop-condo97-trigger:focus-visible,.management35 .mop-condo97-option:focus-visible{outline:2px solid #5ac8ff;outline-offset:2px}
+.management35 .mop-condo97-trigger:disabled{opacity:.55;cursor:not-allowed}
+.management35 .mop-condo97-trigger>svg:first-child{color:#83c9ee;flex:none}
+.management35 .mop-condo97-value{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.management35 .mop-condo97-chevron{flex:none;color:#b6d7e8;transition:transform .18s ease}
+.management35 .mop-condo97.is-open .mop-condo97-chevron{transform:rotate(180deg)}
+.management35 .mop-condo97-menu{position:absolute;top:calc(100% + 7px);left:0;right:0;min-width:min(250px,100%);max-height:320px;overflow-y:auto;padding:7px;background:linear-gradient(155deg,#103650,#081f34);border:1px solid #367ca2;border-radius:12px;box-shadow:0 18px 40px #000a;backdrop-filter:blur(14px);animation:mop-condo97-in .17s ease-out both}
+.management35 .mop-condo97-option{display:flex;align-items:center;gap:11px;width:100%;min-height:38px;padding:8px 10px;border:0;border-radius:8px;background:transparent;color:#dceffc;text-align:left;font-size:12px;transition:background .14s ease,color .14s ease}
+.management35 .mop-condo97-option:hover,.management35 .mop-condo97-option.selected:hover{background:#1a5675;color:#fff}
+.management35 .mop-condo97-option.selected{background:#12415b}
+.management35 .mop-condo97-option>span:last-child{display:flex;flex-direction:column;gap:3px;min-width:0}
+.management35 .mop-condo97-option small{font-size:10px;line-height:1.35;color:#9ec1d5}
+.management35 .mop-condo97-check{display:grid;place-items:center;flex:none;width:18px;height:18px;border:1px solid #4a7791;border-radius:5px;background:#082638;color:transparent}
+.management35 .mop-condo97-check.checked{background:#147aa3;border-color:#51c8f5;color:#fff}
+.management35 .mop-condo97-separator{height:1px;background:#30556c;margin:5px 4px}
+@keyframes mop-condo97-in{from{opacity:0;transform:translateY(-5px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.management35 .mop-condo97-menu{animation:none}.management35 .mop-condo97-chevron{transition:none}}

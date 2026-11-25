@@ -1,0 +1,21 @@
+/* Preview 66 — compact continuity review, derived only from current handover snapshot */
+.handover66-overview{margin:14px 0 17px;padding:17px 19px;border:1px solid #2b6b8b;border-radius:15px;background:linear-gradient(115deg,#0e3450,#082338);box-shadow:inset 0 1px #ffffff12}
+.handover66-overview-head,.handover66-overview-head>div,.handover66-next{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.handover66-overview-head>div{justify-content:flex-start;color:#d7f3ff;font-size:14px}
+.handover66-overview-head svg{color:#59c8ef}
+.handover66-overview-head>span{font-size:10px;color:#8aafc5}
+.handover66-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0 12px}
+.handover66-metrics>div{display:flex;flex-direction:column;gap:4px;min-width:0;padding:11px 12px;border-radius:10px;border:1px solid #275574;background:#08283d}
+.handover66-metrics strong{font-size:24px;line-height:1.1;color:#e7f7ff}
+.handover66-metrics span{font-size:11px;color:#a9c5d5}
+.handover66-metrics .attention{border-color:#886342;background:#3a2b243d}
+.handover66-metrics .attention strong{color:#ffd29a}
+.handover66-next{border-top:1px solid #2b587454;padding-top:11px;color:#a7c9dc;font-size:11px;flex-wrap:wrap}
+.handover66-next button{display:inline-flex;align-items:center;gap:5px;border:1px solid #2b779b;border-radius:8px;padding:7px 10px;color:#d4f4ff;background:#0d3d5a;cursor:pointer;font-size:11px}
+.handover66-next button:hover{background:#14516d}
+.handover66-next button:focus-visible{outline:2px solid #7bdeff;outline-offset:2px}
+@media(max-width:800px){.handover66-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.handover66-overview{padding:13px}.handover66-overview-head{align-items:flex-start}.handover66-overview-head>span{max-width:90px;text-align:right}.handover66-metrics{gap:7px}.handover66-metrics>div{padding:10px}.handover66-metrics strong{font-size:21px}}
+
+/* Preview 107 confirmation feedback */
+.mop107-success{border:1px solid #2e8b77;border-radius:9px;background:#164d456a;color:#92f0cf;font-size:12px;padding:11px 15px;margin:10px 0}
