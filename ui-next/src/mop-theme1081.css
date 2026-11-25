@@ -99,7 +99,7 @@
  border-color:var(--mop-glass-border)!important;
  backdrop-filter:blur(18px);
 }
-.mop108-list,.mop108-record-detail,.mop108-summary>div,.mop108-handover-note{
+.mop108-record-detail,.mop108-summary>div,.mop108-handover-note{
  background:var(--mop-glass-card)!important;
  border-color:var(--mop-glass-border)!important;
 }

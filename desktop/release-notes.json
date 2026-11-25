@@ -1,5 +1,14 @@
 [
   {
+    "version": "2.3.0-preview.110.3",
+    "date": "2026-11-25",
+    "title": "MOP Preview 110.3 - acabamento da ciência inicial",
+    "changes": [
+      "Registros para conferência e painel de aceite integrados em uma superfície contínua, sem fundos sobrepostos.",
+      "Rolagem interna preservada e controles de confirmação alinhados."
+    ]
+  },
+  {
     "version": "2.3.0-preview.110.2",
     "date": "2026-11-25",
     "title": "MOP Preview 110.2 - acabamento da ciencia inicial",

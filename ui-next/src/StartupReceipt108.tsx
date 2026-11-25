@@ -150,6 +150,7 @@ export default function StartupReceipt108({identity,onAccepted,onExit,isDemo=fal
   <div className="mop108-windowbar"><span className="mop108-window-brand">MOP<span>Ciência de turno</span></span><div className="mop108-window-right"><button type="button" className="mop108-logout" onClick={onExit} disabled={saving}><LogOut size={14}/><span>Trocar conta</span></button>{windowActions&&<div className="mop108-window-actions">{windowActions}</div>}</div></div>
   <div className="mop108-frame">
    <header className="mop108-header"><div className="mop108-headline"><span className="mop108-heading-icon"><ShieldCheck size={25}/></span><div><span className="mop108-eyebrow">CONTINUIDADE DO PLANTÃO{isDemo?' · DEMONSTRAÇÃO':''}</span><h1 id="mop108-title" ref={title} tabIndex={-1}>Recebimento e ciência do turno</h1><p id="mop108-purpose">Confira a entrega, entenda as pendências e assuma a continuidade com clareza.</p></div></div><button type="button" className="mop108-refresh" onClick={()=>void refresh()} disabled={loading||saving}><RefreshCw size={15} className={loading?'mop108-spin':''}/><span>Atualizar conferência</span></button></header>
+   <div className="mop108-review-surface">
    <div className="mop108-body" aria-busy={loading||saving}>
     {snapshot&&!fresh&&!loading&&<p className="mop108-stale-notice"><AlertTriangle size={15}/>Os dados abaixo são da consulta anterior. Atualize a conferência antes de registrar o aceite.</p>}
     {loading?<div className="mop108-loading" role="status"><RefreshCw size={23} className="mop108-spin"/><strong>Consultando a entrega e os registros do turno</strong><p>Aguarde para iniciar a conferência.</p></div>:snapshot?<>
@@ -176,6 +177,7 @@ export default function StartupReceipt108({identity,onAccepted,onExit,isDemo=fal
     <div className="mop108-final-row"><label className="mop108-confirm" htmlFor="mop108-declaration"><input id="mop108-declaration" type="checkbox" checked={declaration} disabled={!snapshot||controlsDisabled} onChange={event=>setDeclaration(event.target.checked)}/><span>Conferi os registros apresentados e assumo a continuidade das pendências deste turno.</span></label><button type="button" className="mop108-submit" disabled={!ready} onClick={()=>void submit()}>{saving?<RefreshCw size={17} className="mop108-spin"/>:<ClipboardCheck size={17}/>}<span>{saving?'Registrando recebimento…':bootstrap?'Registrar início e entrar':'Confirmar recebimento e entrar'}</span></button></div>
     <p className="mop108-action-help">{actionHelp}</p>
    </footer>
+   </div>
   </div>
  </section></div>;
 }
