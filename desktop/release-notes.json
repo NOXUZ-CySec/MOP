@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.3.0-preview.110.5",
+    "date": "2026-11-25",
+    "title": "MOP Preview 110.5 - Registros e seletores",
+    "changes": [
+      "Indicadores interativos, filtros organizados e detalhes de continuidade operacional na aba Registros.",
+      "Seletores de Checklists e Rotinas restaurados ao padrão compartilhado.",
+      "Ações de registros bloqueadas durante consultas indisponíveis."
+    ]
+  },
+  {
     "version": "2.3.0-preview.110.4",
     "date": "2026-11-25",
     "title": "MOP Preview 110.4 - Checklists e Rotinas",
