@@ -1,5 +1,17 @@
 [
   {
+    "version": "2.3.0-preview.109.9",
+    "date": "2026-11-25",
+    "title": "MOP Preview 109.9 — central de atualizações refinada",
+    "changes": [
+      "Painel de Atualizações redesenhado no mesmo padrão de Backup e recuperação, com cards, ícones e acabamento visual consistente.",
+      "Versão instalada separada da nova versão disponível, com estados claros de consulta, download, instalação e falha.",
+      "Histórico de versões reorganizado com cabeçalho fixo, datas, identificação da versão instalada e seções expansíveis.",
+      "Confirmação de reinício usa o diálogo padrão do MOP, com foco acessível, cancelamento por Escape e proteção contra ações repetidas.",
+      "A interface permite nova tentativa após erro tardio do instalador e preserva eventos de atualização mais recentes que o status inicial."
+    ]
+  },
+  {
     "version": "2.3.0-preview.109.8",
     "date": "2026-11-25",
     "title": "MOP Preview 109.8 — confiabilidade e recuperação",

@@ -4,7 +4,7 @@
 
 **Aplicativo para Windows que reúne registros, turnos, acompanhamento e continuidade operacional. Desenvolvido por NOXUZ.**
 
-Esta árvore contém o código da **Preview 109.8 de homologação**, com versão de pacote `2.3.0-preview.109.8`. O código e as prereleases desta linha usam o repositório [NOXUZ-CySec/MOP](https://github.com/NOXUZ-CySec/MOP). A construção local não publica uma release automaticamente.
+Esta árvore contém o código da **Preview 109.9 de homologação**, com versão de pacote `2.3.0-preview.109.9`. O código e as prereleases desta linha usam o repositório [NOXUZ-CySec/MOP](https://github.com/NOXUZ-CySec/MOP). A construção local não publica uma release automaticamente.
 
 ## O que o aplicativo oferece
 
@@ -17,16 +17,16 @@ Esta árvore contém o código da **Preview 109.8 de homologação**, com versã
 
 A interface atual fica em `ui-next`, com componentes React e o catálogo visual do projeto. O processo principal do Electron controla armazenamento, sessões, permissões, IPC e integrações com o Windows.
 
-## Preview 109.8
+## Preview 109.9
 
-Esta preview consolida a preparação do código para construção e validação reproduzíveis:
+Esta preview refina a central de atualizações no mesmo padrão visual de Backup e recuperação:
 
-- Versão e entrada do aplicativo centralizadas em `package.json`.
-- Configuração canônica de empacotamento que preserva a identidade da homologação.
-- Comandos explícitos de verificação de tipos, testes de fundação, interface e catálogo.
-- Dependência Playwright fixada no projeto.
-- Fluxos de backup e recuperação com controle de acesso no processo principal.
-- Coordenação de leituras da interface e testes de regressão associados.
+- Cards para a versão instalada e o estado da atualização, com progresso e mensagens claras.
+- Histórico de versões com cabeçalho fixo, datas e identificação da versão instalada.
+- Confirmação de reinício com o diálogo padrão do MOP, foco acessível e cancelamento por teclado.
+- Proteção contra respostas antigas de status e recuperação da interface após erro tardio do instalador.
+
+Os recursos de backup integral, coordenação de leituras e build canônico introduzidos na 109.8 continuam disponíveis. O backend mantém o canal de homologação e baixa novas versões automaticamente; a instalação depende de confirmação.
 
 Os resultados de validação do executável distribuído devem acompanhar as notas da respectiva release. A existência do código ou do template de CI não comprova, por si só, a aprovação de um pacote.
 
@@ -53,10 +53,10 @@ npm.cmd run dist:preview
 
 O procedimento completo, os requisitos e os comandos alternativos estão em [BUILDING.md](BUILDING.md).
 
-A saída desta versão é `dist-ui-next-109-8`:
+A saída desta versão é `dist-ui-next-109-9`:
 
-- `MOP-Preview109.8-Instalador.exe`;
-- `MOP-Preview109.8-Portable.exe`;
+- `MOP-Preview109.9-Instalador.exe`;
+- `MOP-Preview109.9-Portable.exe`;
 - metadados e arquivos auxiliares da construção.
 
 `dist:preview`, `dist:win` e `dist:portable` usam `--publish never`. A publicação no GitHub é uma etapa separada.

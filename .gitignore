@@ -13,6 +13,7 @@
 !/package-lock.json
 !/electron-builder-preview.cjs
 !/electron-builder-ui-next109-8.json
+!/electron-builder-ui-next109-9.json
 !/desktop/
 !/src/
 !/assets/

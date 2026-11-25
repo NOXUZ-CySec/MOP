@@ -1,6 +1,6 @@
 # Construção do MOP Preview
 
-Este guia descreve a linha de homologação do MOP. A versão da aplicação e o ponto de entrada ficam em `package.json`: atualmente `2.3.0-preview.109.8` e `desktop/main-next43.cjs`.
+Este guia descreve a linha de homologação do MOP. A versão da aplicação e o ponto de entrada ficam em `package.json`: atualmente `2.3.0-preview.109.9` e `desktop/main-next43.cjs`.
 
 ## Ambiente
 
@@ -71,10 +71,10 @@ O comando executa, na ordem:
 4. Empacotamento Windows x64 com electron-builder e `--publish never`.
 5. Preparação dos metadados de atualização `latest.yml` e `preview.yml` para o instalador.
 
-Para a versão atual, a saída é `dist-ui-next-109-8`, com:
+Para a versão atual, a saída é `dist-ui-next-109-9`, com:
 
-- `MOP-Preview109.8-Instalador.exe`;
-- `MOP-Preview109.8-Portable.exe`;
+- `MOP-Preview109.9-Instalador.exe`;
+- `MOP-Preview109.9-Portable.exe`;
 - metadados de atualização e arquivos auxiliares produzidos pelo empacotador.
 
 A opção somente portátil não exige metadados de atualização do instalador. As pastas de versões anteriores são preservadas.
@@ -105,7 +105,7 @@ A configuração mantém a identidade da homologação:
 
 Esses campos não devem ser alterados apenas para incrementar o número de preview: fazem parte da continuidade da instalação. A localização dos dados e o comportamento de sessão continuam sendo definidos pelo código de desktop.
 
-`electron-builder-ui-next109-8.json` é um arquivo gerado de compatibilidade. Edite a fonte canônica, execute `npm.cmd run config:preview` e depois `npm.cmd run check:release-config`. Não mantenha divergências manuais entre os dois arquivos.
+`electron-builder-ui-next109-9.json` é um arquivo gerado de compatibilidade. Edite a fonte canônica, execute `npm.cmd run config:preview` e depois `npm.cmd run check:release-config`. Não mantenha divergências manuais entre os dois arquivos.
 
 As configurações históricas permanecem disponíveis no repositório quando necessárias para referência ou testes antigos. Os comandos desta página usam a configuração canônica, sem selecionar uma configuração antiga por nome.
 
