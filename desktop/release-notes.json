@@ -1,5 +1,21 @@
 [
   {
+    "version": "2.3.0-preview.110.1",
+    "date": "2026-11-25",
+    "title": "MOP Preview 110.1 — ciência do turno e barra superior",
+    "changes": [
+      "Tela inicial de recebimento e ciência redesenhada para destacar o resumo entregue, o contexto do turno e as pendências importantes.",
+      "Conferência individual explícita, com progresso real, informações de continuidade e confirmação final sempre acessível.",
+      "Falhas de atualização bloqueiam o aceite de dados antigos; alterações nas orientações ou no resumo exigem nova conferência.",
+      "Controles de minimizar, maximizar e fechar disponíveis durante a ciência inicial, com confirmação de fechamento.",
+      "Corrigido o desaparecimento da barra superior ao usar os indicadores e as leituras obrigatórias da Passagem de Turno.",
+      "Os atalhos para pendências rolam somente a área de conteúdo, preservando o relógio, as notificações e os controles da janela.",
+      "A estrutura da interface impede deslocamentos de rolagem ocultos, incluindo em janelas compactas.",
+      "Funcionalidades de entrega, recebimento, rascunhos e orientações da Preview 110 preservadas.",
+      "Novo ícone do MOP, somente com o símbolo e fundo transparente, integrado à janela, lembretes, notificações e pacotes Windows."
+    ]
+  },
+  {
     "version": "2.3.0-preview.110",
     "date": "2026-11-25",
     "title": "MOP Preview 110 — passagem de turno e continuidade",

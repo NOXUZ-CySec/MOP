@@ -4,6 +4,8 @@ const shift=require('../src/shift.js');
 const {visible,stampWrite}=require('./operations.cjs');
 const handover=require('./handover107.cjs');
 const H=require('../src/handover-automation.js');
+const I=require('../src/intelligence.js');
+const text=value=>String(value??'').trim();
 const WINDOW=12*3600000;
 function table(db){db.exec('CREATE TABLE IF NOT EXISTS shift_gate108 (user_id TEXT NOT NULL,shift_id TEXT NOT NULL,delivery_id INTEGER NOT NULL,token TEXT NOT NULL,accepted_at TEXT NOT NULL,PRIMARY KEY(user_id,shift_id))')}
 function latest(scope){return scope.handovers.filter(h=>h.automation_version===1&&!h.receipt_at).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')))[0]}
@@ -11,19 +13,28 @@ function gather(state,session,now=new Date()){
  const scope=visible(state,session),current=shift.at(now),incomingStart=Date.parse(current.start_at);
  const delivery=latest(scope);
  const rows=scope.items.filter(x=>!x.deleted_at);
- // All records created in the immediately preceding shift + all still-open critical pending items.
+ // Review outgoing/current-shift records and every still-open visible item.
  const created=rows.filter(x=>{const t=Date.parse(x.created_at||x.recorded_at||x.at);return Number.isFinite(t)&&t>=incomingStart-WINDOW&&t<incomingStart});
  const currentRows=rows.filter(x=>{const t=Date.parse(x.created_at||x.recorded_at||x.at);return Number.isFinite(t)&&t>=incomingStart&&t<=+now});
  const open=rows.filter(x=>x.status!=='Resolvido'&&x.status!=='Concluído');
  const critical=open.filter(x=>H.isCritical(x,now));
  const map=new Map();
  for(const x of [...created,...currentRows,...open])map.set(String(x.protocol||x.id),x);
- const items=[...map.values()].sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at))||String(a.protocol).localeCompare(String(b.protocol))).map(x=>({
-  id:String(x.protocol||x.id),title:String(x.subject||x.protocol||'Registro'),condo:String(x.condo||''),category:String(x.category||''),description:String(x.description||''),
-  status:String(x.status==='Resolvido'?'Concluído':x.status),priority:String(x.priority||'Normal'),occurredAt:x.created_at||'',version:String(x.updated_at||x.created_at||''),
-  critical:critical.includes(x),createdDuringOutgoing:created.includes(x)
- }));
- const token=crypto.createHash('sha256').update(JSON.stringify({shift:current.id,delivery:delivery?.id||0,items:items.map(x=>[x.id,x.version,x.status,x.priority,x.critical])})).digest('hex');
+ const items=[...map.values()].sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at))||String(a.protocol).localeCompare(String(b.protocol))).map(x=>{
+  const deadline=text(x.deadline)||null,due=I.stamp(deadline);
+  return {
+   id:String(x.protocol||x.id),title:String(x.subject||x.protocol||'Registro'),condo:String(x.condo||''),category:String(x.category||''),description:String(x.description||''),
+   status:String(x.status==='Resolvido'?'Concluído':x.status),priority:String(x.priority||'Normal'),occurredAt:x.created_at||'',version:String(x.updated_at||x.created_at||''),
+   critical:critical.includes(x),createdDuringOutgoing:created.includes(x),createdDuringCurrent:currentRows.includes(x),
+   assignee:text(x.assignee),nextAction:text(x.next_action),actionTaken:text(x.action_taken),deadline,
+   overdue:open.includes(x)&&Number.isFinite(due)&&due<+now
+  };
+ });
+ // Bind confirmation to the actual content reviewed, even if an upstream update
+ // changes an instruction or delivery summary without changing updated_at.
+ // No query timestamp is included: identical content retains the same token.
+ const deliveryReview=delivery?{id:delivery.id,summary:delivery.handover_note||delivery.note||'',outgoing:delivery.outgoing||null,outgoingUserId:delivery.outgoing_identity?.user_id||null,at:delivery.at||null,deliveredAt:delivery.delivered_at||null}:null;
+ const token=crypto.createHash('sha256').update(JSON.stringify({shift:current.id,delivery:deliveryReview,items})).digest('hex');
  return {scope,current,delivery,items,token};
 }
 function snapshot(store,session,now=new Date()){

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AlertTriangle, ArrowLeftRight, ArrowRight, CalendarDays, Check, CheckCircle2, ClipboardCheck, ClipboardList, Clock3, FileText, Info, ListChecks, LoaderCircle, Moon, PencilLine, Search, ShieldCheck, Sparkles, Sun, UserRound, X, ChevronDown, ExternalLink } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -70,6 +70,7 @@ const changeNames = {added:'Incluída após a entrega',updated:'Atualizada após
 
 export default function HandoverPage({initial=demoSnapshot,onOpenRecord,onNavigateRoutines,onCommand,mode='demo',draft:controlledDraft,onDraftChange,disabled=false,refreshing=false,stale=false,lastUpdated,onRefresh,reviewMessage}:Props){
   const snapshot=initial,isDemo=mode==='demo',receipt=snapshot.stage==='receipt',waiting=snapshot.stage==='awaiting-receipt',delivery=snapshot.stage==='delivery';
+  const queueRef=useRef<HTMLElement|null>(null);
   const [localDraft,setLocalDraft]=useState(()=>draftFor(snapshot));
   const draft=controlledDraft||localDraft;
   const [view,setView]=useState<View>('all'),[query,setQuery]=useState(''),[expanded,setExpanded]=useState<string|null>(null);
@@ -113,7 +114,15 @@ export default function HandoverPage({initial=demoSnapshot,onOpenRecord,onNaviga
     catch(error){setEditError(error instanceof Error?error.message:'Não foi possível salvar a orientação. Seus campos foram mantidos.')}
     finally{setSaving(false)}
   };
-  const showFilter=(next:View)=>{setView(next);setQuery('');document.getElementById('handover110-queue')?.scrollIntoView({block:'start'})};
+  const scrollToQueue=()=>{
+    const queue=queueRef.current,pane=queue?.closest<HTMLElement>('.ref-main');
+    if(!queue||!pane)return;
+    // Scroll only the content pane: scrollIntoView also moved the shell and hid its titlebar.
+    const inset=parseFloat(getComputedStyle(pane).paddingTop)||0;
+    const top=pane.scrollTop+queue.getBoundingClientRect().top-pane.getBoundingClientRect().top-pane.clientTop-inset;
+    pane.scrollTo({top:Math.max(0,top),behavior:'auto'});
+  };
+  const showFilter=(next:View)=>{setView(next);setQuery('');scrollToQueue()};
   const deliveryBlock=stale?'Atualize os dados para concluir a conferência.':editChanged?'Salve ou cancele a orientação em edição.':!summaryReady?'Escreva um resumo com orientações para o próximo plantão.':checkCount<3?'Conclua os três itens de conferência.':working?'Aguarde a operação em andamento.':'Tudo conferido. Revise os dados na confirmação final.';
   const receiptBlock=stale?'Atualize os dados antes de confirmar o recebimento.':editChanged?'Salve ou cancele a orientação em edição.':unread.length?unread.length+' pendência(s) importante(s) ainda precisam de leitura.':working?'Aguarde a operação em andamento.':'Leituras conferidas. Registre eventuais ressalvas antes de confirmar.';
   return <section className="handover110" aria-labelledby="handover110-title">
@@ -135,7 +144,7 @@ export default function HandoverPage({initial=demoSnapshot,onOpenRecord,onNaviga
     {!!snapshot.changes?.length&&<details className="handover110-changes"><summary><Info size={17}/><span><strong>{snapshot.changes.length} alteração(ões) desde a entrega</strong> · confira o estado atual das pendências</span><ChevronDown size={16}/></summary><ul>{snapshot.changes.map(change=><li key={change.id}><strong>{change.id}</strong><span>{changeNames[change.kind]}</span></li>)}</ul></details>}
     <div className="handover110-layout">
       <div className="handover110-main">
-        <section className="handover110-panel handover110-queue" id="handover110-queue" aria-labelledby="handover110-queue-title">
+        <section ref={queueRef} className="handover110-panel handover110-queue" id="handover110-queue" aria-labelledby="handover110-queue-title">
           <header className="handover110-panel-header"><div><span className="handover110-panel-icon"><ClipboardList size={21}/></span><div><h2 id="handover110-queue-title">Pendências para continuidade</h2><p>Dados atuais dos registros. Priorize os riscos e deixe a próxima ação clara.</p></div></div><span className="handover110-count">{pending.length} aberta(s)</span></header>
           <div className="handover110-toolbar"><label className="handover110-search"><Search size={17} aria-hidden="true"/><input aria-label="Buscar pendência" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Protocolo, assunto, condomínio ou responsável"/>{query&&<button type="button" aria-label="Limpar busca" onClick={()=>setQuery('')}><X size={15}/></button>}</label>
             <div className="handover110-filters" role="group" aria-label="Filtrar pendências">{([{key:'all',label:'Todas'},{key:'critical',label:'Críticas'},{key:'incomplete',label:'Sem orientação'},{key:'overdue',label:'Vencidas'},{key:'deadlines',label:'Prazos'}] as const).map(option=><button type="button" key={option.key} aria-pressed={view===option.key} onClick={()=>setView(option.key)}>{option.label}<span>{counts[option.key]}</span></button>)}</div>
@@ -190,7 +199,7 @@ export default function HandoverPage({initial=demoSnapshot,onOpenRecord,onNaviga
               {gaps.length>0&&<div className="handover110-quality-note"><AlertTriangle size={17}/><div><strong>{gaps.length} pendência(s) com orientação incompleta</strong><p>Confira os responsáveis e próximos passos. Se algo ainda não estiver definido, explique no resumo.</p><button type="button" onClick={()=>showFilter('incomplete')}>Revisar orientações <ArrowRight size={13}/></button></div></div>}
               <Button type="button" className="handover110-primary handover110-submit" disabled={!canDeliver} onClick={()=>void submit()}><ArrowRight size={18}/>Registrar entrega do turno</Button><p className="handover110-action-help" role="status">{deliveryBlock}</p>
             </>}
-            {receipt&&<><div className="handover110-readiness"><div><span>Leituras obrigatórias</span><strong>{reviewed} de {critical.length}</strong></div><progress value={critical.length?reviewed:1} max={critical.length||1} aria-label="Leituras obrigatórias conferidas"/></div><p className="handover110-review-explanation">{critical.length?'Abra cada pendência importante, confira a orientação e registre sua leitura.':'Não há pendências classificadas para leitura obrigatória. Confira o resumo e registre ressalvas, se necessário.'}</p>{unread.length>0&&<div className="handover110-unread">{unread.map(item=><button type="button" key={item.id} onClick={()=>{setView('critical');setQuery('');setExpanded(item.id);document.getElementById('handover110-queue')?.scrollIntoView({block:'start'})}}><span/><span>{item.id}<strong>{item.title}</strong></span><ArrowRight size={14}/></button>)}</div>}<Button type="button" className="handover110-primary handover110-submit" disabled={!canReceive} onClick={()=>void submit()}><ShieldCheck size={18}/>Confirmar recebimento</Button><p className="handover110-action-help" role="status">{receiptBlock}</p></>}
+            {receipt&&<><div className="handover110-readiness"><div><span>Leituras obrigatórias</span><strong>{reviewed} de {critical.length}</strong></div><progress value={critical.length?reviewed:1} max={critical.length||1} aria-label="Leituras obrigatórias conferidas"/></div><p className="handover110-review-explanation">{critical.length?'Abra cada pendência importante, confira a orientação e registre sua leitura.':'Não há pendências classificadas para leitura obrigatória. Confira o resumo e registre ressalvas, se necessário.'}</p>{unread.length>0&&<div className="handover110-unread">{unread.map(item=><button type="button" key={item.id} onClick={()=>{setView('critical');setQuery('');setExpanded(item.id);scrollToQueue()}}><span/><span>{item.id}<strong>{item.title}</strong></span><ArrowRight size={14}/></button>)}</div>}<Button type="button" className="handover110-primary handover110-submit" disabled={!canReceive} onClick={()=>void submit()}><ShieldCheck size={18}/>Confirmar recebimento</Button><p className="handover110-action-help" role="status">{receiptBlock}</p></>}
             {waiting&&<div className="handover110-waiting"><Clock3 size={32}/><strong>Entrega #{snapshot.deliveryId} registrada</strong><p>Outro operador deverá conferir o resumo, as pendências e confirmar o recebimento com a própria conta.</p><span>O estado atual dos registros continua disponível para acompanhamento.</span></div>}
             {!delivery&&!receipt&&!waiting&&<p className="handover110-review-explanation">Consulte as informações da passagem e atualize os dados para acompanhar a próxima etapa.</p>}
             {message&&<p className="handover110-local-message" role="status">{message}</p>}

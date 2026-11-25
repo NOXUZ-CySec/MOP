@@ -4,7 +4,7 @@
 
 **Aplicativo para Windows que reúne registros, turnos, acompanhamento e continuidade operacional. Desenvolvido por NOXUZ.**
 
-Esta árvore contém o código da **Preview 110 de homologação**, com versão de pacote `2.3.0-preview.110`. O código e as prereleases desta linha usam o repositório [NOXUZ-CySec/MOP](https://github.com/NOXUZ-CySec/MOP). A construção local não publica uma release automaticamente.
+Esta árvore contém o código da **Preview 110.1 de homologação**, com versão de pacote `2.3.0-preview.110.1`. O código e as prereleases desta linha usam o repositório [NOXUZ-CySec/MOP](https://github.com/NOXUZ-CySec/MOP). A construção local não publica uma release automaticamente.
 
 ## O que o aplicativo oferece
 
@@ -16,6 +16,14 @@ Esta árvore contém o código da **Preview 110 de homologação**, com versão 
 - Exportações e recursos de continuidade, incluindo backup e recuperação em ambiente separado.
 
 A interface atual fica em `ui-next`, com componentes React e o catálogo visual do projeto. O processo principal do Electron controla armazenamento, sessões, permissões, IPC e integrações com o Windows.
+
+## Preview 110.1
+
+A conferência inicial do turno recebe um layout dedicado: resumo e contexto da entrega, pendências importantes primeiro, orientações de continuidade e progresso das leituras individuais. A confirmação exige todos os registros conferidos e a declaração final. Falhas de consulta bloqueiam o aceite até uma nova conferência válida.
+
+Os controles da janela ficam acessíveis durante esse fluxo. O novo ícone do MOP acompanha os pacotes Windows, a janela, os lembretes e as notificações.
+
+Corrige o desaparecimento da barra superior após navegar pelas pendências da Passagem de Turno. Os atalhos rolam apenas o conteúdo; a estrutura da janela mantém o relógio, as notificações e os controles visíveis, inclusive no modo compacto.
 
 ## Preview 110
 
@@ -57,10 +65,10 @@ npm.cmd run dist:preview
 
 O procedimento completo, os requisitos e os comandos alternativos estão em [BUILDING.md](BUILDING.md).
 
-A saída desta versão é `dist-ui-next-110`:
+A saída desta versão é `dist-ui-next-110-1`:
 
-- `MOP-Preview110-Instalador.exe`;
-- `MOP-Preview110-Portable.exe`;
+- `MOP-Preview110.1-Instalador.exe`;
+- `MOP-Preview110.1-Portable.exe`;
 - metadados e arquivos auxiliares da construção.
 
 `dist:preview`, `dist:win` e `dist:portable` usam `--publish never`. A publicação no GitHub é uma etapa separada.

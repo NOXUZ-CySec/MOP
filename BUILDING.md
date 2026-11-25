@@ -1,6 +1,6 @@
 # Construção do MOP Preview
 
-Este guia descreve a linha de homologação do MOP. A versão da aplicação e o ponto de entrada ficam em `package.json`: atualmente `2.3.0-preview.110` e `desktop/main-next43.cjs`.
+Este guia descreve a linha de homologação do MOP. A versão da aplicação e o ponto de entrada ficam em `package.json`: atualmente `2.3.0-preview.110.1` e `desktop/main-next43.cjs`.
 
 ## Ambiente
 
@@ -57,6 +57,19 @@ A aprovação dos testes de fundação não substitui a validação visual ou o 
 
 `npm start` e `npm run start:preview` abrem o aplicativo de homologação e podem acessar seu perfil normal. Eles não fazem parte da construção nem do comando de testes de fundação.
 
+### Conferência inicial e barra superior da Preview 110.1
+
+Depois de construir a interface, execute os testes direcionados com dados sintéticos:
+
+```powershell
+node --test test/preview107-startup-gate.test.cjs test/startup1101.test.cjs
+node test/topbar1101-ui.cjs
+node test/startup1101-ui.cjs
+```
+
+Os dois roteiros de interface usam Chromium e a pasta ui-next/dist por padrão. Iniciam um servidor local temporário, simulam a ponte Electron e bloqueiam requisições externas. Não fazem login real, não recebem um turno operacional e não alteram a base em uso. Os relatórios registram os hashes do build testado.
+
+Esses testes cobrem os atalhos que antes deslocavam a barra, a conferência individual, o bloqueio de dados desatualizados, as exceções do recebimento e o layout em três larguras. A verificação dos controles de janela em Electron deve usar um perfil separado.
 ### Construção da release
 
 ```powershell
@@ -71,10 +84,10 @@ O comando executa, na ordem:
 4. Empacotamento Windows x64 com electron-builder e `--publish never`.
 5. Preparação dos metadados de atualização `latest.yml` e `preview.yml` para o instalador.
 
-Para a versão atual, a saída é `dist-ui-next-110`, com:
+Para a versão atual, a saída é `dist-ui-next-110-1`, com:
 
-- `MOP-Preview110-Instalador.exe`;
-- `MOP-Preview110-Portable.exe`;
+- `MOP-Preview110.1-Instalador.exe`;
+- `MOP-Preview110.1-Portable.exe`;
 - metadados de atualização e arquivos auxiliares produzidos pelo empacotador.
 
 A opção somente portátil não exige metadados de atualização do instalador. As pastas de versões anteriores são preservadas.
@@ -105,7 +118,7 @@ A configuração mantém a identidade da homologação:
 
 Esses campos não devem ser alterados apenas para incrementar o número de preview: fazem parte da continuidade da instalação. A localização dos dados e o comportamento de sessão continuam sendo definidos pelo código de desktop.
 
-`electron-builder-ui-next110.json` é um arquivo gerado de compatibilidade. Edite a fonte canônica, execute `npm.cmd run config:preview` e depois `npm.cmd run check:release-config`. Não mantenha divergências manuais entre os dois arquivos.
+`electron-builder-ui-next110-1.json` é um arquivo gerado de compatibilidade. Edite a fonte canônica, execute `npm.cmd run config:preview` e depois `npm.cmd run check:release-config`. Não mantenha divergências manuais entre os dois arquivos.
 
 As configurações históricas permanecem disponíveis no repositório quando necessárias para referência ou testes antigos. Os comandos desta página usam a configuração canônica, sem selecionar uma configuração antiga por nome.
 

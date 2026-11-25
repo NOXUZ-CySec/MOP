@@ -7,7 +7,7 @@ function create({BrowserWindow,ipcMain,getContext,getTasks,complete}){
  const show=(task,session,date,isTest=false)=>{
   if(popup&&!popup.isDestroyed()){popup.setAlwaysOnTop(true,'screen-saver');popup.show();popup.moveTop();popup.focus();return};
   current={taskId:String(task.id),userId:String(session.userId),date,isTest,reminder_revision:Number(task.reminder_revision||0)};
-  const w=new BrowserWindow({width:500,height:310,minWidth:500,minHeight:310,frame:false,transparent:true,thickFrame:false,resizable:false,maximizable:false,minimizable:false,alwaysOnTop:true,focusable:true,skipTaskbar:false,autoHideMenuBar:true,show:false,title:'MOP · Lembrete de rotina',backgroundColor:'#00000000',webPreferences:{preload:path.join(__dirname,'reminder-preload97.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false}});
+  const w=new BrowserWindow({width:500,height:310,minWidth:500,minHeight:310,frame:false,transparent:true,thickFrame:false,resizable:false,maximizable:false,minimizable:false,alwaysOnTop:true,focusable:true,skipTaskbar:false,autoHideMenuBar:true,show:false,icon:path.join(__dirname,'../assets/icon.ico'),title:'MOP · Lembrete de rotina',backgroundColor:'#00000000',webPreferences:{preload:path.join(__dirname,'reminder-preload97.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false}});
   popup=w;
   w.webContents.setWindowOpenHandler(()=>({action:'deny'}));
   w.webContents.on('will-navigate',e=>e.preventDefault());
