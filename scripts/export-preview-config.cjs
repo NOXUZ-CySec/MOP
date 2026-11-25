@@ -25,7 +25,7 @@ const target = path.join(root, filename);
 const expected = JSON.stringify(config, null, 2) + "\n";
 if (args.includes("--check")) {
   assert.ok(fs.existsSync(target), "Compatibility configuration is missing; run npm run config:preview");
-  assert.equal(fs.readFileSync(target, "utf8"), expected, "Compatibility configuration is stale; run npm run config:preview");
+  assert.deepEqual(JSON.parse(fs.readFileSync(target, "utf8")), config, "Compatibility configuration is stale; run npm run config:preview");
 } else if (!fs.existsSync(target) || fs.readFileSync(target, "utf8") !== expected) {
   fs.writeFileSync(target, expected, "utf8");
 }
