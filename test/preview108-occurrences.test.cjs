@@ -26,3 +26,12 @@ test('UI exposes configurable aging, explicit due dates, assignment filters and 
  assert.match(ui,/snapshot\.statusHistory/);
  assert.match(ui,/historyEntries\.map/);
 });
+
+test('Occurrence status badges use semantic tones outside the progress bar classes',()=>{
+ const root=path.join(__dirname,'../ui-next/src');
+ const ui=fs.readFileSync(path.join(root,'Occurrences102.tsx'),'utf8');
+ const css=fs.readFileSync(path.join(root,'page-header.css'),'utf8');
+ assert.match(ui,/className="occ-badge" data-tone={/);
+ assert.match(ui,/Pendente: "pending", "Em andamento": "active", "Conclu\u00eddo": "done"/);
+ for(const state of ['pending','active','done'])assert.ok(css.includes('.occ-badge[data-tone='+state+']'));
+});

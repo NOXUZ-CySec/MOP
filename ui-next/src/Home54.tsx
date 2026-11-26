@@ -1,5 +1,6 @@
+import { PageHeader, PageAction } from "./PageHeader";
 import React,{useEffect,useRef,useState} from 'react';
-import {AlertTriangle,ArrowRight,ArrowLeftRight,CalendarDays,CheckCircle2,ClipboardCheck,Clock3,FilePlus2,FileText,Flag,History,LayoutDashboard,ShieldCheck,Sun,Moon,RefreshCw,AlertCircle,RotateCw} from 'lucide-react';
+import {AlertTriangle,ArrowRight,CheckCircle2,ClipboardCheck,Clock3,FileText,Flag,History,ShieldCheck} from 'lucide-react';
 import type {OperationalRecord} from './RecordsPage';
 import './home1107.css';
 import { createReadSession1098, type ReadSession1098 } from './queries1098/readCoordinator1098';
@@ -44,7 +45,10 @@ export default function Home54({records,demo,operator,role,loading,error,onNavig
  const previousCount=verified?continuity.createdCount:previous.length,closedNow=verified?continuity.closedNow:previous.filter(r=>r.status==='Concluído').length;
  const delivery=verified?continuity.delivery:null;
  return <div className="mop-home54 home1107" aria-label="Central do operador">
-  <header className="home1107-header"><span className="home1107-icon"><LayoutDashboard size={26}/></span><div className="home1107-heading"><span className="home1107-eyebrow">BRIEFING OPERACIONAL</span><h1>Bem-vindo ao seu plantão, {operator||'Operador'}.</h1><p>{dateFormat.format(now)} | Turno {isDay?'diurno':'noturno'} ({isDay?'06h - 18h':'18h - 06h'})</p></div><div className="home1107-actions">{canCreate&&<button className="primary" onClick={onNewRecord}><FilePlus2 size={16}/> Novo registro</button>}<button onClick={refreshHome} disabled={loading} aria-label="Atualizar registros"><RefreshCw size={16}/> Atualizar</button></div></header>
+  <PageHeader page="home" title={<>Bem-vindo ao seu plantão, {operator||"Operador"}.</>} description={<>{dateFormat.format(now)} · Turno {isDay?"diurno (06h – 18h)":"noturno (18h – 06h)"}</>} actions={<>
+    <PageAction kind="refresh" onClick={refreshHome} disabled={loading} aria-label="Atualizar registros">Atualizar</PageAction>
+    {canCreate&&<PageAction kind="create" primary onClick={onNewRecord}>Novo registro</PageAction>}
+  </>}/>
   <div className="home1107-context"><span><ShieldCheck size={15}/>{demo?'Demonstração':accepted?'Ciência registrada':'Consulta operacional'}</span><span>{error?'Falha na consulta':loading?'Atualizando...':stale?'Consulta desatualizada':lastUpdated?'Consulta '+clockFormat.format(lastUpdated):'Aguardando consulta'}</span></div>
   {(error||stale)&&<div className="home1107-warning" role="alert"><AlertTriangle size={17}/>{error||'Dados desatualizados. Atualize antes de tomar decisões.'}</div>}
   {newPendingNotice>0&&<div className="home1107-warning" role="status"><Flag size={16}/>{newPendingNotice} nova(s) pendência(s)<button onClick={()=>setNewPendingNotice(0)}>Dispensar</button></div>}

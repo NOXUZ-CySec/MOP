@@ -1,5 +1,5 @@
 .mop-report-dashboard {
-  --report-current: #67cbed;
+  --report-current: var(--mop-ui-accent);
   --report-previous: #a5aacb;
   --report-line: #2c4c60;
   --report-muted: #a9c0ce;
@@ -36,13 +36,13 @@
   color: #dbeefa;
 }
 .mop-report-dashboard button[data-slot="button"]:hover,
-.mop-report-dashboard button[aria-pressed="true"] { background: #1b4058; color: #f4fbff; }
-.mop-report-dashboard button[data-slot="button"][data-variant="outline"] { border-color: #3d637b; background: transparent; }
-.mop-report-dashboard button.mop-report-export { background: #1a5976; border-color: #4689a6; }
+.mop-report-dashboard button[aria-pressed="true"] { background: var(--mop-ui-hover); color: #f4fbff; }
+.mop-report-dashboard button[data-slot="button"][data-variant="outline"] { border-color: var(--mop-ui-border); background: transparent; }
+.mop-report-dashboard button.mop-report-export { background: var(--mop-ui-primary); border-color: var(--mop-ui-primary-border); }
 .mop-report-menu {
   z-index: 1000;
   background: #102b40;
-  border: 1px solid #3d637b;
+  border: 1px solid var(--mop-ui-border);
   color: #ebf5fa;
 }
 .mop-report-menu [data-highlighted] { background: #24516c; color: white; }
@@ -59,7 +59,7 @@
   width: auto;
   min-height: 32px;
   padding: 4px 8px;
-  border: 1px solid #3d637b;
+  border: 1px solid var(--mop-ui-border);
   border-radius: 7px;
   background: #0c263c;
   color: #eaf5fc;

@@ -1,5 +1,6 @@
+import { PageHeader, PageAction } from "./PageHeader";
 import React,{useEffect,useMemo,useState} from 'react';
-import {BarChart3,FileText,ShieldAlert,ClipboardCheck,ArrowLeftRight,CheckCircle2,AlertTriangle,RefreshCw,CalendarDays,Building2,Tag,Info,ChartNoAxesColumn,TrendingUp,FileDown,FileSpreadsheet} from 'lucide-react';
+import {BarChart3,FileText,ShieldAlert,ClipboardCheck,ArrowLeftRight,CheckCircle2,AlertTriangle,CalendarDays,Building2,Tag,Info,ChartNoAxesColumn,TrendingUp} from 'lucide-react';
 import RecordFilterDropdown from './RecordFilterDropdown';
 import Analytics106 from './Analytics106';
 import ReportsDashboard, { type DashboardExport } from './ReportsDashboard';
@@ -53,7 +54,13 @@ export default function Reports104({records,role,demo,loading,error,onRefresh,on
  };
  const exportReport=async(format:'pdf'|'xlsx')=>{if(!manager||demo||exporting)return;setExportError('');setExportMessage('');setExporting(format);try{if(!window.mopDesktop?.reportExport105)throw Error('Atualize para Preview 105 para exportar.');const consolidated=section==='shift'||section==='routines';const result=await window.mopDesktop.reportExport105(format,{section,period:consolidated?'Hoje':section==='analytics'?'Todos os períodos':period,condo:consolidated?'Todos os condomínios':condo,category:consolidated?'Todas as categorias':category,status:consolidated?'Todos os status':status,days:section==='analytics'?analyticsDays:undefined});if(result.saved)setExportMessage('Relatório '+(result.filename||format.toUpperCase())+' salvo com sucesso.')}catch(e){setExportError(e instanceof Error?e.message:'Falha na exportação.')}finally{setExporting('')}};
  return <section className="rep104">
-  <header className="rep104-heading"><div className="rep104-heading-title"><BarChart3 size={29}/><div><h1>Relatórios</h1><p>Indicadores operacionais baseados nos dados autorizados da central.</p></div></div><div className="rep105-actions"><button type="button" disabled={loading||refreshing||!!exporting} className="rep104-refresh" onClick={()=>{onRefresh();void refresh()}}><RefreshCw size={16}/> {refreshing?'Atualizando...':'Atualizar dados'}</button>{manager&&!demo&&section!=='overview'&&<><button type="button" disabled={!!exporting||loading} className="rep105-pdf" onClick={()=>void exportReport('pdf')}><FileDown size={16}/>{exporting==='pdf'?'Gerando PDF...':'Exportar PDF'}</button><button type="button" disabled={!!exporting||loading} className="rep105-xlsx" onClick={()=>void exportReport('xlsx')}><FileSpreadsheet size={16}/>{exporting==='xlsx'?'Gerando Excel...':'Exportar Excel'}</button></>}</div></header>
+  <PageHeader page="reports" title="Relatórios" description="Indicadores dos dados autorizados da central." actions={<>
+   <PageAction kind="refresh" disabled={loading||refreshing||!!exporting} onClick={()=>{onRefresh();void refresh()}}>{refreshing?"Atualizando…":"Atualizar"}</PageAction>
+   {manager&&!demo&&section!=="overview"&&<>
+     <PageAction kind="pdf" disabled={!!exporting||loading} onClick={()=>void exportReport("pdf")}>{exporting==="pdf"?"Gerando PDF…":"Exportar PDF"}</PageAction>
+     <PageAction kind="excel" disabled={!!exporting||loading} onClick={()=>void exportReport("xlsx")}>{exporting==="xlsx"?"Gerando Excel…":"Exportar Excel"}</PageAction>
+   </>}
+  </>}/>
   <div className="rep104-scope"><Info size={15}/>{demo?'Ambiente demonstrativo. Indicadores reais indisponíveis.':manager?'Visão gerencial: registros autorizados, filtros por período e condomínio.':'Visão de operador: somente registros do plantão em andamento.'}{updatedAt&&!demo&&<span>Consultado às {new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit'}).format(updatedAt)}</span>}</div>
   {exportError&&<div role="alert" className="rep104-errors">{exportError}</div>}{exportMessage&&<div role="status" className="rep105-success">{exportMessage}</div>}
   {(error||checklistError||handoverError)&&<div className="rep104-errors" role="status">{[error,checklistError,handoverError].filter(Boolean).join(' · ')}</div>}

@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.3.0-preview.110.10",
+    "date": "2026-11-26",
+    "title": "MOP Preview 110.10 - Identidade visual das abas",
+    "changes": [
+      "Cabeçalhos padronizados nas dez abas, com ícones, texto alinhado e botões responsivos.",
+      "Indicadores Pendente, Em andamento e Concluído legíveis em Ocorrências.",
+      "Paleta compartilhada para os status em Ocorrências, Registros e Relatórios."
+    ]
+  },
+  {
     "version": "2.3.0-preview.110.9",
     "date": "2026-11-26",
     "title": "MOP Preview 110.9 - Fila de Ocorrências",

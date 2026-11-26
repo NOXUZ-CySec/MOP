@@ -1,3 +1,4 @@
+import { PageHeader, PageAction } from "./PageHeader";
 import React,{useEffect,useRef,useState} from 'react';
 import {ClipboardList,CheckCircle2,Clock3,Plus,RefreshCw,AlertCircle,AlertTriangle,Bell,Search,ChevronDown,CalendarDays,Settings2,Check,Cloud,Monitor} from 'lucide-react';
 import './checklist68.css';
@@ -53,7 +54,10 @@ export default function Checklist68({role,demo,initialTaskId,onTaskHandled}:{rol
  const disable=async()=>{if(!manager||!disableTarget)return;await mutate('disable',{id:disableTarget.id},'Rotina desativada. Histórico preservado.',()=>setDisableTarget(null))};
  const testPopup=async()=>{setBusy(true);setError('');setMessage('');try{if(!window.mopDesktop?.reminderTest97)throw Error('Teste de lembrete indisponível. Atualize o aplicativo.');await window.mopDesktop.reminderTest97();setMessage('Solicitação de teste enviada. Confira a janela do lembrete acima dos demais programas.')}catch(e){setError(e instanceof Error?e.message:'Falha ao abrir lembrete de teste.')}finally{setBusy(false)}};
  return <section className="check68 check1104">
-  <header className="check1104-header"><div><span className="check1104-icon"><ClipboardList size={26}/></span><span><h1>Checklists e Rotinas</h1><p>Organize e acompanhe as atividades do plantão.</p></span></div><div className="check1104-actions">{manager&&!demo&&<button type="button" className="check1104-primary" disabled={busy} onClick={()=>{if(editorOpen){setEditorOpen(false)}else{openEditor()}}}><Plus size={16}/> {editorOpen?'Ocultar cadastro':'Nova rotina'}</button>}<button type="button" onClick={()=>void load()} disabled={busy||loading||demo}><RefreshCw size={16}/> {loading?'Consultando...':'Atualizar'}</button></div></header>
+  <PageHeader page="routines" title="Checklists e Rotinas" description="Organize e acompanhe as atividades do plantão." actions={<>
+   <PageAction kind="refresh" onClick={()=>void load()} disabled={busy||loading||demo}>{loading?"Atualizando…":"Atualizar"}</PageAction>
+   {manager&&!demo&&<PageAction kind="create" primary={!editorOpen} disabled={busy} onClick={()=>editorOpen?setEditorOpen(false):openEditor()}>{editorOpen?"Ocultar cadastro":"Nova rotina"}</PageAction>}
+  </>}/>
   {demo?<div className="check68-empty"><AlertCircle size={24}/><strong>Ambiente demonstrativo</strong><p>Nenhuma rotina real é carregada ou alterada nesta conta.</p></div>:<>
    <div className="check1104-context"><span><CalendarDays size={16}/> {dateLabel} · Plantão {currentPeriod.toLowerCase()}</span><span>{scope==='central'?<Cloud size={15}/>:<Monitor size={15}/>} {fresh?(scope==='central'?'Central conectada':'Dados locais nesta estação'):loading?'Consultando dados':'Dados não confirmados'}</span></div>
    <div className="check68-summary">{[{id:'all',label:'Previstas',value:periodTasks.length,Icon:ClipboardList},{id:'pending',label:'Pendentes',value:pending,Icon:Clock3},{id:'done',label:'Concluídas',value:completed,Icon:CheckCircle2}].map(({id,label,value,Icon})=><div key={id} className={'check1104-metric '+id}><button type="button" aria-pressed={view===id} onClick={()=>setView(id)}><Icon size={20}/><strong>{fresh?value:'—'}</strong><span>{label}</span></button></div>)}</div>

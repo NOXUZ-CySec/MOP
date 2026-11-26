@@ -1,5 +1,6 @@
+import { PageHeader, PageAction } from "./PageHeader";
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AlertTriangle, ArrowLeftRight, ArrowRight, CalendarDays, Check, CheckCircle2, ClipboardCheck, ClipboardList, Clock3, FileText, Info, ListChecks, LoaderCircle, Moon, PencilLine, Search, ShieldCheck, Sparkles, Sun, UserRound, X, ChevronDown, ExternalLink } from 'lucide-react';
+import { AlertTriangle, ArrowRight, CalendarDays, Check, CheckCircle2, ClipboardCheck, ClipboardList, Clock3, FileText, Info, ListChecks, LoaderCircle, Moon, PencilLine, Search, ShieldCheck, Sparkles, Sun, UserRound, X, ChevronDown, ExternalLink } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import './handover110.css';
@@ -126,12 +127,11 @@ export default function HandoverPage({initial=demoSnapshot,onOpenRecord,onNaviga
   const deliveryBlock=stale?'Atualize os dados para concluir a conferência.':editChanged?'Salve ou cancele a orientação em edição.':checkCount<3?'Conclua os três itens de conferência.':working?'Aguarde a operação em andamento.':'Tudo conferido. Revise os dados na confirmação final.';
   const receiptBlock=stale?'Atualize os dados antes de confirmar o recebimento.':editChanged?'Salve ou cancele a orientação em edição.':unread.length?unread.length+' pendência(s) importante(s) ainda precisam de leitura.':working?'Aguarde a operação em andamento.':'Leituras conferidas. Registre eventuais ressalvas antes de confirmar.';
   return <section className="handover110" aria-labelledby="handover110-title">
-    <header className="handover110-heading">
-      <span className="handover110-heading-icon" aria-hidden="true"><ArrowLeftRight size={26}/></span>
-      <div><span className="handover110-eyebrow">CONTINUIDADE OPERACIONAL</span><h1 id="handover110-title">Passagem de Turno</h1><p>Deixe claro o que aconteceu, o que continua aberto e qual é o próximo passo.</p></div>
-      <span className={'handover110-phase '+(waiting?'is-waiting':receipt?'is-receipt':'')}><span/>{isDemo?'Demonstração · ':''}{phase}</span>
-    </header>
-    {onRefresh&&<div className="handover110-connection" aria-label="Atualização dos dados da passagem"><span>{stale?<AlertTriangle size={16}/>:refreshing?<LoaderCircle size={16} className="handover110-spin"/>:<CheckCircle2 size={16}/>}<span>{stale?'Dados precisam ser atualizados':refreshing?'Atualizando a passagem…':lastUpdated?'Dados atualizados em '+dateLabel(lastUpdated):'Dados da passagem atual'}</span></span><Button type="button" variant="ghost" disabled={disabled||refreshing||saving} onClick={onRefresh}><Clock3 size={14}/>Atualizar dados</Button></div>}
+    <PageHeader page="handover" title="Passagem de Turno" titleId="handover110-title" description="Ocorrências, pendências e próximos passos para o plantão." actions={<>
+ <span className={"handover110-phase "+(waiting?"is-waiting":receipt?"is-receipt":"")}><span/>{isDemo?"Demonstração · ":""}{phase}</span>
+ {onRefresh&&<PageAction kind="refresh" disabled={disabled||refreshing||saving} onClick={onRefresh}>Atualizar</PageAction>}
+</>}/>
+    {onRefresh&&<div className="handover110-connection" aria-label="Atualização dos dados da passagem"><span>{stale?<AlertTriangle size={16}/>:refreshing?<LoaderCircle size={16} className="handover110-spin"/>:<CheckCircle2 size={16}/>}<span>{stale?'Dados precisam ser atualizados':refreshing?'Atualizando a passagem…':lastUpdated?'Dados atualizados em '+dateLabel(lastUpdated):'Dados da passagem atual'}</span></span></div>}
     <section className="handover110-context" aria-label="Contexto do plantão">
       <div className="handover110-shift">{snapshot.shift==='Noturno'?<Moon size={23}/>:<Sun size={23}/>}<div><span>Plantão atual</span><strong>{snapshot.shift} <small>{snapshot.period}</small></strong><p><CalendarDays size={13}/>{dateLabel(snapshot.date,false)}</p></div></div>
       <div className="handover110-people"><div><span>Quem entrega</span><strong><UserRound size={15}/>{snapshot.outgoing||'Não informado'}</strong></div><ArrowRight className="handover110-flow-arrow" size={19}/><div><span>Quem recebe</span><strong><UserRound size={15}/>{snapshot.incoming||'Aguardando confirmação'}</strong></div></div>

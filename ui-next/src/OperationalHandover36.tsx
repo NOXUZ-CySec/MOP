@@ -1,3 +1,4 @@
+import { PageHeader } from "./PageHeader";
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {AlertTriangle,ArrowLeftRight,CheckCircle2,LoaderCircle,RotateCw,ShieldCheck} from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -172,6 +173,7 @@ export default function OperationalHandover36({sessionScope,onOpenRecord,onNavig
   return <div className="handover110-operational" ref={containerRef} tabIndex={-1}>
     {error&&<div className="handover110-feedback is-error" role="alert"><AlertTriangle size={18} aria-hidden="true"/><span>{error}{loadError&&actionError&&' '+loadError}</span></div>}
     {success&&<div className={'handover110-feedback is-'+success.tone} role="status"><CheckCircle2 size={18} aria-hidden="true"/><span>{success.text}</span></div>}
+    {!snapshot&&<PageHeader page="handover" title="Passagem de Turno" description="Ocorrências, pendências e próximos passos para o plantão."/>}
     {!snapshot&&<div className="handover110-loading" role="status">
       {refreshing?<><LoaderCircle size={22} className="handover110-spin" aria-hidden="true"/><span>Carregando informações do turno…</span></>:<><AlertTriangle size={22} aria-hidden="true"/><span>Não foi possível carregar a passagem.</span><Button onClick={refresh} disabled={!sessionScope?.active}>Tentar novamente</Button></>}
     </div>}

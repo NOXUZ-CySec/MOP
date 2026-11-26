@@ -1,5 +1,6 @@
+import { PageHeader, PageAction } from "./PageHeader";
 import React,{useEffect,useMemo,useState} from 'react';
-import {ShieldCheck,RefreshCw,Search,WifiOff,ArrowLeftRight,CheckCircle2,Clock3} from 'lucide-react';
+import {Search,WifiOff,ArrowLeftRight,CheckCircle2,Clock3} from 'lucide-react';
 import RecordFilterDropdown from './RecordFilterDropdown';
 type Ack={user_id:string;shift_id:string;snapshot_version:string;record_id:string;record_version:string;ack_at?:string;acknowledged_at?:string;remote_at?:string|null};
 type Receipt={id:number;shift_id:string;user_id:string;operator:string;received_at:string;kind:string;delivery_at:string|null;outgoing:string;note:string;source:string};
@@ -17,7 +18,9 @@ export default function Audit52({demo}:{demo:boolean}){
  const matches=(values:unknown[])=>values.some(value=>String(value??'').toLocaleLowerCase('pt-BR').includes(query.trim().toLocaleLowerCase('pt-BR')));
  const list=useMemo(()=>receipts.filter(r=>matches([r.operator,r.user_id,r.shift_id,r.kind,r.outgoing,r.note])),[receipts,query]);
  const ackRows=useMemo(()=>[...data.local.map(x=>({...x,source:'local'})),...data.remote.map(x=>({...x,source:'central'}))].filter(x=>(origin==='all'||x.source===origin)&&matches([x.user_id,x.shift_id,x.record_id,x.snapshot_version])).sort((a,b)=>String(b.ack_at||b.acknowledged_at).localeCompare(String(a.ack_at||a.acknowledged_at))).slice(0,300),[data,query,origin]);
- return <section className="audit52"><header><div><span className="audit52-eyebrow"><ShieldCheck size={16}/> SUPERVISÃO</span><h1>Ciência e auditoria</h1><p>Histórico de recebimentos de turno e comprovantes de leitura de ocorrências.</p></div><button type="button" onClick={()=>void load()} disabled={busy}><RefreshCw size={16}/>{busy?'Atualizando...':'Atualizar'}</button></header>
+ return <section className="audit52"><PageHeader page="audit" title="Ciência e auditoria" description="Histórico de recebimentos de turno e comprovantes de leitura." actions={
+  <PageAction kind="refresh" onClick={()=>void load()} disabled={busy}>{busy?"Atualizando…":"Atualizar"}</PageAction>
+ }/>
  {demo&&<p className="audit52-note">Demonstração: registros fictícios; nenhum aceite operacional foi consultado.</p>}
  {error&&<p role="alert" className="audit52-error">{error}</p>}
  <div className="audit52-stats"><div><span>Recebimentos registrados</span><strong>{receipts.length}</strong></div><div><span>Inícios sem entrega</span><strong>{receipts.filter(x=>!x.delivery_at).length}</strong></div><div><span>Ciências individuais antigas</span><strong>{data.local.length+data.remote.length}</strong></div></div>

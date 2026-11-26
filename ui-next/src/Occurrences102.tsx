@@ -1,5 +1,6 @@
+import { PageHeader, PageAction } from "./PageHeader";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronDown, FilePlus2, RefreshCw, Search, SlidersHorizontal, X } from "lucide-react";
+import { ChevronDown, Search, SlidersHorizontal, X } from "lucide-react";
 import { Dialog, Tabs } from "radix-ui";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -50,8 +51,10 @@ function severity(value?: string) {
   return key ? "Normal" : "Não definida";
 }
 
+const statusTones: Record<RecordStatus, string> = { Pendente: "pending", "Em andamento": "active", "Concluído": "done" };
+
 function Badge({ children, tone = "" }: { children: React.ReactNode; tone?: string }) {
-  return <span data-slot="badge" className={"occ-badge " + tone}>{children}</span>;
+  return <span data-slot="badge" className="occ-badge" data-tone={tone || undefined}>{children}</span>;
 }
 
 export default function Occurrences102({ records, role, demo, loading, error, onRefresh, onOpenRecord, onEditRecord, onNewRecord }: Props) {
@@ -201,7 +204,7 @@ export default function Occurrences102({ records, role, demo, loading, error, on
   const notice = feedback && <p className={"occ-notice " + (feedback.error ? "error" : "success")} role={feedback.error ? "alert" : "status"}>{feedback.id} · {feedback.text}</p>;
   const detail = record && selected ? <>
     <header className="occ-detail-heading">
-      <Badge tone={selected.open ? "progress" : "done"}>{record.status}</Badge>
+      <Badge tone={statusTones[record.status]}>{record.status}</Badge>
       <h2>{record.title}</h2><p>{record.id} · {record.condo}</p>
     </header>
     {feedback?.id === record.id && notice}
@@ -263,13 +266,10 @@ export default function Occurrences102({ records, role, demo, loading, error, on
   </> : <p className="occ-muted">Selecione uma ocorrência na fila.</p>;
 
   return <section className="occ-workbench">
-    <header className="occ-heading">
-      <div><h1>Ocorrências</h1><p>Fila operacional do plantão</p></div>
-      <div className="occ-actions">
-        <Button type="button" variant="outline" disabled={loading} onClick={() => { setNow(Date.now()); onRefresh(); void refresh(); }}><RefreshCw/>Atualizar</Button>
-        {role !== "viewer" && <Button type="button" onClick={onNewRecord}><FilePlus2/>Novo registro</Button>}
-      </div>
-    </header>
+    <PageHeader page="occurrences" title="Ocorrências" description="Fila operacional do plantão" actions={<>
+      <PageAction kind="refresh" disabled={loading} onClick={() => { setNow(Date.now()); onRefresh(); void refresh(); }}>Atualizar</PageAction>
+      {role !== "viewer" && <PageAction kind="create" primary onClick={onNewRecord}>Novo registro</PageAction>}
+    </>}/>
     {demo && <p className="occ-muted">Demonstração com dados fictícios.</p>}
     {(error || trackingError) && <p role="alert" className="occ-notice error">{[error, trackingError].filter(Boolean).join(" · ")}</p>}
     {feedback && (!record || feedback.id !== record.id || (compact && !sheet)) && notice}
@@ -314,7 +314,7 @@ export default function Occurrences102({ records, role, demo, loading, error, on
           {filtered.map(row => <Button type="button" variant="ghost" className="occ-row" key={row.record.id} aria-pressed={record?.id === row.record.id}
             onClick={event => { lastRow.current = event.currentTarget; setChosen(row.record.id); setTab("summary"); setSheet(compact); }}>
             <span className="occ-row-main"><strong>{row.record.title}</strong><small>{row.record.id} · {row.record.condo}</small></span>
-            <span className="occ-badges"><Badge tone={row.open ? "progress" : "done"}>{row.record.status}</Badge>
+            <span className="occ-badges"><Badge tone={statusTones[row.record.status]}>{row.record.status}</Badge>
               <Badge tone={row.critical ? "critical" : ""}>{row.priority}</Badge>
               {row.late && <Badge tone="late">Prazo vencido</Badge>}</span>
             <small>{ready ? (row.assignee ? name(row.assignee) : "Sem responsável") : "Responsável indisponível"}
