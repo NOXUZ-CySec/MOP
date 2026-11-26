@@ -9,7 +9,7 @@ import type {LucideIcon} from 'lucide-react';
 export type RecordStatus='Concluído'|'Em andamento'|'Pendente';
 export type RecordCategory='Segurança'|'Sistemas'|'Rotina'|'Manutenção'|'Infraestrutura';
 export type OperationalRecord={
-  id:string;title:string;description:string;category:RecordCategory;status:RecordStatus;authorId?:string;editReason?:string;actionTaken?:string;priority?:string;nextAction?:string;updatedAt?:string;
+  id:string;title:string;description:string;category:RecordCategory;status:RecordStatus;authorId?:string;editReason?:string;actionTaken?:string;priority?:string;nextAction?:string;updatedAt?:string;assignee?:string;deadline?:string;
   occurredAt:string;author:string;condo:string;details:string; icon:LucideIcon;
 };
 /** Visual fixtures only. Replace the provider with an authenticated, scoped read model during integration. */
@@ -32,8 +32,8 @@ export interface RecordProvider{
 export const demoRecordProvider:RecordProvider={mode:'demo',async list(){return sampleRecords.map(item=>({...item}))}};
 const countLabel=(n:number)=>String(n).padStart(2,'0');
 const dateTime=recordDateTime;
-export type RecordsPageProps={onCreate:()=>void,records?:OperationalRecord[],onAction?:(action:'edit'|'duplicate'|'delete',id:string,reason?:string)=>void|Promise<void>,mode?:'demo'|'operational',role?:string,userId?:string,openRecordId?:string|null,onOpenRecordHandled?:()=>void;loading?:boolean;error?:string;onRetry?:()=>void};
-export default function RecordsPage({onCreate,records=sampleRecords,onAction,mode='demo',role='operator',userId='',openRecordId,onOpenRecordHandled,loading=false,error='',onRetry}:RecordsPageProps){
+export type RecordsPageProps={onCreate:()=>void,records?:OperationalRecord[],onAction?:(action:'edit'|'duplicate'|'delete',id:string,reason?:string)=>void|Promise<void>,mode?:'demo'|'operational',role?:string,userId?:string,openRecordId?:string|null,onOpenRecordHandled?:()=>void;loading?:boolean;error?:string;onRetry?:()=>void;initialScope?:'open'|'attention'|'previous';scopeIds?:string[];onScopeHandled?:()=>void};
+export default function RecordsPage({onCreate,records=sampleRecords,onAction,mode='demo',role='operator',userId='',openRecordId,onOpenRecordHandled,loading=false,error='',onRetry,initialScope,scopeIds,onScopeHandled}:RecordsPageProps){
 
  const [query,setQuery]=useState(''),[period,setPeriod]=useState<Period>(emptyRecordFilters.period);
  const [category,setCategory]=useState(emptyRecordFilters.category),[status,setStatus]=useState(emptyRecordFilters.status);
@@ -43,9 +43,11 @@ export default function RecordsPage({onCreate,records=sampleRecords,onAction,mod
  const [revealRecordId,setRevealRecordId]=useState<string|null>(null),[revealToken,setRevealToken]=useState(0);
  const [resetToken,setResetToken]=useState(0);
  const [advanced,setAdvanced]=useState(true);
+ const [briefingScope,setBriefingScope]=useState<{kind:'open'|'attention'|'previous';ids:string[]}|null>(null);
+ useEffect(()=>{if(initialScope){setBriefingScope({kind:initialScope,ids:scopeIds||[]});onScopeHandled?.()}},[initialScope,scopeIds,onScopeHandled]);
  useEffect(()=>{
   if(!openRecordId||loading)return;
-  setQuery('');setPeriod(emptyRecordFilters.period);setCategory(emptyRecordFilters.category);setStatus(emptyRecordFilters.status);
+  setBriefingScope(null);setQuery('');setPeriod(emptyRecordFilters.period);setCategory(emptyRecordFilters.category);setStatus(emptyRecordFilters.status);
   setCondo(emptyRecordFilters.condo);setAuthor(emptyRecordFilters.author);
   if(records.some(record=>record.id===openRecordId)){
    setSelectedId(openRecordId);setRevealRecordId(openRecordId);setRevealToken(token=>token+1);setNotice('');
@@ -56,13 +58,13 @@ export default function RecordsPage({onCreate,records=sampleRecords,onAction,mod
  const condos=[emptyRecordFilters.condo,...Array.from(new Set(records.map(record=>record.condo))).sort((a,b)=>a.localeCompare(b,'pt-BR'))];
  const authors=[emptyRecordFilters.author,...Array.from(new Set(records.map(record=>record.author))).sort((a,b)=>a.localeCompare(b,'pt-BR'))];
  const filters=useMemo(()=>({query,period,category,status,condo,author}),[query,period,category,status,condo,author]);
- const filtered=useMemo(()=>filterOperationalRecords(records,filters),[records,filters]);
- const hasFilters=!!query.trim()||period!==emptyRecordFilters.period||category!==emptyRecordFilters.category||status!==emptyRecordFilters.status||condo!==emptyRecordFilters.condo||author!==emptyRecordFilters.author;
- const resetKey=JSON.stringify([filters,resetToken]);
+ const filtered=useMemo(()=>filterOperationalRecords(briefingScope?records.filter(r=>briefingScope.kind==='open'?r.status!=='Conclu\u00eddo':briefingScope.ids.includes(r.id)):records,filters),[records,filters,briefingScope]);
+ const hasFilters=!!briefingScope||!!query.trim()||period!==emptyRecordFilters.period||category!==emptyRecordFilters.category||status!==emptyRecordFilters.status||condo!==emptyRecordFilters.condo||author!==emptyRecordFilters.author;
+ const resetKey=JSON.stringify([filters,resetToken,briefingScope]);
  const selected=filtered.find(record=>record.id===selectedId)??filtered.reduce<OperationalRecord|undefined>((latest,record)=>!latest||(Date.parse(record.occurredAt)||0)>(Date.parse(latest.occurredAt)||0)?record:latest,undefined);
  const canEdit=role!=='viewer'&&!!selected&&(role==='admin'||role==='supervisor'||(!!userId&&selected.authorId===userId));
  const metrics=[{label:'Total de registros',value:records.length,tone:'blue',icon:FileText},{label:'Concluídos',value:records.filter(r=>r.status==='Concluído').length,tone:'green',icon:CheckCircle2},{label:'Em andamento',value:records.filter(r=>r.status==='Em andamento').length,tone:'amber',icon:RotateCw},{label:'Pendentes',value:records.filter(r=>r.status==='Pendente').length,tone:'red',icon:AlertTriangle}];
- const clear=()=>{setQuery('');setPeriod(emptyRecordFilters.period);setCategory(emptyRecordFilters.category);setStatus(emptyRecordFilters.status);setCondo(emptyRecordFilters.condo);setAuthor(emptyRecordFilters.author);setResetToken(token=>token+1)};
+ const clear=()=>{setBriefingScope(null);setQuery('');setPeriod(emptyRecordFilters.period);setCategory(emptyRecordFilters.category);setStatus(emptyRecordFilters.status);setCondo(emptyRecordFilters.condo);setAuthor(emptyRecordFilters.author);setResetToken(token=>token+1)};
  const act=async(action:'edit'|'duplicate'|'delete')=>{if(!selected||loading||error)return;if(action==='delete'){setDeleteId(selected.id);setDeleteReason('');setNotice('');return}if(onAction){try{await onAction(action,selected.id)}catch(e){setNotice(e instanceof Error?e.message:'Não foi possível executar a ação.')}}else{setNotice('Ação indisponível nesta versão.')}};
  const confirmDelete=async()=>{if(loading||error||role!=='admin'||!deleteId||deleteReason.trim().length<8||deleting)return;setDeleting(true);try{if(!onAction)throw Error('Exclusão indisponível.');await onAction('delete',deleteId,deleteReason.trim());setDeleteId(null);setDeleteReason('');setSelectedId(null);setNotice('Registro excluído logicamente com auditoria.')}catch(e){setNotice(e instanceof Error?e.message:'Não foi possível excluir o registro.')}finally{setDeleting(false)}};
  return <div className="records-screen records1105">
@@ -75,7 +77,7 @@ export default function RecordsPage({onCreate,records=sampleRecords,onAction,mod
    <RecordFilterDropdown label="Responsável" value={author} options={authors} display={value=>value===emptyRecordFilters.author?'Todos os responsáveis':value} onChange={setAuthor}/>
    <span>{hasFilters?'Filtros ativos · '+filtered.length+' resultados':'Consulta dos registros autorizados'}</span>
   </div>
-  <div className="records1105-filter-foot" role="status"><span>{filtered.length} de {records.length} registros</span>{error?<span>Consulta desatualizada</span>:loading?<span>Atualizando...</span>:null}</div></section>
+  <div className="records1105-filter-foot" role="status"><span>{briefingScope?({open:'Ocorr\u00eancias abertas',attention:'Prioridades do briefing',previous:'Registros do turno anterior'}[briefingScope.kind])+' | ':''}{filtered.length} de {records.length} registros</span>{error?<span>Consulta desatualizada</span>:loading?<span>Atualizando...</span>:null}</div></section>
   <div className="records-layout"><RecordsTable1097 data={filtered} totalRecords={records.length} selectedId={selected?.id} onSelect={id=>{setSelectedId(id);setNotice('')}} resetKey={resetKey} revealRecordId={revealRecordId} revealToken={revealToken} hasFilters={hasFilters} onClearFilters={clear} loading={loading} error={error} onRetry={onRetry}/>
   <aside className="records-detail" aria-label="Detalhes do registro">{selected?<><div className="records-detail-top"><div><FileText size={23}/><h2>Registro #{selected.id}</h2></div><span className={'records-status '+selected.status.replaceAll(' ','-')}>{selected.status}</span></div><div className="records1105-detail-title"><h3>{selected.title}</h3><span>{selected.priority?'Prioridade: '+selected.priority:'Prioridade não informada'}</span></div><dl className="records-definition"><div><dt>Categoria</dt><dd>{selected.category}</dd></div><div><dt>Data e Hora</dt><dd>{dateTime(selected.occurredAt)}</dd></div><div><dt>Registrado por</dt><dd>{selected.author}</dd></div><div><dt>Condomínio</dt><dd>{selected.condo}</dd></div></dl><div className="records-description"><h3>Descrição</h3><p>{selected.description||selected.details||'Não informada'}</p></div><div className="records1105-continuity"><h3><ClipboardCheck size={16}/> Continuidade operacional</h3><dl><div><dt>Providências registradas</dt><dd>{selected.actionTaken||'Não informadas'}</dd></div><div><dt>Próxima ação</dt><dd>{selected.nextAction||'Não informada'}</dd></div>{selected.updatedAt&&<div><dt>Última atualização</dt><dd>{dateTime(selected.updatedAt)}</dd></div>}</dl></div><div className="records-actions"><button type="button" onClick={()=>act('edit')} disabled={loading||!!error||role==='viewer'||(mode==='operational'&&!canEdit)}><Pencil size={16}/> Editar</button><button type="button" onClick={()=>act('duplicate')} disabled={loading||!!error||role==='viewer'}><Copy size={16}/> Duplicar</button><button type="button" className="danger" onClick={()=>act('delete')} disabled={loading||!!error||role!=='admin'}><Trash2 size={16}/> Excluir</button></div>{notice&&<p role="status" className="records-notice"><Info size={15}/>{notice}</p>}</>:<div className="records-detail-empty"><FileText size={25}/><p>Selecione um registro para visualizar os detalhes.</p></div>}</aside></div><p className="records-demo-note"><Info size={13}/>{mode==='demo'?'Dados demonstrativos: crie, edite e duplique registros fictícios. A exclusão é restrita ao administrador de teste.':'Registros autenticados com controle de permissões e auditoria.'}</p>
  {deleteId&&<div className="records96-overlay" role="presentation"><section className="records96-dialog" role="alertdialog" aria-modal="true" aria-label="Confirmar exclusão do registro"><h2>Excluir registro?</h2><p>O registro será ocultado das consultas operacionais, mas continuará preservado para auditoria. Esta ação não apaga o histórico.</p><label>Justificativa obrigatória<textarea value={deleteReason} onChange={e=>setDeleteReason(e.target.value)} maxLength={1000} rows={3} placeholder="Explique o motivo da exclusão (mínimo 8 caracteres)"/></label>{notice&&<p className="records96-error" role="alert">{notice}</p>}<div className="records96-actions"><button type="button" disabled={deleting} onClick={()=>{setDeleteId(null);setNotice('')}}>Cancelar</button><button type="button" className="danger" disabled={deleting||loading||!!error||role!=='admin'||deleteReason.trim().length<8} onClick={()=>void confirmDelete()}>{deleting?'Excluindo...':'Confirmar exclusão'}</button></div></section></div>}

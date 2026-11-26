@@ -99,4 +99,16 @@ function snapshot(store,session,now=new Date()){
   deliveryId:last?.id||undefined,deliverySummary:last?.handover_note||last?.note||'',stage:last?(pending?'awaiting-receipt':'receipt'):'delivery',
   outgoing:last?.outgoing||session.display_name,incoming:last?.incoming||null,shift:shift.type,date:shift.date,period:shift.type==='Diurno'?'06:00 – 18:00':'18:00 – 06:00'};
 }
-module.exports={checkout,snapshot};
+// Read only: use the existing authorized scope and the actual receipt for this user/shift.
+function briefing(store,session,now=new Date()){
+ if(!session?.userId||!['operator','supervisor','admin'].includes(session.role))throw Error('Perfil sem acesso ao briefing.');
+ const scope=visible(store.read(),session),current=SHIFT.at(now),previous=SHIFT.at(new Date(Date.parse(current.start_at)-1));
+ const receipt=scope.handovers.filter(h=>h.automation_version===1&&h.receipt_at&&h.receipt_user_id===session.userId&&h.receipt_slot===current.id).sort((a,b)=>String(b.receipt_at).localeCompare(String(a.receipt_at)))[0];
+ const rows=scope.items.filter(r=>!r.deleted_at),start=Date.parse(previous.start_at),end=Date.parse(previous.end_at);
+ const created=rows.filter(r=>{const at=I.stamp(r.created_at);return Number.isFinite(at)&&at>=start&&at<end});
+ const closed=r=>['Resolvido','Conclu\u00eddo'].includes(r.status);
+ const items=rows.filter(r=>!closed(r)).map(r=>itemView(r,session,now,true));
+ const delivery=receipt?.delivered_at?{id:receipt.id,at:receipt.delivered_at,outgoing:receipt.outgoing||'',summary:receipt.handover_note||receipt.note||'',receivedAt:receipt.receipt_at}:null;
+ return {current,previous,delivery,received:!!receipt,createdIds:created.map(protocol),createdCount:created.length,closedNow:created.filter(closed).length,openNow:created.filter(r=>!closed(r)).length,items};
+}
+module.exports={checkout,snapshot,briefing};
