@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.3.0-preview.110.13",
+    "date": "2026-11-26",
+    "title": "MOP Preview 110.13 - Gerenciamento de Usuários",
+    "changes": [
+      "Tela de Gerenciamento de Usuários com busca e filtro por perfil.",
+      "Cadastro administrativo com usuário, e-mail e senha inicial na central de homologação.",
+      "Atribuição de perfil e condomínios no cadastro e na edição de acessos existentes."
+    ]
+  },
+  {
     "version": "2.3.0-preview.110.12",
     "date": "2026-11-26",
     "title": "MOP Preview 110.12 - Registros",

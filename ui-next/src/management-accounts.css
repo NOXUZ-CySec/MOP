@@ -1,0 +1,30 @@
+.mop-accounts { display:grid;gap:14px;min-width:0;color:var(--mop-ui-text) }
+.mop-account-layout { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;gap:12px }
+.mop-accounts .mop-account-panel { padding:16px;gap:12px;min-width:0;color:var(--mop-ui-text);border-color:var(--mop-glass-border,var(--mop-control-border));background:var(--mop-glass-panel,var(--mop-ui-surface));box-shadow:var(--mop-glass-shadow) }
+.mop-account-panel h2 { margin:0;font-size:17px;font-weight:700 }
+.mop-account-search { position:relative;flex:1 1 190px;min-width:0 }
+.mop-account-search svg { position:absolute;top:10px;left:10px;color:var(--mop-ui-icon-fg);pointer-events:none }
+.mop-account-search input { padding-left:34px }
+.mop-account-panel input { color:var(--mop-ui-text);background:var(--mop-ui-surface);border-color:var(--mop-control-border) }
+.mop-account-panel input::placeholder { color:var(--mop-ui-text-muted);opacity:1 }
+.mop-account-actions { display:flex;gap:8px;align-items:center;flex-wrap:wrap }
+.mop-account-list { display:grid;gap:6px;max-height:540px;overflow:auto;padding:3px }
+.mop-accounts .mop-account-row { display:grid;grid-template-columns:auto minmax(0,1fr) auto;justify-content:stretch;gap:8px;height:auto;min-height:47px;padding:8px 10px;white-space:normal;text-align:left;color:var(--mop-ui-text);background:var(--mop-ui-field);border:1px solid var(--mop-control-border) }
+.mop-accounts .mop-account-row:is(:hover,[aria-pressed=true]) { background:var(--mop-ui-selected);border-color:var(--mop-control-accent) }
+.mop-account-row strong,.mop-account-row small { display:block;overflow-wrap:anywhere }
+.mop-account-muted,.mop-account-row small { margin:0;color:var(--mop-ui-text-muted);font-size:13px;line-height:1.4 }
+.mop-account-row svg,.mop-account-empty svg { color:var(--mop-ui-icon-fg);flex:none }
+.mop-account-role { padding:3px 7px;border:1px solid var(--mop-status-active-border);border-radius:6px;color:var(--mop-status-active-fg);background:var(--mop-status-active-bg);font-size:11px;overflow-wrap:anywhere }
+.mop-account-panel form,.mop-account-panel fieldset { display:grid;gap:12px;min-width:0 }
+.mop-account-panel fieldset { margin:0;padding:0;border:0 }
+.mop-account-panel label { display:grid;gap:5px;font-size:13px;font-weight:600 }
+.mop-account-label { display:block;margin-bottom:5px;font-size:13px;font-weight:600 }
+.mop-account-label ~ .mop-account-muted { margin-top:5px }
+.mop-account-panel form button[data-variant=default] { background:var(--mop-control-primary);color:#fff;border:1px solid var(--mop-ui-primary-border) }
+.mop-account-panel form button[data-variant=default]:hover:not(:disabled) { background:var(--mop-ui-primary-hover) }
+.mop-account-panel form button[data-variant=outline] { background:var(--mop-ui-field);color:var(--mop-ui-text);border-color:var(--mop-control-border) }
+.mop-accounts :is(button,input):focus-visible { outline:2px solid var(--mop-control-accent);outline-offset:2px }
+.mop-account-empty { display:flex;gap:8px;align-items:center;color:var(--mop-ui-text-muted);font-size:13px }
+.mop-account-message { margin:0;padding:8px 10px;border:1px solid var(--mop-status-done-border);border-radius:7px;background:var(--mop-status-done-bg);color:var(--mop-status-done-fg);font-size:13px }
+.mop-account-message.error { border-color:var(--mop-status-danger-border);background:var(--mop-status-danger-bg);color:var(--mop-status-danger-fg) }
+@media(max-width:900px){ .mop-account-layout { grid-template-columns:minmax(0,1fr) } .mop-account-list { max-height:265px } }

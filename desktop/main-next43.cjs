@@ -173,10 +173,17 @@ else {
       });
       ipcMain.handle('mop:open-data',async event=>{try{trusted(event);if(authorized().role!=='admin')throw Error('Somente administradores podem abrir a pasta de dados.');const error=await shell.openPath(store.directory);if(error)throw Error(error);return {ok:true,value:true};}catch(e){return {ok:false,error:privacy.clean(e.message)};}});
       ipcMain.handle('mop:management',async(event,action,input)=>{
-        try{trusted(event);if(authorized().role!=='admin')throw Error('Acesso exclusivo de administradores.');
-          if(!['list','save'].includes(action))throw Error('AÃ§Ã£o invÃ¡lida.');
-          const params=action==='list'?{p_workspace:sync.workspace()}:{p_workspace:sync.workspace(),p_user_id:input.user_id,p_username:input.username,p_display_name:input.display_name,p_role:input.role,p_condos:input.condos};
-          const {data,error}=await sync.client.rpc(action==='list'?'mop_list_members':'mop_set_operator_220',params);if(error)throw error;authorized();return {ok:true,value:privacy.clean(data)};
+        try{
+          trusted(event);
+          const session=authorized();
+          if(session.role!=='admin')throw Error('Acesso exclusivo de administradores.');
+          const workspace=sync?.workspace();
+          if(session.mode!=='online'||!sync?.authenticated||!workspace)throw Error('Conecte-se à central para gerenciar usuários.');
+          if(!['list','save','create'].includes(action))throw Error('Ação inválida.');
+          const value=await require('./management-accounts.cjs').manage(sync.client,workspace,action,input);
+          const current=authorized();
+          if(current.userId!==session.userId||current.role!=='admin'||sync.workspace()!==workspace)throw Error('A sessão de gerenciamento mudou. Atualize a lista.');
+          return {ok:true,value:privacy.clean(value)};
         }catch(e){return {ok:false,error:privacy.clean(e.message)};}
       });
       ipcMain.handle('mop:download',async(event,input)=>{
