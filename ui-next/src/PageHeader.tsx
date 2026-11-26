@@ -24,7 +24,7 @@ export function PageHeader({ page, title, description, titleId, descriptionId, t
   const Icon = pageIcons[page];
   return <header className="mop-page-header" data-page={page}>
     <div className="mop-page-heading">
-      <span className="mop-page-icon" aria-hidden="true"><Icon size={23} strokeWidth={1.75}/></span>
+      <span className="mop-page-icon" aria-hidden="true"><Icon size={23} strokeWidth={2}/></span>
       <div className="mop-page-copy">
         <h1 id={titleId} ref={titleRef} tabIndex={titleTabIndex}>{title}</h1>
         {description && <p id={descriptionId}>{description}</p>}
@@ -44,6 +44,6 @@ export function PageAction({ kind, primary = false, className, children, ...prop
   return <Button type="button" variant={primary ? "default" : "outline"}
     className={className ? "mop-page-action " + className : "mop-page-action"}
     data-mop-action={primary ? "primary" : "secondary"} {...props}>
-    <Icon aria-hidden="true" size={16} strokeWidth={1.8}/>{children}
+    <Icon aria-hidden="true" size={16} strokeWidth={2}/>{children}
   </Button>;
 }

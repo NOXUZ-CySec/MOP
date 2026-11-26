@@ -1,14 +1,15 @@
 :root {
   --mop-ui-text: #edf7ff;
-  --mop-ui-muted: #a9c7d9;
-  --mop-ui-accent: #72d0ef;
-  --mop-ui-border: #32617a;
+  --mop-ui-text-muted: #b8d2e2;
+  --mop-control-accent: #72d0ef;
+  --mop-control-border: #32617a;
   --mop-ui-field: rgba(7, 29, 47, .78);
-  --mop-ui-icon-bg: rgba(27, 99, 127, .18);
+  --mop-ui-icon-bg: #0c2d44;
+  --mop-ui-icon-fg: #a0e5fb;
   --mop-ui-surface: #0c293e;
   --mop-ui-hover: #153a51;
   --mop-ui-selected: #1b435b;
-  --mop-ui-primary: #157595;
+  --mop-control-primary: #157595;
   --mop-ui-primary-hover: #1a85a6;
   --mop-ui-primary-border: #3999b4;
   --mop-status-pending-bg: #48391f;
@@ -50,10 +51,10 @@
   flex: 0 0 46px;
   width: 46px;
   height: 46px;
-  border: 1px solid var(--mop-ui-border);
+  border: 1px solid var(--mop-control-border);
   border-radius: 11px;
   background: var(--mop-ui-icon-bg);
-  color: var(--mop-ui-accent);
+  color: var(--mop-ui-icon-fg);
 }
 .mop-page-copy { min-width: 0; overflow-wrap: anywhere; }
 .mop-page-header .mop-page-copy h1 {
@@ -67,7 +68,7 @@
 .mop-page-header[data-page=home] .mop-page-copy h1 { font-size: clamp(28px, 3vw, 42px); }
 .mop-page-header .mop-page-copy p {
   margin: 4px 0 0;
-  color: var(--mop-ui-muted);
+  color: var(--mop-ui-text-muted);
   font-size: 12px;
   line-height: 1.42;
 }
@@ -82,10 +83,10 @@
 .mop-page-action[data-mop-action],
 .occ-workbench button[data-slot=button]:not(.occ-metric,.occ-row),
 .occ-sheet button[data-slot=button],
-.occ-confirm button[data-slot=button] {
+.occ-confirm button[data-variant] {
   --button-bg: var(--mop-ui-field);
   --button-fg: var(--mop-ui-text);
-  --button-border: var(--mop-ui-border);
+  --button-border: var(--mop-control-border);
   --button-hover: var(--mop-ui-hover);
   border: 1px solid var(--button-border);
   background: var(--button-bg);
@@ -97,8 +98,8 @@
 .mop-page-action[data-mop-action=primary],
 .occ-workbench button[data-slot=button][data-variant=default]:not(.occ-metric,.occ-row),
 .occ-sheet button[data-slot=button][data-variant=default],
-.occ-confirm button[data-slot=button][data-variant=default] {
-  --button-bg: var(--mop-ui-primary);
+.occ-confirm button[data-variant][data-variant=default] {
+  --button-bg: var(--mop-control-primary);
   --button-fg: #fff;
   --button-border: var(--mop-ui-primary-border);
   --button-hover: var(--mop-ui-primary-hover);
@@ -106,7 +107,7 @@
 .mop-page-action[data-mop-action]:hover:not(:disabled),
 .occ-workbench button[data-slot=button]:not(.occ-metric,.occ-row):hover:not(:disabled),
 .occ-sheet button[data-slot=button]:hover:not(:disabled),
-.occ-confirm button[data-slot=button]:hover:not(:disabled) { background: var(--button-hover); }
+.occ-confirm button[data-variant]:hover:not(:disabled) { background: var(--button-hover); }
 .mop-page-header .mop-page-actions .mop-page-action[data-mop-action] {
   display: inline-flex;
   min-height: 38px;
@@ -123,8 +124,9 @@
   white-space: normal;
   text-align: center;
 }
-.mop-page-action[data-mop-action] svg { width: 16px; height: 16px; flex: none; }
-.mop-page-action[data-mop-action]:focus-visible { outline: 2px solid var(--mop-ui-accent); outline-offset: 2px; }
+.mop-page-header .mop-page-action[data-mop-action] svg { width: 16px; height: 16px; flex: none; color: var(--mop-ui-icon-fg); }
+.mop-page-header .mop-page-action[data-mop-action=primary] svg { color: #fff; }
+.mop-page-action[data-mop-action]:focus-visible { outline: 2px solid var(--mop-control-accent); outline-offset: 2px; }
 .mop-page-header[data-page=records], .mop-page-header[data-page=schedule], .mop-page-header[data-page=recordForm] { margin-bottom: 14px; }
 @media (max-width: 600px) {
   .mop-page-header .mop-page-heading { flex-basis: 100%; }
@@ -133,7 +135,7 @@
 }
 
 .mop-page-header[data-page=handover] { margin-bottom:14px }
-.mop-page-header:has(#mop108-title) { flex:none;padding:16px 0;border-bottom:1px solid var(--mop-ui-border);margin-bottom:0 }
+.mop-page-header:has(#mop108-title) { flex:none;padding:16px 0;border-bottom:1px solid var(--mop-control-border);margin-bottom:0 }
 .handover110 .handover110-phase { margin-left:0 }
 .audit52 > header.mop-page-header,.management35 > header.mop-page-header { padding:0;gap:12px 18px;align-items:center }
 .audit52 > header.mop-page-header .mop-page-action { min-height:38px;padding:7px 12px;border-radius:9px;font-size:12px }
@@ -143,4 +145,4 @@
 :is(.occ-badge[data-tone=done],.rep104-status.complete,.records-status.Concluído) { background:var(--mop-status-done-bg);color:var(--mop-status-done-fg);border-color:var(--mop-status-done-border) }
 .occ-badge:is([data-tone=late],[data-tone=critical]) { background:var(--mop-status-danger-bg);color:var(--mop-status-danger-fg);border-color:var(--mop-status-danger-border) }
 
-.mop-page-header .mop-page-icon svg { color:inherit }
+.mop-page-header .mop-page-icon svg { color: var(--mop-ui-icon-fg); }

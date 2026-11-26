@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.3.0-preview.110.11",
+    "date": "2026-11-26",
+    "title": "MOP Preview 110.11 - Contraste e legibilidade",
+    "changes": [
+      "Subtítulos e ícones dos cabeçalhos com maior contraste nas dez abas.",
+      "Textos secundários, selos e formulários de Ocorrências mais legíveis.",
+      "Gráficos de Relatórios com ciano para o período atual, dourado para o anterior e destaque claro na seleção."
+    ]
+  },
+  {
     "version": "2.3.0-preview.110.10",
     "date": "2026-11-26",
     "title": "MOP Preview 110.10 - Identidade visual das abas",

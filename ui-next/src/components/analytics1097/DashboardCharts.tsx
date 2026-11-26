@@ -1,5 +1,6 @@
 import { useId } from "react";
-import { Area, AreaChart, CartesianGrid, ReferenceLine, XAxis, YAxis } from "recharts";
+import { Check } from "lucide-react";
+import { Area, AreaChart, CartesianGrid, ReferenceDot, ReferenceLine, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -34,9 +35,10 @@ export default function DashboardCharts({ trend, distribution, dimension, setDim
               <XAxis dataKey="key" tickFormatter={value => trend.find(point => point.key === value)?.label || value} tickLine={false} axisLine={false} minTickGap={24} tick={{ fill: "var(--report-muted)", fontSize: 11 }}/>
               <YAxis allowDecimals={false} width={34} tickLine={false} axisLine={false} tick={{ fill: "var(--report-muted)", fontSize: 11 }}/>
               <ChartTooltip content={<ChartTooltipContent/>}/>
-              {selectedPoint && <ReferenceLine x={selectedPoint.key} stroke="var(--report-current)" strokeDasharray="4 4"/>}
-              <Area type="linear" dataKey="previous" name="Período anterior" stroke="var(--report-previous)" fill="none" strokeDasharray="5 4" isAnimationActive={false}/>
-              <Area type="linear" dataKey="current" name="Período atual" stroke="var(--report-current)" fill={"url(#" + gradient + ")"} strokeWidth={2} dot={trend.length === 1} isAnimationActive={false}/>
+              {selectedPoint && <ReferenceLine x={selectedPoint.key} stroke="var(--report-selection)" strokeWidth={2} strokeDasharray="2 5"/>}
+              <Area type="linear" dataKey="current" name="Período atual" stroke="var(--report-current)" fill={"url(#" + gradient + ")"} strokeWidth={4} dot={trend.length === 1} isAnimationActive={false}/>
+              <Area type="linear" dataKey="previous" name="Período anterior" stroke="var(--report-previous)" fill="none" strokeWidth={2.5} strokeDasharray="7 5" dot={trend.length === 1} isAnimationActive={false}/>
+              {selectedPoint && <ReferenceDot x={selectedPoint.key} y={selectedPoint.current} r={5} fill="var(--report-selection)" stroke="#0b263a" strokeWidth={2} ifOverflow="visible"/>}
             </AreaChart>
           </ChartContainer>
         <label className="mop-report-date">Detalhar dia
@@ -56,7 +58,7 @@ export default function DashboardCharts({ trend, distribution, dimension, setDim
       <CardContent className="mop-report-distribution">
         {distribution.length ? distribution.map(item => <button type="button" key={item.label} aria-pressed={selectedGroup === item.label}
           onClick={() => onGroup(item.label)} className="mop-report-bar">
-          <span>{item.label}</span><strong>{item.count}</strong>
+          <span>{item.label}</span><span className="mop-report-bar-value">{selectedGroup === item.label && <Check size={15} aria-hidden="true"/>}<strong>{item.count}</strong></span>
           <span className="mop-report-bar-track" aria-hidden="true"><i style={{ width: item.count / max * 100 + "%" }}/></span>
         </button>) : <p className="mop-report-note">Nenhum registro neste recorte.</p>}
       </CardContent>
