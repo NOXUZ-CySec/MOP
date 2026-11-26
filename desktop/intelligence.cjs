@@ -46,14 +46,19 @@ class Intelligence {
   removeFavorite(session,name){this.db.prepare('DELETE FROM intelligence_favorites WHERE owner=? AND name=?').run(session.userId,String(name));return this.favorites(session);}
   snapshot(session,now=new Date()){
     const state=visible(this.store.read(),session),slas=this.slas(state.items,now),seen=new Set(this.db.prepare('SELECT key FROM intelligence_seen WHERE owner=?').all(session.userId).map(x=>x.key));
-    const notifications=I.notifications(state,session,this.policy(),slas,now).map(n=>({...n,read:seen.has(n.key)}));
+    const records=new Map(state.items.filter(record=>!record.deleted_at).map(record=>[record.id,record]));
+    const withRecord=notice=>{
+      const record=records.get(notice.itemId);
+      return record?{...notice,recordProtocol:String(record.protocol||record.id)}:notice;
+    };
+    const notifications=I.notifications(state,session,this.policy(),slas,now).map(n=>withRecord({...n,read:seen.has(n.key)}));
     const active=new Set(notifications.map(n=>n.key));
     for(const n of notifications)this.db.prepare('INSERT INTO intelligence_history VALUES(?,?,?,?) ON CONFLICT(owner,key) DO UPDATE SET payload=excluded.payload').run(session.userId,n.key,now.toISOString(),JSON.stringify(n));
     this.db.prepare('DELETE FROM intelligence_history WHERE owner=? AND at<?').run(session.userId,new Date(+now-30*86400000).toISOString());
     const history=this.db.prepare('SELECT * FROM intelligence_history WHERE owner=? ORDER BY at DESC,key').all(session.userId).map(r=>({...JSON.parse(r.payload),at:r.at,read:seen.has(r.key),active:active.has(r.key)})).filter(n=>
       (n.condo==null||session.condos==null||session.condos.includes(n.condo))&&
-      (!n.itemId||state.items.some(x=>x.id===n.itemId&&!x.deleted_at&&x.condo===n.condo))&&
-      (n.type!=='shift'||session.role!=='viewer')).slice(0,200);
+      (!n.itemId||records.get(n.itemId)?.condo===n.condo)&&
+      (n.type!=='shift'||session.role!=='viewer')).slice(0,200).map(withRecord);
     return {policy:this.policy(),slas,favorites:this.favorites(session),notifications,history};
   }
   mark(session,key){if(!this.snapshot(session).history.some(n=>n.key===key))throw Error('Notificação fora do seu acesso ou desatualizada.');this.db.prepare('INSERT OR REPLACE INTO intelligence_seen VALUES(?,?,?)').run(session.userId,key,new Date().toISOString());return true;}

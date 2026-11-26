@@ -4,7 +4,7 @@
 const shared=require('./shared-ops93.cjs');
 const keyFor=(kind,row,phase)=>'swap94:'+kind+':'+row.id+':'+phase;
 function asNotice(kind,row,phase,title,detail){
- return {key:keyFor(kind,row,phase),type:'shift',title,detail,
+ return {key:keyFor(kind,row,phase),type:'shift',target:'schedule',severity:['pending','ready'].includes(phase)?'warning':'info',title,detail,
          at:row.decided_at||row.colleague_responded_at||row.created_at||new Date().toISOString(),active:true};
 }
 async function list(sync,session,db){

@@ -63,7 +63,9 @@ test('histórico deduplica, mantém resolvidos, persiste e refaz o escopo',t=>{
  const {service,store}=setup(t,[item(1)]),time=new Date();
  const first=service.snapshot(operator,time);service.snapshot(operator,time);
  assert.equal(service.snapshot(operator,time).history.length,first.history.length);
- const key=first.history.find(n=>n.itemId===1).key;service.mark(operator,key);
+ const recordNotice=first.history.find(n=>n.itemId===1);
+ assert.equal(recordNotice.recordProtocol,String(store.read().items[0].protocol||1));
+ const key=recordNotice.key;service.mark(operator,key);
  assert.ok(new Intelligence(store).snapshot(operator,time).history.find(n=>n.key===key).read);
  const s=store.read();s.items[0].status='Resolvido';store.write(s,admin);
  const resolved=service.snapshot(operator,time);assert.ok(resolved.history.some(n=>n.key===key&&!n.active));

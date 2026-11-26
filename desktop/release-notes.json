@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.3.0-preview.110.14",
+    "date": "2026-11-26",
+    "title": "MOP Preview 110.14 - Central de Notificações",
+    "changes": [
+      "Painel lateral com avisos ativos em destaque, contadores e filtros por prioridade, leitura e categoria.",
+      "Atalhos para registros, passagem de turno, checklists e escala, conforme o acesso do usuário.",
+      "Marcação individual ou em lote. Um aviso lido continua em destaque enquanto estiver ativo e for prioritário."
+    ]
+  },
+  {
     "version": "2.3.0-preview.110.13",
     "date": "2026-11-26",
     "title": "MOP Preview 110.13 - Gerenciamento de Usuários",

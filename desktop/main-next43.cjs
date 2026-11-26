@@ -39,22 +39,25 @@ else {
           const session=authorized();
           notificationService ||=new (require('./intelligence.cjs').Intelligence)(store);
           const swap=require('./swap-notices94.cjs');
-          let cloud=[];
+          let cloud=[],cloudUnavailable=false;
           if(require('./shared-ops93.cjs').active(sync,session)){
-            try{cloud=await swap.list(sync,session,store.db)}catch{cloud=[]}
+            try{cloud=await swap.list(sync,session,store.db)}catch{cloudUnavailable=true}
           }
-          authorized();
+          const current=authorized();
+          if(current.userId!==session.userId||current.role!==session.role||JSON.stringify(current.condos)!==JSON.stringify(session.condos))throw Error('A sessão mudou. Atualize os avisos.');
           if(action==='snapshot'){
             const result=notificationService.snapshot(session);
             const all=[...cloud,...result.history].sort((a,b)=>String(b.at||'').localeCompare(String(a.at||''))).slice(0,200);
-            return {ok:true,value:{...result,notifications:[...cloud,...result.notifications],history:all}};
+            return {ok:true,value:{...result,notifications:[...cloud,...result.notifications],history:all,warning:cloudUnavailable?'Os avisos de escala da central estão indisponíveis. Os outros avisos continuam visíveis.':''}};
           }
           if(action==='read'){
             const key=String(input?.key||'');
+            if(cloudUnavailable&&key.startsWith('swap94:'))throw Error('Não foi possível atualizar este aviso de escala.');
             const value=cloud.some(n=>n.key===key)?swap.mark(store.db,session,cloud,key):notificationService.mark(session,key);
             return {ok:true,value};
           }
           if(action==='readAll'){
+            if(cloudUnavailable)throw Error('Atualize os avisos da central antes de marcar todos como lidos.');
             notificationService.markAll(session);swap.markAll(store.db,session,cloud);
             return {ok:true,value:true};
           }

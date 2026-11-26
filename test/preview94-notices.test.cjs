@@ -21,6 +21,7 @@ test('94 notifications: teammate gets a new unread request and can mark it as re
  await withRows([], [row], [],async()=>{
   const list=await notices.list(f.sync,f.session,f.db);
   assert.equal(list.length,1);assert.equal(list[0].title,'Troca aguardando seu aceite');assert.equal(list[0].read,false);
+  assert.equal(list[0].target,"schedule");assert.equal(list[0].severity,"warning");
   assert.equal(notices.mark(f.db,f.session,list,list[0].key),true);
   const refreshed=await notices.list(f.sync,f.session,f.db);
   assert.equal(refreshed[0].read,true);
