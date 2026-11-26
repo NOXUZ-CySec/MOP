@@ -1,5 +1,16 @@
 [
   {
+    "version": "2.3.0-preview.110.12",
+    "date": "2026-11-26",
+    "title": "MOP Preview 110.12 - Registros",
+    "changes": [
+      "Busca e filtros mantidos à mão, com filtros removíveis e indicadores por status que acompanham o recorte.",
+      "Detalhes em Resumo e Continuidade, painel lateral em janelas estreitas e ação Copiar protocolo.",
+      "Confirmação de exclusão com justificativa preservada em caso de falha.",
+      "Textos, ícones e botões de Registros seguem o padrão de contraste da Preview 110.11."
+    ]
+  },
+  {
     "version": "2.3.0-preview.110.11",
     "date": "2026-11-26",
     "title": "MOP Preview 110.11 - Contraste e legibilidade",

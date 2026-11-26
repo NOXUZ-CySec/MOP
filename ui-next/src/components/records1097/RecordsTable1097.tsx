@@ -44,7 +44,7 @@ const columns = columnHelper.columns([
 export type RecordsTable1097Props = {
   data: OperationalRecord[];
   selectedId?: string | null;
-  onSelect: (id: string) => void;
+  onSelect: (id: string, trigger?: HTMLElement) => void;
   resetKey?: string;
   revealRecordId?: string | null;
   revealToken?: number;
@@ -96,11 +96,11 @@ export function RecordsTable1097({
   const start = data.length ? pagination.pageIndex * pagination.pageSize + 1 : 0;
   const end = Math.min((pagination.pageIndex + 1) * pagination.pageSize, data.length);
   const caption = hasFilters ? data.length + ' de ' + totalRecords + ' registros' : data.length + ' registros';
-  const activate = (id: string) => onSelect(id);
+  const activate = (id: string, trigger?: HTMLElement) => onSelect(id, trigger);
 
   return <section className="records-list records1097" aria-label="Lista de registros" aria-busy={loading}>
     <div className="records1097-toolbar">
-      <div className="records1097-result"><FileText size={16} /><strong>{caption}</strong><span>Selecione para ver os detalhes</span></div>
+      <div className="records1097-result"><FileText size={16} /><strong>{caption}</strong></div>
       <DropdownMenu.Root>
         <DropdownMenu.Trigger className="records1097-control" aria-label="Escolher colunas">
           <Columns3 size={15} /> Colunas
@@ -150,7 +150,7 @@ export function RecordsTable1097({
             </button>
           </th>;
         })}</tr>)}</thead>
-        <tbody>{rows.map(row => <tr key={row.id} data-record-row={row.id} data-selected={row.getIsSelected() || undefined} onClick={() => activate(row.id)}>
+        <tbody>{rows.map(row => <tr key={row.id} data-record-row={row.id} data-selected={row.getIsSelected() || undefined} onClick={event => activate(row.id, event.currentTarget.querySelector<HTMLButtonElement>('.records1097-open') || undefined)}>
           {row.getVisibleCells().map(cell => {
             const record = row.original;
             const Icon = record.icon || FileText;
@@ -159,7 +159,7 @@ export function RecordsTable1097({
               {id !== 'title' && <span className="records1097-cell-label">{labels[id]}</span>}
               {id === 'title' ? <button type="button" className="records1097-open" data-record-id={record.id}
                 aria-pressed={row.getIsSelected()} aria-label={'Abrir registro ' + record.id + ': ' + record.title}
-                onClick={event => { event.stopPropagation(); activate(record.id); }}>
+                onClick={event => { event.stopPropagation(); activate(record.id, event.currentTarget); }}>
                 <span className={'records-row-icon ' + record.status.replaceAll(' ', '-')}><Icon size={17} /></span>
                 <span className="records1097-title"><small>#{record.id}</small><strong>{record.title}</strong><span>{record.description}</span></span>
               </button> : id === 'status' ? <span className={'records-status ' + record.status.replaceAll(' ', '-')}>{record.status}</span>
