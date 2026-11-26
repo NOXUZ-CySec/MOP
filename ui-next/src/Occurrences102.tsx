@@ -1,118 +1,348 @@
-import React,{useEffect,useMemo,useState} from 'react';
-import {AlertTriangle,ShieldAlert,Clock3,CheckCircle2,Search,CalendarDays,SlidersHorizontal,Building2,Tag,RefreshCw,ArrowRight,ClipboardList,FileText,UserRound,Activity,History,ChevronRight,Info,Pencil,ArrowLeftRight} from 'lucide-react';
-import type {OperationalRecord} from './RecordsPage';
-import RecordFilterDropdown from './RecordFilterDropdown';
-import './occurrences102.css';
-import './occurrences108.css';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ChevronDown, FilePlus2, RefreshCw, Search, SlidersHorizontal, X } from "lucide-react";
+import { Dialog, Tabs } from "radix-ui";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import RecordFilterDropdown from "./RecordFilterDropdown";
+import type { OperationalRecord, RecordStatus } from "./RecordsPage";
+import "./occurrences1109.css";
 
-type Tracking={record_protocol:string;priority:string;assigned_user_id:string|null;updated_at?:string};
-type Update={id:string;record_protocol:string;note:string;author_id:string;created_at:string};
-type Member={user_id:string;display_name?:string;username?:string;condos?:string[]|null;role?:string};
-type StatusChange={id:string;record_protocol:string;from:string;to:string;at:string;actor:string;kind:string;source:string};
-type Snapshot={tracking:Tracking[];updates:Update[];members:Member[];statusHistory?:StatusChange[]};
-type Props={records:OperationalRecord[],role:string,demo:boolean,loading:boolean,error:string,onRefresh:()=>void,onOpenRecord:(id:string)=>void,onEditRecord:(id:string)=>void,onNewRecord:()=>void};
-const formatDate=(value:string)=>{const t=new Date(value);return Number.isFinite(t.getTime())?new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',dateStyle:'short',timeStyle:'short'}).format(t):'Data indisponível'};
-const dateKey=(d:Date)=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
-const priority=(value:string|undefined)=>{const v=(value||'').toLowerCase();return /cr[ií]tic|urgente|emerg[eê]ncia/.test(v)?'Crítica':/alta|high/.test(v)?'Alta':/m[eé]dia|moderad/.test(v)?'Média':/baixa|low/.test(v)?'Baixa':/normal/.test(v)?'Normal':'Não definida'};
-export default function Occurrences102({records,role,demo,loading,error,onRefresh,onOpenRecord,onEditRecord,onNewRecord}:Props){
- const [snapshot,setSnapshot]=useState<Snapshot>({tracking:[],updates:[],members:[],statusHistory:[]}),[trackingError,setTrackingError]=useState(''),[busy,setBusy]=useState(false),[note,setNote]=useState(''),[editPriority,setEditPriority]=useState('Normal'),[editAssignee,setEditAssignee]=useState('Nenhum');
- const manager=role==='admin'||role==='supervisor';
- const [clockNow,setClockNow]=useState(Date.now());useEffect(()=>{const timer=setInterval(()=>setClockNow(Date.now()),60000);return()=>clearInterval(timer)},[]);
- const loadTracking=async()=>{if(demo)return;try{const data=await window.mopDesktop?.occurrence103?.('list') as Snapshot|undefined;if(data){setSnapshot(data);setTrackingError('')}}catch(e){setTrackingError(e instanceof Error?e.message:'Não foi possível consultar acompanhamento.')}};
- useEffect(()=>{void loadTracking()},[demo]);
- useEffect(()=>{if(demo)return;const off=window.mopDesktop?.onSync?.(x=>{if(x?.dataChanged)void loadTracking()});const timer=setInterval(()=>void loadTracking(),30000);return()=>{off?.();clearInterval(timer)}},[demo]);
- const [query,setQuery]=useState(''),[status,setStatus]=useState('Todos os status'),[category,setCategory]=useState('Todas as categorias'),[condo,setCondo]=useState('Todos os condomínios'),[period,setPeriod]=useState('Todos os períodos'),[chosen,setChosen]=useState<string|null>(null);
- const [assignee,setAssignee]=useState('Todos os responsáveis'),[focus,setFocus]=useState('Todas as ocorrências'),[ageHours,setAgeHours]=useState(24);
- const occurrences=useMemo(()=>records.filter(r=>r.category!=='Rotina'||r.status!=='Concluído').sort((a,b)=>Date.parse(b.occurredAt)-Date.parse(a.occurredAt)),[records]);
- const trackingMap=useMemo(()=>new Map(snapshot.tracking.map(t=>[t.record_protocol,t])),[snapshot.tracking]);
- const severity=(r:OperationalRecord)=>priority(trackingMap.get(r.id)?.priority||r.priority);
- const aging=(r:OperationalRecord)=>r.status!=='Concluído'&&Number.isFinite(Date.parse(r.occurredAt))&&clockNow-Date.parse(r.occurredAt)>=ageHours*3600000;
- const criticalList=occurrences.filter(r=>r.status!=='Concluído'&&severity(r)==='Crítica');
- const agedList=occurrences.filter(aging);
- const assignedIds=[...new Set(snapshot.tracking.map(t=>t.assigned_user_id).filter((x):x is string=>!!x))];
- const assignedOptions=['Todos os responsáveis','Sem responsável',...assignedIds];
- const assignedName=(id:string)=>id==='Todos os responsáveis'?'Responsável':id==='Sem responsável'?'Sem responsável':snapshot.members.find(x=>x.user_id===id)?.display_name||snapshot.members.find(x=>x.user_id===id)?.username||'Usuário atribuído';
- const filtered=useMemo(()=>occurrences.filter(r=>{
-  const text=[r.id,r.title,r.description,r.condo,r.details].join(' ').toLocaleLowerCase('pt-BR');
-  if(query&&!text.includes(query.toLocaleLowerCase('pt-BR')))return false;
-  if(status!=='Todos os status'&&r.status!==status)return false;
-  const who=trackingMap.get(r.id)?.assigned_user_id||null;
-  if(assignee==='Sem responsável'&&who)return false;
-  if(assignee!=='Todos os responsáveis'&&assignee!=='Sem responsável'&&who!==assignee)return false;
-  if(focus==='Críticas abertas'&&!(r.status!=='Concluído'&&severity(r)==='Crítica'))return false;
-  if(focus==='Pendências antigas'&&!aging(r))return false;
-  if(focus==='Sem responsável'&&(r.status==='Concluído'||who))return false;
-  if(category!=='Todas as categorias'&&r.category!==category)return false;
-  if(condo!=='Todos os condomínios'&&r.condo!==condo)return false;
-  const d=new Date(r.occurredAt),time=d.getTime();if(!Number.isFinite(time))return period==='Todos os períodos';
-  if(period==='Hoje')return dateKey(d)===dateKey(new Date());
-  if(period==='Últimos 7 dias')return time>=Date.now()-7*86400000;
-  if(period==='Últimos 30 dias')return time>=Date.now()-30*86400000;
-  return true;
- }),[occurrences,query,status,category,condo,period,assignee,focus,ageHours,trackingMap,clockNow]);
- const selected=filtered.find(x=>x.id===chosen)||filtered[0]||null;
- const track=selected?snapshot.tracking.find(x=>x.record_protocol===selected.id):undefined;
- const assigned=snapshot.members.find(m=>m.user_id===track?.assigned_user_id);
- const permittedMembers=selected?snapshot.members.filter(m=>m.condos==null||m.condos.includes(selected.condo)):[];
- const updates=selected?snapshot.updates.filter(x=>x.record_protocol===selected.id):[];
- const statusChanges=selected?(snapshot.statusHistory||[]).filter(x=>x.record_protocol===selected.id):[];
- const historyEntries=[...updates.map(u=>({id:u.id,at:u.created_at,label:u.note,author:snapshot.members.find(m=>m.user_id===u.author_id)?.display_name||'Equipe',kind:'Providência',origin:'Central'})),...statusChanges.map(x=>({id:x.id,at:x.at,label:x.kind+': '+x.from+' → '+x.to,author:x.actor,kind:x.kind,origin:x.source}))].sort((a,b)=>Date.parse(b.at)-Date.parse(a.at));
- const minutesOpen=selected?Math.max(0,Math.floor(((selected.status==='Concluído'?Date.parse(selected.updatedAt||selected.occurredAt):clockNow)-Date.parse(selected.occurredAt))/60000)):0;
- const duration=minutesOpen<60?minutesOpen+' min':Math.floor(minutesOpen/1440)>0?Math.floor(minutesOpen/1440)+' d '+Math.floor(minutesOpen%1440/60)+' h':Math.floor(minutesOpen/60)+' h '+minutesOpen%60+' min';
- const edit=async(operation:'assign'|'note'|'status',data:Record<string,unknown>)=>{
-  if(!selected||busy)return;setBusy(true);setTrackingError('');
-  try{await window.mopDesktop?.occurrence103?.(operation,{id:selected.id,...data});if(operation==='note')setNote('');await loadTracking();if(operation==='status')onRefresh()}
-  catch(e){setTrackingError(e instanceof Error?e.message:'Não foi possível salvar a ocorrência.')}finally{setBusy(false)}
- };
- useEffect(()=>{setEditPriority(track?.priority||'Normal');setEditAssignee(track?.assigned_user_id||'Nenhum');setNote('')},[selected?.id,track?.priority,track?.assigned_user_id]);
- useEffect(()=>{if(chosen&&!occurrences.some(r=>r.id===chosen))setChosen(null)},[chosen,occurrences]);
- const clear=()=>{setQuery('');setStatus('Todos os status');setCategory('Todas as categorias');setCondo('Todos os condomínios');setPeriod('Todos os períodos');setAssignee('Todos os responsáveis');setFocus('Todas as ocorrências');setAgeHours(24)};
- const unresolved=occurrences.filter(r=>r.status!=='Concluído');
- const today=dateKey(new Date());
- const metrics=[
-  {label:'Em aberto',value:unresolved.length,icon:AlertTriangle,tone:'amber'},
-  {label:'Em andamento',value:occurrences.filter(r=>r.status==='Em andamento').length,icon:Clock3,tone:'blue'},
-  {label:'Resolvidas hoje',value:occurrences.filter(r=>r.status==='Concluído'&&dateKey(new Date(r.updatedAt||r.occurredAt))===today).length,icon:CheckCircle2,tone:'green'},
-  {label:'Críticas',value:criticalList.length,icon:ShieldAlert,tone:'red'},
-  {label:'Pendências antigas',value:agedList.length,icon:Clock3,tone:'amber'}
- ];
- return <div className="occ102">
-  <header className="occ102-heading"><div className="occ102-title"><AlertTriangle size={30}/><div><h1>Ocorrências</h1><p>Monitoramento, providências e continuidade entre plantões.</p></div></div><div className="occ102-top-actions"><button type="button" className="occ102-refresh" onClick={onRefresh} disabled={loading}><RefreshCw size={16}/> Atualizar</button>{role!=='viewer'&&<button type="button" className="occ102-primary" onClick={onNewRecord}><FileText size={16}/> Novo registro</button>}</div></header>
-  {demo&&<p className="occ102-message"><Info size={15}/> Ambiente demonstrativo — dados fictícios.</p>}
-  {error&&<p className="occ102-message error" role="alert"><AlertTriangle size={15}/>{error}</p>}
-  {trackingError&&<p className="occ102-message error" role="alert"><AlertTriangle size={15}/>{trackingError}</p>}
-  {(criticalList.length>0||agedList.length>0)&&<div className="occ108-alert" role="status"><ShieldAlert size={20}/><div><strong>Atenção operacional</strong><span>{criticalList.length} ocorrência(s) crítica(s) aberta(s) · {agedList.length} pendência(s) com pelo menos {ageHours} hora(s) desde o registro.</span></div><button type="button" onClick={()=>setFocus('Críticas abertas')} disabled={!criticalList.length}>Ver críticas</button><button type="button" onClick={()=>setFocus('Pendências antigas')} disabled={!agedList.length}>Ver antigas</button></div>}
-  <div className="occ102-metrics">{metrics.map(({label,value,icon:Icon,tone})=><div key={label} className={'occ102-metric '+tone}><span className="occ102-metric-icon"><Icon size={22}/></span><div><strong>{String(value).padStart(2,'0')}</strong><span>{label}</span></div></div>)}</div>
-  <div className="occ102-filters"><label className="occ102-search"><Search size={18}/><input aria-label="Buscar ocorrências" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Buscar por título, registro ou condomínio"/></label>
-   <RecordFilterDropdown label="Status" icon={SlidersHorizontal} value={status} options={['Todos os status','Pendente','Em andamento','Concluído']} display={v=>v==='Todos os status'?'Status':v} onChange={setStatus}/>
-   <RecordFilterDropdown label="Categoria" icon={Tag} value={category} options={['Todas as categorias',...new Set(occurrences.map(r=>r.category))]} display={v=>v==='Todas as categorias'?'Categoria':v} onChange={setCategory}/>
-   <RecordFilterDropdown label="Condomínio" icon={Building2} value={condo} options={['Todos os condomínios',...new Set(occurrences.map(r=>r.condo))]} display={v=>v==='Todos os condomínios'?'Condomínio':v} onChange={setCondo}/>
-   <RecordFilterDropdown label="Período" icon={CalendarDays} value={period} options={['Todos os períodos','Hoje','Últimos 7 dias','Últimos 30 dias']} display={v=>v==='Todos os períodos'?'Período':v} onChange={setPeriod}/>
-   <RecordFilterDropdown label="Responsável" icon={UserRound} value={assignee} options={assignedOptions} display={assignedName} onChange={setAssignee}/>
-   <RecordFilterDropdown label="Atenção" icon={ShieldAlert} value={focus} options={['Todas as ocorrências','Críticas abertas','Pendências antigas','Sem responsável']} display={v=>v==='Todas as ocorrências'?'Atenção':v} onChange={setFocus}/>
-   <RecordFilterDropdown label="Idade mínima" icon={Clock3} value={String(ageHours)} options={['24','48','72','168']} display={v=>v+'h em aberto'} onChange={v=>setAgeHours(Number(v))}/>
-   <button type="button" className="occ102-clear" onClick={clear}>Limpar filtros</button>
-  </div>
-  <div className="occ102-layout"><section className="occ102-list"><div className="occ102-section-title"><h2>Fila operacional</h2><span>{filtered.length} ocorrência(s)</span></div>
-    {loading&&<p className="occ102-empty">Atualizando informações da central...</p>}
-    {!loading&&filtered.length===0&&<div className="occ102-empty"><ClipboardList size={28}/><strong>{occurrences.length?'Nenhuma ocorrência corresponde aos filtros':'Nenhuma ocorrência disponível'}</strong><span>Os registros que exigem acompanhamento aparecerão aqui, respeitando seus acessos.</span></div>}
-    <div className="occ102-items">{filtered.map(r=>{const Icon=r.icon,selectedRow=selected?.id===r.id;return <button type="button" key={r.id} className={'occ102-item'+(selectedRow?' selected':'')} aria-pressed={selectedRow} onClick={()=>setChosen(r.id)}>
-      <span className="occ102-item-icon"><Icon size={18}/></span><span className="occ102-item-main"><strong>{r.title}</strong><small>{r.condo} · {formatDate(r.occurredAt)}</small><span className="occ102-item-description">{r.description}</span><span className="occ108-flags">{r.status!=='Concluído'&&severity(r)==='Crítica'&&<em className="critical">Crítica aberta</em>}{aging(r)&&<em className="old">{Math.floor(Math.max(0,clockNow-Date.parse(r.occurredAt))/3600000)}h desde o registro</em>}{r.status!=='Concluído'&&!trackingMap.get(r.id)?.assigned_user_id&&<em>Sem responsável</em>}</span></span><span className={'occ102-status '+(r.status==='Concluído'?'done':r.status==='Em andamento'?'progress':'pending')}>{r.status}</span><ChevronRight size={17} className="occ102-arrow"/>
-    </button>})}</div>
-   </section>
-   <aside className="occ102-detail">{selected?<><div className="occ102-section-title"><h2>Detalhes da ocorrência</h2><span className={'occ102-status '+(selected.status==='Concluído'?'done':selected.status==='Em andamento'?'progress':'pending')}>{selected.status}</span></div>
-   <div className="occ102-detail-title"><selected.icon size={24}/><div><strong>{selected.title}</strong><small>{selected.id}</small></div></div>
-   <dl className="occ102-facts"><div><dt><Building2 size={14}/> Condomínio</dt><dd>{selected.condo}</dd></div><div><dt><Tag size={14}/> Categoria</dt><dd>{selected.category}</dd></div><div><dt><ShieldAlert size={14}/> Prioridade</dt><dd>{priority(track?.priority||selected.priority)}</dd></div><div><dt><CalendarDays size={14}/> Registrada em</dt><dd>{formatDate(selected.occurredAt)}</dd></div><div><dt><Clock3 size={14}/> {selected.status==='Concluído'?'Duração até conclusão':'Tempo em aberto'}</dt><dd>{duration}</dd></div><div><dt><UserRound size={14}/> Responsável pelo registro</dt><dd>{selected.author}</dd></div><div><dt><UserRound size={14}/> Responsável pelo acompanhamento</dt><dd>{assigned?.display_name||assigned?.username||'Não atribuído'}</dd></div></dl>
-   <section className="occ102-notes"><h3><ClipboardList size={16}/> Descrição e providências</h3><p>{selected.description||'Sem descrição.'}</p>{selected.actionTaken&&<div><strong>Providências tomadas</strong><p>{selected.actionTaken}</p></div>}{selected.nextAction&&<div><strong>Próxima ação</strong><p>{selected.nextAction}</p></div>}</section>
-   <section className="occ103-management"><h3><SlidersHorizontal size={16}/> Gestão da ocorrência</h3>
-   {manager&&!demo&&<div className="occ103-assign"><label>Prioridade<RecordFilterDropdown label="Prioridade" value={editPriority} options={['Baixa','Normal','Alta','Crítica']} onChange={setEditPriority}/></label><label>Responsável<RecordFilterDropdown label="Responsável" value={editAssignee} options={['Nenhum',...permittedMembers.map(m=>m.user_id)]} display={id=>id==='Nenhum'?'Não atribuído':permittedMembers.find(m=>m.user_id===id)?.display_name||permittedMembers.find(m=>m.user_id===id)?.username||id} onChange={setEditAssignee}/></label><button disabled={busy} type="button" onClick={()=>void edit('assign',{priority:editPriority,assigned_user_id:editAssignee==='Nenhum'?null:editAssignee})}>Salvar gestão</button></div>}
-   <label className="occ103-status-field">Status da ocorrência<RecordFilterDropdown label="Status" value={selected.status} options={selected.status==='Concluído'&&!manager?['Concluído']:['Pendente','Em andamento','Concluído']} onChange={v=>{if(!demo&&v!==selected.status)void edit('status',{status:v==='Concluído'?'Resolvido':v})}}/></label>
-   {!demo&&role!=='viewer'&&<div className="occ103-note-editor"><label>Registrar providência<textarea rows={3} maxLength={2000} value={note} onChange={e=>setNote(e.target.value)} placeholder="Descreva a ação realizada e as próximas etapas"/></label><button type="button" disabled={busy||note.trim().length<4} onClick={()=>void edit('note',{note})}>Adicionar ao histórico</button></div>}
-   {demo&&<p>Modo de demonstração: as ações operacionais estão desativadas.</p>}
-   </section>
-   <section className="occ102-history"><h3><History size={16}/> Linha do tempo</h3><div className="occ102-timeline">{historyEntries.map(e=><div key={e.id}><span className="occ102-timeline-dot"/><strong>{e.label}</strong><small>{e.author} · {formatDate(e.at)} · {e.origin}</small></div>)}<div><span className="occ102-timeline-dot"/><strong>Registro criado</strong><small>{formatDate(selected.occurredAt)}</small></div>{selected.updatedAt&&selected.updatedAt!==selected.occurredAt&&<div><span className="occ102-timeline-dot"/><strong>Última atualização</strong><small>{formatDate(selected.updatedAt)}</small></div>}</div><p>As mudanças de status exibidas são as verificadas na auditoria desta estação; registros realizados em outra máquina podem não constar aqui. As providências vêm do acompanhamento central. O histórico completo permanece no registro original.</p></section>
-   <div className="occ102-detail-actions"><button type="button" className="occ102-primary" onClick={()=>onOpenRecord(selected.id)}><ArrowRight size={16}/> Abrir registro</button>{role!=='viewer'&&<button type="button" onClick={()=>onEditRecord(selected.id)}><Pencil size={15}/> Editar registro original</button>}</div>
-   </>:<div className="occ102-empty"><Activity size={26}/><strong>Selecione uma ocorrência</strong><span>Detalhes e providências aparecerão neste painel.</span></div>}</aside></div>
-  <p className="occ102-footer"><Info size={13}/> Os alertas de idade consideram horas desde a criação, não prazos contratuais de SLA. Os dados seguem o escopo autorizado; não são criadas ocorrências duplicadas.</p>
- </div>;
+type Member = { user_id: string; display_name?: string; username?: string; condos?: string[] | null };
+type Snapshot = {
+  tracking: { record_protocol: string; priority: string; assigned_user_id: string | null }[];
+  members: Member[];
+  updates: { id: string; record_protocol: string; note: string; author_id: string; created_at: string }[];
+  statusHistory?: { id: string; record_protocol: string; from: string; to: string; at: string; actor: string; kind: string; source: string }[];
+};
+type Props = {
+  records: OperationalRecord[];
+  role: string;
+  demo: boolean;
+  loading: boolean;
+  error: string;
+  onRefresh: () => void;
+  onOpenRecord: (id: string) => void;
+  onEditRecord: (id: string) => void;
+  onNewRecord: () => void;
+};
+const empty: Snapshot = { tracking: [], members: [], updates: [] };
+const day = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" });
+const date = new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" });
+const stamp = (value?: string) => Date.parse(value || "");
+const format = (value?: string) => Number.isFinite(stamp(value)) ? date.format(stamp(value)) : "Não informado";
+const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+const statuses: RecordStatus[] = ["Pendente", "Em andamento", "Concluído"];
+const priorities = ["Baixa", "Normal", "Alta", "Crítica"];
+const defaultFilters = { status: "", category: "", condo: "", period: "", assignee: "", age: "" };
+const labels = { status: "Status", category: "Categoria", condo: "Condomínio", period: "Período", assignee: "Responsável", age: "Tempo em aberto" };
+const queues = { open: "Em aberto", critical: "Críticas", late: "Prazo vencido", unassigned: "Sem responsável" };
+type Queue = keyof typeof queues | "";
+type Pending = { id: string; title: string; from: RecordStatus; to: RecordStatus };
+
+function severity(value?: string) {
+  const key = normalize(value || "");
+  if (/critic|urgente|emerg/.test(key)) return "Crítica";
+  if (/alta|high/.test(key)) return "Alta";
+  if (/media|moderad/.test(key)) return "Média";
+  if (/baixa|low/.test(key)) return "Baixa";
+  return key ? "Normal" : "Não definida";
+}
+
+function Badge({ children, tone = "" }: { children: React.ReactNode; tone?: string }) {
+  return <span data-slot="badge" className={"occ-badge " + tone}>{children}</span>;
+}
+
+export default function Occurrences102({ records, role, demo, loading, error, onRefresh, onOpenRecord, onEditRecord, onNewRecord }: Props) {
+  const manager = role === "admin" || role === "supervisor";
+  const canWrite = !demo && role !== "viewer";
+  const [compact, setCompact] = useState(() => matchMedia("(max-width: 1080px)").matches);
+  useEffect(() => {
+    const media = matchMedia("(max-width: 1080px)");
+    const change = () => setCompact(media.matches);
+    media.addEventListener("change", change);
+    return () => media.removeEventListener("change", change);
+  }, []);
+
+  const [now, setNow] = useState(Date.now);
+  const [snapshot, setSnapshot] = useState(empty);
+  const [ready, setReady] = useState(demo);
+  const [trackingError, setTrackingError] = useState("");
+  const latest = useRef(0);
+  const refresh = useCallback(async () => {
+    if (demo) return;
+    const request = ++latest.current;
+    try {
+      const data: Snapshot = await window.mopDesktop?.occurrence103?.("list");
+      if (!data) throw Error("Consulta de acompanhamento indisponível.");
+      if (request !== latest.current) return;
+      setSnapshot(data);
+      setReady(true);
+      setTrackingError("");
+    } catch (err) {
+      if (request !== latest.current) return;
+      setReady(false);
+      setTrackingError(err instanceof Error ? err.message : "Falha ao consultar acompanhamento.");
+    }
+  }, [demo]);
+  useEffect(() => {
+    void refresh();
+    const off = demo ? undefined : window.mopDesktop?.onSync?.(event => { if (event?.dataChanged) void refresh(); });
+    const timer = window.setInterval(() => { setNow(Date.now()); void refresh(); }, 30000);
+    return () => { ++latest.current; off?.(); window.clearInterval(timer); };
+  }, [demo, refresh]);
+
+  const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState(defaultFilters);
+  const [more, setMore] = useState(false);
+  const [queue, setQueue] = useState<Queue>("");
+  const [sort, setSort] = useState("Atenção");
+  const [chosen, setChosen] = useState<string>();
+  const [sheet, setSheet] = useState(false);
+  const [tab, setTab] = useState("summary");
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [assignment, setAssignment] = useState<{ id: string; priority: string; assignee: string }>();
+  const [pending, setPending] = useState<Pending>();
+  const [busy, setBusy] = useState(false);
+  const writing = useRef(false);
+  const lastRow = useRef<HTMLButtonElement | null>(null);
+  const [feedback, setFeedback] = useState<{ id: string; text: string; error?: boolean }>();
+
+  const tracking = new Map(snapshot.tracking.map(item => [item.record_protocol, item]));
+  const members = new Map(snapshot.members.map(member => [member.user_id, member]));
+  const name = (id: string) => members.get(id)?.display_name || members.get(id)?.username || "Usuário atribuído";
+  const rows = records.filter(row => row.category !== "Rotina" || row.status !== "Concluído").map(record => {
+    const tracked = tracking.get(record.id);
+    const priority = severity(tracked?.priority || record.priority);
+    const open = record.status !== "Concluído";
+    return { record, priority, open, critical: open && priority === "Crítica",
+      late: open && stamp(record.deadline) < now,
+      age: Math.floor(Math.max(0, now - stamp(record.occurredAt)) / 3600000),
+      assignee: tracked?.assigned_user_id || "" };
+  });
+  const inQueue = (row: typeof rows[number], key: Queue) =>
+    key === "unassigned" ? ready && row.open && !row.assignee : !key || row[key];
+  const search = normalize(query.trim());
+  const filtered = rows.filter(row => {
+    const r = row.record;
+    if (!inQueue(row, queue) || (filters.status && r.status !== filters.status) ||
+        (filters.category && r.category !== filters.category) || (filters.condo && r.condo !== filters.condo) ||
+        (filters.assignee && (!ready || (filters.assignee === "unassigned" ? Boolean(row.assignee) : row.assignee !== filters.assignee))) ||
+        (filters.age && !(row.open && row.age >= Number(filters.age)))) return false;
+    if (search && !normalize([r.id, r.title, r.condo, r.description, r.details].join(" ")).includes(search)) return false;
+    const time = stamp(r.occurredAt);
+    if (filters.period === "Hoje") return Number.isFinite(time) && day.format(time) === day.format(now);
+    return !filters.period || (time <= now && time >= now - (filters.period === "Últimos 7 dias" ? 7 : 30) * 86400000);
+  });
+  const rank = (row: typeof rows[number]) => row.late ? 0 : row.critical ? 1 : row.open ? 2 : 3;
+  filtered.sort((a,b) => (sort === "Atenção" ? rank(a) - rank(b) || (a.late && b.late ? stamp(a.record.deadline) - stamp(b.record.deadline) : 0) : 0)
+    || (stamp(b.record.occurredAt) || 0) - (stamp(a.record.occurredAt) || 0));
+  // Keep the open detail after a write moves its row out of the current queue.
+  const selected = rows.find(row => row.record.id === chosen) || (!compact ? filtered[0] : undefined);
+  const record = selected?.record;
+  const note = record ? drafts[record.id] || "" : "";
+  const update = async (id: string, operation: "note" | "assign" | "status", data: object) => {
+    if (!canWrite || writing.current) return;
+    writing.current = true;
+    setBusy(true);
+    setFeedback(undefined);
+    try {
+      const result = await window.mopDesktop?.occurrence103?.(operation, { ...data, id });
+      if (!result?.saved) throw Error("A alteração não foi confirmada.");
+      if (operation === "note") setDrafts(current => ({ ...current, [id]: "" }));
+      if (operation === "assign") setAssignment(undefined);
+      setFeedback({ id, text: operation === "note" ? "Providência registrada." : operation === "assign" ? "Responsável e prioridade atualizados." : "Status atualizado." });
+      if (operation === "status") onRefresh();
+      void refresh();
+    } catch (err) {
+      setFeedback({ id, error: true, text: err instanceof Error ? err.message : "Não foi possível salvar a alteração." });
+    } finally {
+      writing.current = false;
+      setBusy(false);
+    }
+  };
+  const requestStatus = (to: RecordStatus) => {
+    if (!record || !canWrite || busy || to === record.status || (record.status === "Concluído" && !manager)) return;
+    if (to === "Concluído" || record.status === "Concluído") setPending({ id: record.id, title: record.title, from: record.status, to });
+    else void update(record.id, "status", { status: to });
+  };
+  const confirm = () => {
+    if (!pending) return;
+    setPending(undefined);
+    const target = rows.find(row => row.record.id === pending.id)?.record;
+    if (!target || target.status !== pending.from) {
+      setFeedback({ id: pending.id, error: true, text: "A ocorrência mudou. Confira o status antes de tentar novamente." });
+      return;
+    }
+    void update(pending.id, "status", { status: pending.to === "Concluído" ? "Resolvido" : pending.to });
+  };
+  const setFilter = (key: keyof typeof labels, value: string) => setFilters(current => ({ ...current, [key]: value }));
+  const filterText = (key: keyof typeof labels, value: string) => {
+    if (value === labels[key]) return value;
+    if (key === "assignee") return value === "unassigned" ? "Sem responsável" : name(value);
+    return key === "age" ? "Há pelo menos " + value + " h" : value;
+  };
+  const choices = (key: keyof typeof labels, values: string[]) =>
+    <RecordFilterDropdown label={labels[key]} value={filters[key] || labels[key]} options={[labels[key], ...values]}
+      display={value => filterText(key, value)} onChange={value => setFilter(key, value === labels[key] ? "" : value)}/>;
+  const assignmentDraft = assignment?.id === record?.id ? assignment : undefined;
+  const editPriority = assignmentDraft?.priority ?? (priorities.includes(selected?.priority) ? selected?.priority : "Normal");
+  const editAssignee = assignmentDraft?.assignee ?? selected?.assignee ?? "";
+  const permitted = record ? snapshot.members.filter(member => member.condos == null || member.condos.includes(record.condo)) : [];
+  const updates = snapshot.updates.filter(item => item.record_protocol === record?.id);
+  const historyEntries = record ? [
+    ...updates.map(item => ({ id: item.id, at: item.created_at, title: item.note, meta: name(item.author_id) + " · Central" })),
+    ...(snapshot.statusHistory || []).filter(item => item.record_protocol === record.id).map(item => ({
+      id: item.id, at: item.at, title: item.kind + ": " + item.from + " → " + item.to, meta: item.actor + " · " + item.source,
+    })),
+    { id: "created", at: record.occurredAt, title: "Registro criado", meta: record.author },
+  ].sort((a,b) => stamp(b.at) - stamp(a.at)) : [];
+  const notice = feedback && <p className={"occ-notice " + (feedback.error ? "error" : "success")} role={feedback.error ? "alert" : "status"}>{feedback.id} · {feedback.text}</p>;
+  const detail = record && selected ? <>
+    <header className="occ-detail-heading">
+      <Badge tone={selected.open ? "progress" : "done"}>{record.status}</Badge>
+      <h2>{record.title}</h2><p>{record.id} · {record.condo}</p>
+    </header>
+    {feedback?.id === record.id && notice}
+    <div className="occ-actions">
+      {canWrite && <Button type="button" size="sm" onClick={() => setTab("notes")}>Registrar providência</Button>}
+      {canWrite && (selected.open || manager) && <RecordFilterDropdown label="Atualizar status" value="" placeholder="Atualizar status"
+        disabled={busy} options={statuses.filter(status => status !== record.status)}
+        display={value => value === "Concluído" ? "Encerrar ocorrência" : selected.open ? value : "Reabrir · " + value}
+        onChange={value => requestStatus(value as RecordStatus)}/>}
+      <Button type="button" size="sm" variant="outline" onClick={() => onOpenRecord(record.id)}>Abrir registro</Button>
+    </div>
+    <Tabs.Root value={tab} onValueChange={setTab}>
+      <Tabs.List className="occ-tabs" aria-label="Detalhes da ocorrência">
+        <Tabs.Trigger value="summary">Resumo</Tabs.Trigger>
+        <Tabs.Trigger value="notes">Providências</Tabs.Trigger>
+        <Tabs.Trigger value="history">Histórico</Tabs.Trigger>
+      </Tabs.List>
+      <Tabs.Content value="summary" className="occ-tab">
+        <dl className="occ-facts">
+          <div><dt>Categoria</dt><dd>{record.category}</dd></div><div><dt>Prioridade</dt><dd>{selected.priority}</dd></div>
+          <div><dt>Prazo</dt><dd>{format(record.deadline)} {selected.late && <Badge tone="late">Vencido</Badge>}</dd></div>
+          <div><dt>Tempo em aberto</dt><dd>{selected.open && Number.isFinite(selected.age) ? selected.age + " h" : "—"}</dd></div>
+          <div><dt>Registrada em</dt><dd>{format(record.occurredAt)}</dd></div><div><dt>Registrada por</dt><dd>{record.author}</dd></div>
+          <div><dt>Responsável</dt><dd>{ready ? (selected.assignee ? name(selected.assignee) : "Sem responsável") : "Consulta indisponível"}</dd></div>
+        </dl>
+        <div className="occ-copy"><h3>Descrição</h3><p>{record.description || "Sem descrição."}</p>
+          {record.nextAction && <><h3>Próxima ação</h3><p>{record.nextAction}</p></>}
+        </div>
+        {manager && canWrite && <details className="occ-management"><summary>Atribuir responsável e prioridade</summary>
+          <div className="occ-actions">
+            <RecordFilterDropdown label="Prioridade" value={editPriority} options={priorities}
+              onChange={value => setAssignment({ id: record.id, priority: value, assignee: editAssignee })}/>
+            <RecordFilterDropdown label="Responsável pela ocorrência" value={editAssignee || "none"}
+              options={["none", ...new Set([...permitted.map(member => member.user_id), ...(editAssignee ? [editAssignee] : [])])]}
+              display={value => value === "none" ? "Sem responsável" : name(value)}
+              onChange={value => setAssignment({ id: record.id, priority: editPriority, assignee: value === "none" ? "" : value })}/>
+            <Button type="button" size="sm" disabled={busy || !ready || !assignmentDraft}
+              onClick={() => void update(record.id, "assign", { priority: editPriority, assigned_user_id: editAssignee || null })}>Salvar atribuição</Button>
+          </div>
+        </details>}
+        {role !== "viewer" && <Button type="button" size="sm" variant="ghost" onClick={() => onEditRecord(record.id)}>Editar registro original</Button>}
+      </Tabs.Content>
+      <Tabs.Content value="notes" className="occ-tab">
+        {record.actionTaken && <div className="occ-copy"><h3>Providência do registro original</h3><p>{record.actionTaken}</p></div>}
+        {canWrite && <form onSubmit={event => { event.preventDefault(); if (note.trim().length >= 4) void update(record.id, "note", { note: note.trim() }); }}>
+          <label htmlFor="occ-note">Providência</label>
+          <textarea id="occ-note" rows={4} maxLength={2000} placeholder="O que foi feito e qual é o próximo passo?" value={note}
+            disabled={busy} onChange={event => { const value = event.target.value; setDrafts(current => ({ ...current, [record.id]: value })); }}/>
+          <Button type="submit" size="sm" disabled={busy || note.trim().length < 4}>Adicionar ao histórico</Button>
+        </form>}
+        {!updates.length && <p className="occ-muted">Nenhuma providência de acompanhamento nesta consulta.</p>}
+        <ul className="occ-history">{updates.map(item => <li key={item.id}><p>{item.note}</p><small>{name(item.author_id)} · {format(item.created_at)}</small></li>)}</ul>
+      </Tabs.Content>
+      <Tabs.Content value="history" className="occ-tab">
+        <p className="occ-muted">Inclui providências da central e mudanças de status da auditoria desta estação.</p>
+        <ul className="occ-history">{historyEntries.map(item => <li key={item.id}><p>{item.title}</p><small>{item.meta} · {format(item.at)}</small></li>)}</ul>
+      </Tabs.Content>
+    </Tabs.Root>
+  </> : <p className="occ-muted">Selecione uma ocorrência na fila.</p>;
+
+  return <section className="occ-workbench">
+    <header className="occ-heading">
+      <div><h1>Ocorrências</h1><p>Fila operacional do plantão</p></div>
+      <div className="occ-actions">
+        <Button type="button" variant="outline" disabled={loading} onClick={() => { setNow(Date.now()); onRefresh(); void refresh(); }}><RefreshCw/>Atualizar</Button>
+        {role !== "viewer" && <Button type="button" onClick={onNewRecord}><FilePlus2/>Novo registro</Button>}
+      </div>
+    </header>
+    {demo && <p className="occ-muted">Demonstração com dados fictícios.</p>}
+    {(error || trackingError) && <p role="alert" className="occ-notice error">{[error, trackingError].filter(Boolean).join(" · ")}</p>}
+    {feedback && (!record || feedback.id !== record.id || (compact && !sheet)) && notice}
+    <div className="occ-metrics" role="group" aria-label="Prioridades da fila">
+      {(Object.keys(queues) as Exclude<Queue, "">[]).map(key => {
+        const unavailable = loading || !!error || (!ready && key === "unassigned");
+        return <Card className="occ-surface" key={key}>
+          <Button type="button" variant="ghost" className={"occ-metric " + key} aria-pressed={queue === key} disabled={unavailable}
+            onClick={() => setQueue(queue === key ? "" : key)}>
+            <span>{queues[key]}</span><strong>{unavailable ? "—" : rows.filter(row => inQueue(row, key)).length}</strong>
+          </Button>
+        </Card>;
+      })}
+    </div>
+    <Card className="occ-surface occ-toolbar">
+      <div className="occ-actions">
+        <div className="occ-search"><Search size={16}/><Input aria-label="Buscar ocorrências" placeholder="Protocolo, título ou condomínio" value={query} onChange={event => setQuery(event.target.value)}/></div>
+        {choices("status", statuses)}
+        <Button type="button" size="sm" variant="outline" aria-expanded={more} aria-controls="occ-more" onClick={() => setMore(!more)}><SlidersHorizontal/>Mais filtros<ChevronDown/></Button>
+      </div>
+      <div id="occ-more" className="occ-actions" hidden={!more}>
+        {choices("category", [...new Set(rows.map(row => row.record.category))])}
+        {choices("condo", [...new Set(rows.map(row => row.record.condo))])}
+        {choices("period", ["Hoje", "Últimos 7 dias", "Últimos 30 dias"])}
+        {choices("assignee", ["unassigned", ...new Set(rows.map(row => row.assignee).filter(Boolean))])}
+        {choices("age", ["24", "48", "72", "168"])}
+      </div>
+      {(query || queue || Object.values(filters).some(Boolean)) && <div className="occ-actions" aria-label="Filtros ativos">
+        {query && <Button type="button" size="xs" variant="secondary" onClick={() => setQuery("")}>Busca: {query}<X aria-label="Remover busca"/></Button>}
+        {queue && <Button type="button" size="xs" variant="secondary" onClick={() => setQueue("")}>{queues[queue]}<X aria-label="Remover recorte"/></Button>}
+        {Object.entries(filters).filter(([,value]) => value).map(([key,value]) => <Button type="button" size="xs" variant="secondary" key={key}
+          onClick={() => setFilter(key as keyof typeof labels, "")}>{filterText(key as keyof typeof labels,value)}<X aria-label="Remover filtro"/></Button>)}
+        <Button type="button" size="xs" variant="ghost" onClick={() => { setFilters(defaultFilters); setQuery(""); setQueue(""); }}>Limpar filtros</Button>
+      </div>}
+    </Card>
+    <div className="occ-layout">
+      <Card className="occ-surface occ-queue">
+        <header><div><h2>Fila operacional</h2><p role="status">{loading ? "Atualizando…" : filtered.length + (filtered.length === 1 ? " ocorrência" : " ocorrências")}</p></div>
+          <RecordFilterDropdown label="Ordenar fila" value={sort} options={["Atenção", "Mais recentes"]} onChange={setSort}/>
+        </header>
+        <div className="occ-rows">
+          {filtered.map(row => <Button type="button" variant="ghost" className="occ-row" key={row.record.id} aria-pressed={record?.id === row.record.id}
+            onClick={event => { lastRow.current = event.currentTarget; setChosen(row.record.id); setTab("summary"); setSheet(compact); }}>
+            <span className="occ-row-main"><strong>{row.record.title}</strong><small>{row.record.id} · {row.record.condo}</small></span>
+            <span className="occ-badges"><Badge tone={row.open ? "progress" : "done"}>{row.record.status}</Badge>
+              <Badge tone={row.critical ? "critical" : ""}>{row.priority}</Badge>
+              {row.late && <Badge tone="late">Prazo vencido</Badge>}</span>
+            <small>{ready ? (row.assignee ? name(row.assignee) : "Sem responsável") : "Responsável indisponível"}
+              {" · "}{Number.isFinite(stamp(row.record.deadline)) ? "Prazo " + format(row.record.deadline) : "Sem prazo"}
+              {row.open && Number.isFinite(row.age) && " · Aberta há " + row.age + " h"}</small>
+          </Button>)}
+          {!loading && !filtered.length && <p className="occ-muted">Nenhuma ocorrência no recorte atual.</p>}
+        </div>
+      </Card>
+      {!compact && <Card className="occ-surface occ-detail">{detail}</Card>}
+    </div>
+    {compact && <Dialog.Root open={sheet && Boolean(record)} onOpenChange={setSheet}>
+      <Dialog.Portal><Dialog.Overlay className="occ-sheet-overlay"/>
+        <Dialog.Content aria-modal="true" data-slot="sheet-content" className="occ-sheet"
+          onCloseAutoFocus={event => { event.preventDefault(); lastRow.current?.focus({ preventScroll: true }); }}>
+          <Dialog.Title className="occ-sheet-label">Detalhes da ocorrência</Dialog.Title>
+          <Dialog.Description className="sr-only">Acompanhamento do registro selecionado.</Dialog.Description>
+          <Dialog.Close asChild><Button type="button" variant="ghost" size="icon-sm" className="occ-sheet-close" aria-label="Fechar detalhes"><X/></Button></Dialog.Close>
+          {detail}
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>}
+    <AlertDialog open={Boolean(pending)} onOpenChange={open => { if (!open) setPending(undefined); }}>
+      <AlertDialogContent aria-modal="true" className="occ-confirm" overlayClassName="occ-confirm-overlay">
+        <AlertDialogTitle>{pending?.to === "Concluído" ? "Encerrar ocorrência?" : "Reabrir ocorrência?"}</AlertDialogTitle>
+        <AlertDialogDescription>{pending?.id} · {pending?.title}. O status passará para {pending?.to}.</AlertDialogDescription>
+        <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={confirm}>Confirmar</AlertDialogAction></AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  </section>;
 }

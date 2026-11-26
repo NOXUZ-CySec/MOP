@@ -18,4 +18,11 @@ const events=statusHistory(store,B);assert.equal(events.length,2);assert.equal(e
 assert.ok(!JSON.stringify(events).includes('MOP-2'));
 }finally{cleanup()}});
 test('audit cannot leak events to another condominium',()=>{const {store,cleanup}=setup();try{let prior=store.read(),next=visible(prior,B);next.items.find(x=>x.id===1).status='Resolvido';store.write(stampWrite(prior,next,B),B);assert.equal(statusHistory(store,C).length,0)}finally{cleanup()}});
-test('UI shows manager assignee filtering, aging filters and status history',()=>{const ui=fs.readFileSync(path.join(__dirname,'../ui-next/src/Occurrences102.tsx'),'utf8');assert.ok(ui.includes('setAssignee'));assert.ok(ui.includes('Pendências antigas'));assert.ok(ui.includes('Críticas abertas'));assert.ok(ui.includes('statusHistory'));assert.ok(ui.includes('historyEntries'));});
+test('UI exposes configurable aging, explicit due dates, assignment filters and audit history',()=>{
+ const ui=fs.readFileSync(path.join(__dirname,'../ui-next/src/Occurrences102.tsx'),'utf8');
+ assert.match(ui,/stamp\(record\.deadline\) < now/);
+ assert.match(ui,/row\.age >= Number\(filters\.age\)/);
+ assert.match(ui,/row\.assignee !== filters\.assignee/);
+ assert.match(ui,/snapshot\.statusHistory/);
+ assert.match(ui,/historyEntries\.map/);
+});

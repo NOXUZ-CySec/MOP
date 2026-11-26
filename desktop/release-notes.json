@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.3.0-preview.110.9",
+    "date": "2026-11-26",
+    "title": "MOP Preview 110.9 - Fila de Ocorrências",
+    "changes": [
+      "Fila compacta com cartões de atenção, filtros removíveis e ordenação por prazo e criticidade.",
+      "Painel responsivo com resumo, providências e histórico, mantendo a fila ao fechar detalhes.",
+      "Confirmação no encerramento e na reabertura e preservação da providência digitada em caso de falha."
+    ]
+  },
+  {
     "version": "2.3.0-preview.110.8",
     "date": "2026-11-26",
     "title": "MOP Preview 110.8 - Dashboard de Relatórios",
