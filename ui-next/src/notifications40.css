@@ -39,3 +39,101 @@
 .mop-notice-error { margin:3px 17px 8px;padding:8px;border:1px solid var(--mop-status-danger-border);border-radius:7px;color:var(--mop-status-danger-fg);background:var(--mop-status-danger-bg);font-size:13px }
 .mop-notice-footer { padding:12px 17px;justify-content:flex-end;border-top:1px solid var(--mop-control-border) }
 @media(max-width:430px){ .mop-notice-header,.mop-notice-controls,.mop-notice-footer { padding-inline:10px } .mop-notice-items { padding-inline:10px } }
+
+/* Animate interaction feedback without changing the priority palette. */
+.mop-notice-sheet {
+  --mop-notice-quick: 140ms;
+  --mop-notice-enter: cubic-bezier(.22, 1, .36, 1);
+}
+.mop-notice-sheet .mop-notice-header {
+  padding-block: 19px;
+}
+.mop-notice-sheet .mop-notice-controls {
+  padding-block-end: 12px;
+}
+.mop-notice-items .mop-notice-item {
+  padding: 12px;
+  border-radius: 12px;
+}
+.mop-notice-items .mop-notice-item:focus-within {
+  outline: 1px solid var(--mop-control-accent);
+  outline-offset: -1px;
+}
+.mop-notice-sheet button[data-slot=button] {
+  transition: background-color var(--mop-notice-quick), border-color var(--mop-notice-quick),
+    color var(--mop-notice-quick), box-shadow var(--mop-notice-quick);
+}
+.mop-notice-sheet button[data-slot=button][data-variant=default]:not(:disabled):hover {
+  background: var(--mop-control-primary);
+  box-shadow: inset 0 0 0 1px var(--mop-control-accent);
+}
+.mop-notice-filters button[data-slot=button][aria-pressed=true] {
+  box-shadow: inset 0 -2px var(--mop-control-accent);
+}
+.mop-notice-tags .mop-notice-read {
+  border: 1px solid var(--mop-control-border);
+}
+.mop-notice-empty > svg {
+  box-sizing: content-box;
+  padding: 10px;
+  background: var(--mop-ui-icon-bg);
+  border: 1px solid var(--mop-control-border);
+  border-radius: 12px;
+}
+.mop-notice-overlay[data-state=closed],
+.mop-notice-sheet[data-state=closed] {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mop-notice-overlay[data-state=open] { animation: mop-notice-fade-in 180ms ease-out both }
+  .mop-notice-overlay[data-state=closed] { animation: mop-notice-fade-out 160ms ease-in both }
+  .mop-notice-sheet[data-state=open] { animation: mop-notice-sheet-in 240ms var(--mop-notice-enter) backwards }
+  .mop-notice-sheet[data-state=closed] { animation: mop-notice-sheet-out 160ms ease-in both }
+  .mop-notice-sheet[data-state=open] .mop-notice-heading-icon {
+    animation: mop-notice-bell-in 290ms var(--mop-notice-enter) backwards;
+  }
+  .mop-notice-items ul,
+  .mop-notice-empty {
+    animation: mop-notice-content-in 170ms var(--mop-notice-enter) backwards;
+  }
+  .mop-notice-read {
+    animation: mop-notice-fade-in 150ms ease-out backwards;
+  }
+  .mop-notice-progress {
+    animation: mop-notice-spin 900ms linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mop-notice-sheet button[data-slot=button] { transition: none }
+}
+
+@keyframes mop-notice-fade-in {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+@keyframes mop-notice-fade-out {
+  from { opacity: 1 }
+  to { opacity: 0 }
+}
+@keyframes mop-notice-sheet-in {
+  from { opacity: .6; transform: translateX(32px) }
+  to { opacity: 1; transform: translateX(0) }
+}
+@keyframes mop-notice-sheet-out {
+  from { opacity: 1; transform: translateX(0) }
+  to { opacity: 0; transform: translateX(24px) }
+}
+@keyframes mop-notice-bell-in {
+  from { transform: rotate(-12deg) scale(.92) }
+  50% { transform: rotate(6deg) }
+  to { transform: rotate(0) scale(1) }
+}
+@keyframes mop-notice-content-in {
+  from { opacity: 0; transform: translateY(5px) }
+  to { opacity: 1; transform: translateY(0) }
+}
+@keyframes mop-notice-spin {
+  to { transform: rotate(360deg) }
+}

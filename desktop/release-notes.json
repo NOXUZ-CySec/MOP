@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.3.0-preview.110.15",
+    "date": "2026-11-26",
+    "title": "MOP Preview 110.15 - Animações na Central de Notificações",
+    "changes": [
+      "O painel lateral e o sino receberam transições de abertura e fechamento.",
+      "Filtros e selos de leitura receberam transições curtas, com indicadores de progresso na atualização e na leitura em lote.",
+      "A interface respeita a preferência do sistema por movimento reduzido."
+    ]
+  },
+  {
     "version": "2.3.0-preview.110.14",
     "date": "2026-11-26",
     "title": "MOP Preview 110.14 - Central de Notificações",

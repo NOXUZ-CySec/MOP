@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Dialog } from "radix-ui";
-import { AlertTriangle, ArrowUpRight, Bell, BellOff, CalendarDays, Check, CheckCheck, ClipboardList, RefreshCw, Repeat2, X } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, Bell, BellOff, CalendarDays, Check, CheckCheck, ClipboardList, LoaderCircle, RefreshCw, Repeat2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import RecordFilterDropdown from "./RecordFilterDropdown";
@@ -79,6 +79,7 @@ export default function NotificationCenter40({ notices, error, onRead, onRefresh
   const unread = notices.filter(notice => !notice.read).length;
   const important = notices.filter(priority).length;
   const counts = { all: notices.length, priority: important, unread, read: notices.length - unread };
+  const listKey = filter + ":" + group;
   const results = notices.filter(notice => (group === "all" || category(notice) === group) &&
     (filter === "all" || (filter === "priority" ? priority(notice) : filter === "read" ? notice.read : !notice.read)));
   results.sort((a,b) => rank(a) - rank(b) || stamp(b) - stamp(a));
@@ -131,7 +132,7 @@ export default function NotificationCenter40({ notices, error, onRead, onRefresh
           </div>
           {(actionError || error) && <p role="alert" className="mop-notice-error">{actionError || error}</p>}
           <div className="mop-notice-items" aria-busy={busy === "refresh"}>
-            {results.length ? <ul aria-label="Notificações no recorte">{results.map(notice => {
+            {results.length ? <ul key={listKey} aria-label="Notificações no recorte">{results.map(notice => {
               const kind = category(notice), target = targetOf(notice);
               const Icon = kind === "alerts" ? AlertTriangle : kind === "schedule" ? CalendarDays : kind === "handover" ? Repeat2 : kind === "checklists" ? ClipboardList : Bell;
               const title = notice.title || "Aviso operacional";
@@ -143,7 +144,7 @@ export default function NotificationCenter40({ notices, error, onRead, onRefresh
                   <div className="mop-notice-tags">
                     <span>{groups[kind]}</span>
                     {needsAttention && <span className="mop-notice-emphasis">{urgent ? "Crítica" : "Atenção"}</span>}
-                    {notice.read ? <span><Check size={12} aria-hidden="true"/>Lida</span> : <span className="mop-notice-new">Não lida</span>}
+                    {notice.read ? <span className="mop-notice-read"><Check size={12} aria-hidden="true"/>Lida</span> : <span className="mop-notice-new">Não lida</span>}
                   </div>
                   <h3>{title}</h3>
                   {(notice.detail || notice.message || notice.description) && <p>{notice.detail || notice.message || notice.description}</p>}
@@ -158,14 +159,14 @@ export default function NotificationCenter40({ notices, error, onRead, onRefresh
                 </div>
               </Card></li>;
             })}</ul> : <div className="mop-notice-empty" role="status">
-              <BellOff size={24} aria-hidden="true"/>
+              {busy === "refresh" ? <LoaderCircle size={24} className="mop-notice-progress" aria-hidden="true"/> : <BellOff size={24} aria-hidden="true"/>}
               {busy === "refresh" ? "Consultando avisos…" : error ? "Não foi possível confirmar este recorte." : "Nenhum aviso neste recorte."}
               {(filter !== "all" || group !== "all") && <Button type="button" variant="outline" size="sm" onClick={() => {setFilter("all");setGroup("all")}}>Limpar filtros</Button>}
             </div>}
           </div>
           <footer className="mop-notice-footer">
-            <Button type="button" variant="outline" size="sm" disabled={!!busy} onClick={() => void run("refresh")}><RefreshCw/>{busy === "refresh" ? "Atualizando…" : "Atualizar"}</Button>
-            <Button type="button" size="sm" disabled={!unread || !!busy} onClick={() => void run("readAll")}><CheckCheck/>Marcar todas como lidas</Button>
+            <Button type="button" variant="outline" size="sm" disabled={!!busy} onClick={() => void run("refresh")}><RefreshCw className={busy === "refresh" ? "mop-notice-progress" : undefined} aria-hidden="true"/>{busy === "refresh" ? "Atualizando…" : "Atualizar"}</Button>
+            <Button type="button" size="sm" disabled={!unread || !!busy} onClick={() => void run("readAll")}>{busy === "readAll" ? <LoaderCircle className="mop-notice-progress" aria-hidden="true"/> : <CheckCheck aria-hidden="true"/>}{busy === "readAll" ? "Marcando avisos…" : "Marcar todas como lidas"}</Button>
           </footer>
         </Dialog.Content>
       </Dialog.Portal>
