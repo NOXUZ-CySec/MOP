@@ -27,17 +27,20 @@ test('Desktop home IPC fetches same shared checklist source as Checklists e Roti
 });
 test('Home refreshing pending routines on focus, sync updates and periodic timer',()=>{
  const ui=read('ui-next/src/Home54.tsx');
- assert.ok(ui.includes("window.mopDesktop!.home109!()"));
- assert.ok(ui.includes("onSync?.("));
- assert.ok(ui.includes("window.setInterval("));
- assert.ok(ui.includes("window.addEventListener('focus',focus)"));
- assert.ok(ui.includes("filter(t=>!t.done)"));
+ const hook=read('ui-next/src/queries1098/useHomeRoutines1098.ts');
+ assert.match(ui,/useHomeRoutines1098\([^\n]*accepted,routineSession\)/);
+ assert.match(hook,/window\.mopDesktop!\.home109!\(\)/);
+ assert.match(hook,/onSync\?\.\([^\n]*dataChanged[^\n]*load\(true\)/);
+ assert.match(hook,/setInterval\([^\n]*visibilityState[^\n]*load\(\)/);
+ assert.match(hook,/addEventListener\('focus',\s*focus\)/);
+ assert.match(hook,/removeEventListener\('focus',\s*focus\)/);
+ assert.match(ui,/\.filter\(t=>!t\.done\)/);
 });
 test('Global Escape returns any authorized page to Início without dismissing mandatory modals',()=>{
  const ui=read('ui-next/src/main.tsx');
  assert.ok(ui.includes("event.key!=='Escape'"));
  assert.ok(ui.includes("setTab('Início');setUserMenu(false)"));
- assert.ok(ui.includes("if(!auth||!awarenessApproved)return"));
+ assert.match(ui,/if\(!auth\|\|\(!awarenessApproved&&account\?\.role!=='viewer'\)\)return/);
  assert.ok(ui.includes("[role=\"alertdialog\"][aria-modal=\"true\"]"));
  assert.ok(ui.includes("closePrompt||recoveryOpen"));
 });

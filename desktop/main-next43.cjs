@@ -157,7 +157,8 @@ else {
           if(dest.canceled||!dest.filePath)return {ok:true,value:{saved:false,canceled:true}};
           const check=authorized();exporter.authorize(check);
           if(check.userId!==session.userId)throw Error('Sessão alterada durante a exportação.');
-          await exporter.generate(report,format,dest.filePath);
+          const output=filters?.dashboard?exporter.createData(store,check,filters):report;
+          await exporter.generate(output,format,dest.filePath);
           return {ok:true,value:{saved:true,filename:path.basename(dest.filePath),format}};
         }catch(e){return {ok:false,error:privacy.clean(e.message)}}
       });

@@ -1,5 +1,16 @@
 [
   {
+    "version": "2.3.0-preview.110.8",
+    "date": "2026-11-26",
+    "title": "MOP Preview 110.8 - Dashboard de Relatórios",
+    "changes": [
+      "Visão Geral com indicadores clicáveis, gráficos interativos e filtros por período, condomínio, categoria e status.",
+      "Exportação do recorte em PDF com gráficos e Excel com resumo, evolução diária e detalhamento.",
+      "Textos corrigidos e título de boas-vindas ampliado na aba Início.",
+      "Suíte atualizada para as regras atuais, incluindo a conclusão de checklists compartilhada pela equipe."
+    ]
+  },
+  {
     "version": "2.3.0-preview.110.7",
     "date": "2026-11-25",
     "title": "MOP Preview 110.7 - Briefing operacional",

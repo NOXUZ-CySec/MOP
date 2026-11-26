@@ -15,9 +15,16 @@ test('Preview49 acknowledgement table is isolated, user and shift scoped, idempo
  assert.equal(store.db.prepare('PRAGMA quick_check').get().quick_check,'ok');
  }finally{store?.close();fs.rmSync(dir,{recursive:true,force:true})}
 });
-test('Preview49 backend requires acknowledgment before handover and record creation',()=>{
+test('Legacy acknowledgment validates its version and operational writes check the effective shift receipt',()=>{
  const source=fs.readFileSync(path.join(__dirname,'../desktop/main-next43.cjs'),'utf8');
  assert.ok(source.includes("ipcMain.handle('mop:awareness49'"));
- assert.ok((source.match(/if\(!shiftAwareness49\(session\)\.accepted\)/g)||[]).length>=2);
+ for(const [handler,operation] of [['record-create43','record creation'],['record-action96','record changes'],['handover36','handover']]){
+  const marker="ipcMain.handle('mop:"+handler+"'";
+  const start=source.indexOf(marker);
+  assert.ok(start>=0,operation);
+  const end=source.indexOf('ipcMain.handle(',start+marker.length);
+  const block=source.slice(start,end<0?undefined:end);
+  assert.match(block,/if\(!require\('\.\/startup-gate108\.cjs'\)\.snapshot\(store,session\)\.accepted\)throw/,operation);
+ }
  assert.ok(source.includes('input?.version!==current.version'));
 });

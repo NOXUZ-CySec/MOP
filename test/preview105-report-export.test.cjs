@@ -18,3 +18,32 @@ test('Supervisor export is strictly scoped to authorized condominium',()=>{const
 test('Report filters apply before document and metrics generation',()=>{const {store,cleanup}=setup();try{const r=exp.createData(store,sessions.supervisor,{...filt,section:'occurrences',status:'Pendente'});assert.equal(r.rows.length,1);assert.equal(r.rows[0][0],'MOP-001');assert.equal(r.stats.find(([x])=>x==='Pendentes')[1],1);assert.throws(()=>exp.createData(store,sessions.admin,{...filt,period:'Últimos -100 dias'}),/inválidos/)}finally{cleanup()}});
 test('Excel exports contain metadata and escape formula-like text',async()=>{const {store,cleanup}=setup();try{const report=await exp.enrichReport(exp.createData(store,sessions.supervisor,filt),store,null,sessions.supervisor);const bytes=await exp.sheets(report).xlsx.writeBuffer();const ExcelJS=require('exceljs'),book=new ExcelJS.Workbook();await book.xlsx.load(bytes);assert.equal(book.getWorksheet('Detalhamento').rowCount,3);assert.equal(book.getWorksheet('Resumo').getCell('B3').value,'Todos os períodos');const row=[...book.getWorksheet('Detalhamento').getRows(2,2)];assert.ok(row.some(r=>String(r.getCell(2).value).startsWith("'=HYPERLINK")));assert.ok(!String(bytes).includes('CONDOMINIO-RESTRITO'))}finally{cleanup()}});
 test('PDF HTML escapes operational content and includes no other condominium',async()=>{const {store,cleanup}=setup();try{const report=await exp.enrichReport(exp.createData(store,sessions.supervisor,filt),store,null,sessions.supervisor);const html=exp.html(report);assert.ok(html.includes('MOP-001'));assert.ok(!html.includes('CONDOMINIO-RESTRITO'));assert.ok(html.includes('Central')||html.includes('CENTRAL'))}finally{cleanup()}});
+
+test('Dashboard export keeps the selected records and rechecks scope, status and dates', async () => {
+ const {store,cleanup}=setup();
+ try{
+  const state=store.read();
+  const now=Date.now();
+  const day=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(now));
+  state.items[0].deadline=new Date(now-3600000).toISOString();
+  store.write(state);
+  const selection={ids:['MOP-001'],start:day,end:day,selectedDate:day,metric:'overdue',dimension:'category',group:'Segurança'};
+  const payload={...filt,dashboard:selection};
+  const report=exp.createData(store,sessions.supervisor,payload);
+  assert.deepEqual(report.rows.map(row=>row[0]),['MOP-001']);
+  assert.equal(report.dashboard.series[0][1],1);
+  assert.equal(report.stats.find(([label])=>label==='Ocorrências vencidas')[1],1);
+  assert.match(exp.html(report),/Evolução diária/);
+  assert.match(exp.html(report),/Distribuição por categoria/);
+  assert.doesNotMatch(exp.html(report),/MOP-002|MOP-003/);
+  const workbook=exp.sheets(report);
+  assert.equal(workbook.getWorksheet('Detalhamento').rowCount,2);
+  assert.equal(workbook.getWorksheet('Evolução').getCell('B2').value,1);
+  assert.throws(()=>exp.createData(store,sessions.operator,payload),/exclusivos/);
+  assert.throws(()=>exp.createData(store,sessions.supervisor,{...payload,dashboard:{...selection,ids:['MOP-001','MOP-002']}}),/Atualize/);
+  assert.throws(()=>exp.createData(store,sessions.supervisor,{...payload,dashboard:{...selection,selectedDate:'2026-02-30'}}),/inválido/);
+  state.items[0].status='Resolvido';
+  store.write(state);
+  assert.throws(()=>exp.createData(store,sessions.supervisor,payload),/Atualize/);
+ }finally{cleanup()}
+});

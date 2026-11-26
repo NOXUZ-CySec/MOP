@@ -26,9 +26,13 @@ test('Home 109 loads real checklist completion data without modifying it',()=>{
   const b=snapshot(store,session);assert.equal(b.tasks[0].done,true);assert.equal(b.scope,'local');
  }finally{store.close();fs.rmSync(dir,{recursive:true,force:true})}
 });
-test('Home 109 contains priority and upcoming task panels with direct operational actions',()=>{
+test('Home briefing links priorities and upcoming routines to the underlying items',()=>{
  const ui=read('ui-next/src/Home54.tsx');
- for(const term of ['Orientação do plantão','O que exige atenção','Próximas rotinas','home109!()','onNavigate(\'Ocorrências\')','onNavigate(\'Checklists e Rotinas\')'])assert.ok(ui.includes(term),term);
+ assert.match(ui,/Prioridades do plant\u00e3o/);
+ assert.match(ui,/Pr\u00f3ximas rotinas/);
+ assert.match(ui,/onOpenRecord\(r\.id\)/);
+ assert.match(ui,/onOpenRoutine\(t\.id\)/);
+ assert.match(ui,/onNavigate\('Checklists e Rotinas'\)/);
 });
 test('Vacations are selectable as a dedicated shift classification, including type and day display',()=>{
  const types=read('ui-next/src/SchedulePage.tsx');const ui=read('ui-next/src/Schedule70.tsx');

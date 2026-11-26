@@ -38,9 +38,11 @@ test('Preview92 main process implements guarded updater IPC without changing rol
  assert.ok(main.includes("ipcMain.handle('mop:update-install',event=>response(event,()=>updater92.install()))"));
  assert.ok(!main.includes('let updaterReady=false;'));
  assert.ok(main.includes('if(isMainFrame&&access?.session)void access.lock()'));
- const ui=fs.readFileSync(path.join(root,'ui-next/dist/index.html'),'utf8');
- assert.match(ui,/assets\/index-[A-Za-z0-9_-]+\.js/);
- const bundles=fs.readdirSync(path.join(root,'ui-next/dist/assets')).filter(name=>name.endsWith('.js'));
- assert.equal(bundles.length,1);
- assert.ok(fs.readFileSync(path.join(root,'ui-next/dist/assets',bundles[0]),'utf8').includes('PREVIEW.94'));
+ const dist=path.join(root,'ui-next/dist');
+ const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
+ const entry=html.match(/<script\b[^>]*\btype="module"[^>]*\bsrc="\.\/(assets\/index-[A-Za-z0-9_-]+\.js)"/);
+ assert.ok(entry,'the built page must reference its module entry');
+ const version=require('../package.json').version;
+ const renderer=fs.readFileSync(path.join(dist,entry[1]),'utf8');
+ assert.ok(renderer.includes(version),'the module entry must contain the package version');
 });

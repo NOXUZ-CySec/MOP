@@ -18,12 +18,16 @@ test('Preview68: swap requires manager approval and cannot be approved twice',()
  assert.equal(schedule.action(db,worker,'load',{month:'2026-11'}).rows[0].kind,'swap');
  assert.throws(()=>schedule.action(db,manager,'decide',{id:req.id,status:'approved'}),/não está pendente/);db.close();
 });
-test('Preview68: checklist creation restricted and completion isolated per user',()=>{
+test('Preview68: checklist creation restricted and team completion keeps its original author',()=>{
  const db=new DatabaseSync(':memory:');checklist.setup(db);
  assert.throws(()=>checklist.action(db,worker,'create',{title:'Verificar câmeras',period:'Todos'}),/supervisão/);
  const task=checklist.action(db,manager,'create',{title:'Verificar câmeras',period:'Todos'});
  checklist.action(db,worker,'complete',{id:task.id});
- checklist.action(db,worker,'complete',{id:task.id});
- assert.equal(checklist.action(db,worker,'list').runs.length,1);
- assert.equal(checklist.action(db,manager,'list').runs.length,0);db.close();
+ checklist.action(db,manager,'complete',{id:task.id});
+ const workerRuns=checklist.action(db,worker,'list').runs;
+ const managerRuns=checklist.action(db,manager,'list').runs;
+ assert.equal(workerRuns.length,1);
+ assert.deepEqual(managerRuns,workerRuns);
+ assert.equal(workerRuns[0].task_id,task.id);
+ assert.equal(workerRuns[0].completed_by,worker.userId);db.close();
 });

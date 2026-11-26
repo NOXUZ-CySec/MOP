@@ -12,10 +12,22 @@ class Query{
  order(){return this}
  limit(n){this.limitN=n;return this}
  insert(value){this.mode='insert';this.payload=value;return this}
+ upsert(value,{onConflict,ignoreDuplicates=false}={}){
+  this.mode='upsert';this.payload=value;this.conflictKeys=onConflict?.split(',')||[];this.ignoreDuplicates=ignoreDuplicates;
+  assert.ok(this.conflictKeys.length,'fixture requires an explicit conflict key');
+  return this;
+ }
  update(value){this.mode='update';this.payload=value;return this}
  async maybeSingle(){const r=await this.execute();return {...r,data:r.data?.[0]||null}}
  then(resolve,reject){return Promise.resolve(this.execute()).then(resolve,reject)}
- execute(){const rows=this.db[this.table]||=[];if(this.mode==='insert'){
+ execute(){const rows=this.db[this.table]||=[];
+ if(this.mode==='upsert'){
+  const row=rows.find(candidate=>this.conflictKeys.every(key=>candidate[key]===this.payload[key]));
+  if(row&&this.ignoreDuplicates)return {data:this.selected?[]:null,error:null};
+  if(row)Object.assign(row,this.payload);else rows.push({...this.payload});
+  return {data:this.selected?[{...this.payload}]:null,error:null};
+ }
+ if(this.mode==='insert'){
   if(this.table==='mop_checklist_runs'&&rows.some(x=>x.workspace_id===this.payload.workspace_id&&x.task_id===this.payload.task_id&&x.user_id===this.payload.user_id&&x.work_date===this.payload.work_date))return {data:null,error:{code:'23505',message:'duplicate'}};
   rows.push({...this.payload});return {data:this.selected?[{...this.payload}]:null,error:null};
  }
@@ -24,7 +36,7 @@ class Query{
  return {data:matches.map(x=>({...x})),error:null};
  }
 }
-function fixture(){const db={mop_checklist_tasks:[],mop_checklist_runs:[],mop_schedule_requests:[],mop_members:[{workspace_id:workspace,user_id:operatorId,display_name:'Solicitante',role:'operator'},{workspace_id:workspace,user_id:colleagueId,display_name:'Colega',role:'operator'},{workspace_id:workspace,user_id:managerId,display_name:'Gestor',role:'supervisor'}]};
+function fixture(){const db={mop_checklist_tasks:[],mop_checklist_team_runs:[],mop_schedule_requests:[],mop_members:[{workspace_id:workspace,user_id:operatorId,display_name:'Solicitante',role:'operator'},{workspace_id:workspace,user_id:colleagueId,display_name:'Colega',role:'operator'},{workspace_id:workspace,user_id:managerId,display_name:'Gestor',role:'supervisor'}]};
  function account(role,id){const sync={authenticated:true,userId:id,membership:{user_id:id,role,workspace_id:workspace},workspace:()=>workspace,client:{from:table=>new Query(db,table)}};const session={userId:id,role,mode:'online'};return {sync,session}}
  return {db,operator:account('operator',operatorId),colleague:account('operator',colleagueId),manager:account('supervisor',managerId),viewer:account('viewer',operatorId)};
 }
@@ -35,9 +47,14 @@ test('Preview93 shared checklist is consistent across two accounts and idempoten
  assert.equal(list.tasks.length,1);assert.equal(list.tasks[0].title,'Conferir gravações');
  assert.deepEqual(list.runs,[]);
  await ops.checklist(f.operator.sync,f.operator.session,'complete',{id:created.id});
- await ops.checklist(f.operator.sync,f.operator.session,'complete',{id:created.id});
+ await ops.checklist(f.colleague.sync,f.colleague.session,'complete',{id:created.id});
  const after=await ops.checklist(f.operator.sync,f.operator.session,'list');
- assert.equal(after.runs.length,1);assert.equal(after.runs[0].user_id,operatorId);
+ assert.equal(after.runs.length,1);
+ assert.equal(after.runs[0].task_id,created.id);
+ assert.equal(after.runs[0].completed_by,operatorId);
+ const team=await ops.checklist(f.manager.sync,f.manager.session,'list');
+ assert.deepEqual(team.runs,after.runs);
+ assert.equal(f.db.mop_checklist_team_runs.length,1);
  await ops.checklist(f.manager.sync,f.manager.session,'disable',{id:created.id});
  assert.equal((await ops.checklist(f.operator.sync,f.operator.session,'list')).tasks.length,0);
  await assert.rejects(ops.checklist(f.operator.sync,f.operator.session,'complete',{id:created.id}),/indisponível/);

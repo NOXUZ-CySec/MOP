@@ -3,7 +3,8 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const root=path.resolve(__dirname,'..');
 test('startup gate replaces standalone awareness modal and secondary handover redirect',()=>{
  const main=fs.readFileSync(path.join(root,'ui-next/src/main.tsx'),'utf8');
- assert.ok(main.includes('if(account?.role!==\'viewer\'&&!awarenessApproved)return <StartupReceipt108'));
+ assert.match(main, /if\(account\?\.role!=='viewer'&&!awarenessApproved\)return[^\n]*<StartupReceipt108\b/);
+ assert.match(main, /onAccepted=\{\(\)=>setAwarenessApproved\(true\)\}/);
  assert.ok(!main.includes('<ShiftAwareness49'));
  assert.ok(!main.includes('Revisar e assumir turno</button>'));
 });
